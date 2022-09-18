@@ -1,0 +1,159 @@
+# Modèle linéaire généralisé {#mod-lineaire-gen}
+
+```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
+SciViews::R
+```
+
+##### Objectifs {.unnumbered}
+
+-   Découvrir le modèle linéaire généralisé
+
+-   Ètre capable d'utiliser la régression logistique
+
+##### Prérequis {.unnumbered}
+
+TODO...
+
+## Modèle linéaire généralisé
+
+Le modèle linéaire nous a permis de combiner différent types de **variables indépendantes ou explicatives** dans un même modèle. Cependant la **variable dépendante ou réponse** à la gauche de l'équation doit *absolument* être numérique et une distribution normale est exigée pour la composante statistique du modèle exprimée dans les résidus $\epsilon$. Donc, si nous voulons modéliser une variable dépendante qui ne répond pas à ces caractéristiques, nous sommes dans l'impasse avec la fonction `lm()`. Dans certains cas, une transformation des données peut résoudre le problème. Par exemple, prendre le logarithme d'une variable qui a une distribution log-normale. Dans d'autres cas, il semble qu'il n'y ait pas de solution... C'est ici que la **modèle linéaire *généralisé*** vient nous sauver la mise.
+
+Le modèle linéaire généralisé se représente comme suit :
+
+$$
+f(y) = \beta_1 + \beta_2 I_2 + \beta_3 I_3 + ... + \beta_k I_k + \beta_l x_1 + \beta_m x_2 + ... + \epsilon
+$$
+
+La différence par rapport au modèle linéaire, c'est que notre variable dépendante $y$ est **transformée** à l'aide d'une fonction $f(y)$ que l'on appelle **fonction de lien**. Cette fonction de lien est choisie soigneusement pour transformer une variable qui a une distribution non-normale vers une distribution normale ou quasi-normale. Du coup, il ne faut rien changer à la droite du signe égal par rapport au modèle linéaire, et les outils existants peuvent être réemployés.
+
+Toute la difficulté ici tient donc à la définition des fonctions de liens pertinentes par rapport à la distribution de $y$. Le tableau suivant reprend les principales situations prises en compte par la fonction `glm()` dans R qui calcule le modèle linéaire généralisé.
+
+| Distribution de Y    | Fonction de lien           | Code R                                           |
+|:---------------------|:---------------------------|:-------------------------------------------------|
+| Gaussienne (Normale) | identité (pas de transfo.) | `glm(..., family = gaussian(link = "identity"))` |
+| Log-Normale          | log                        | `glm(..., family = gaussian(link = "log"))`      |
+| Binomiale            | logit                      | `glm(..., family = binomial(link = logit))`      |
+| Binomiale            | probit (alternative)       | `glm(..., family = binomial(link = probit))`     |
+| Poisson              | log                        | `glm(..., family = poisson(link = log))`         |
+
+Il en existe bien d'autres. Voyez l'aide de `?family` pour plus de détails. Par exemple, pour une variable réponse binaire acceptant seulement deux valeurs possibles et ayant une distribution binomiale, avec une réponse de type logistique (une variation croissante d'une ou plusieurs variables indépendantes fait passer la proportion des individus appartenant au second état selon une courbe logistique en S), une fonction de type **logit** est à utiliser.
+
+$$
+y = 1/(1 + e^{- \beta x})
+$$
+
+La transformation **logit** calcule alors : $\ln(y / (1 - y)) = \beta x$. Les situations correspondant à ce cas de figure concernent par exemple des variables de type (vivant *versus* mort) par rapport à une situation potentiellement létale, ou alors, le développement d'une maladie lors d'une épidémie (sain *versus* malade).
+
+### Exemple
+
+Continuons à analyser nos données concernant les bébés à la naissance. Un bébé prématuré est un bébé qui naît avant 37 semaines de grossesse. Dans notre jeu de données `Babies`, nous pouvons déterminer si un enfant est prématuré ou non (variable binaire) à partir de la variable `gestation`(en jours). Transformons nos données pour obtenir les variables d'intérêt.
+
+```{r}
+SciViews::R
+babies <- read("babies", package = "UsingR")
+babies %>.%
+  select(., gestation, smoke, wt1, ht, race, age) %>.%
+  # Éliminer les valeurs manquantes
+  filter(., gestation < 999, smoke < 9, wt1 < 999, ht < 999, race < 99, age < 99) %>.%
+  # Transformer wt1 en kg et ht en cm
+  mutate(., wt1 = wt1 * 0.4536) %>.%
+  mutate(., ht = ht / 39.37) %>.%
+  # Transformer smoke en variable facteur
+  mutate(., smoke = as.factor(smoke)) %>.%
+  # Idem pour race
+  mutate(., race = as.factor(race)) %>.%
+  # Déterminer si un bébé est prématuré ou non (en variable facteur)
+  mutate(., premat = as.factor(as.numeric(gestation < 7*37))) %>.%
+  # Calculer le BMI comme meilleur index d'embonpoint des mères que leur masse
+  mutate(., bmi = wt1 / ht^2) %->% # Collecter les résultats avec %->%
+  Babies_prem
+```
+
+Comment se répartissent les enfants entre prématurés et nés à terme ?
+
+```{r}
+table(Babies_prem$premat)
+```
+
+Nous avons un nombre relativement faible de prématurés dans l'ensemble. C'était à prévoir. Attention à un plan très mal balancé ici : c'est défavorable à une bonne analyse, mais pas rédhibitoire. Décrivons ces données.
+
+```{r}
+Babies_table <- table(Babies_prem$premat, Babies_prem$smoke)
+knitr::kable(addmargins(Babies_table))
+```
+
+Ce tableau de contingence ne nous donne pas encore l'idée de la répartition de prématurés en fonction du statut de fumeuse de la mère, mais le graphique suivant nous le montre.
+
+```{r}
+chart(data = Babies_prem, ~smoke %fill=% premat) +
+  geom_bar(position = "fill")
+```
+
+Il ne semble pas y avoir un effet flagrant, même si le niveau `smoke == 2` semble contenir une plus forte proportion de prématurés. Qu'en est-il en fonction de l'ethnie (voir `help(babies, package = "UsingR")` pour le détail sur les variétés ethniques considérées) de la mère (variable `race`) ?
+
+```{r}
+Babies_table <- table(Babies_prem$premat, Babies_prem$race)
+knitr::kable(addmargins(Babies_table))
+```
+
+```{r}
+chart(data = Babies_prem, ~race %fill=% premat) +
+  geom_bar(position = "fill")
+```
+
+Ici, nous voyons déjà un effet semble-t-il plus marqué. Qu'en est-il du BMI ?
+
+```{r}
+chart(data = Babies_prem, bmi ~ premat) +
+  geom_boxplot() +
+  ylab("BMI de la mère")
+```
+
+Sur ce graphique, il ne semble pas y avoir d'influence du BMI sur le fait d'avoir un enfant prématuré ou non. Enfin, l'âge de la mère influence-t-il également ?
+
+```{r}
+chart(data = Babies_prem, age ~ premat) +
+  geom_boxplot() +
+  ylab("Age de la mère (an)")
+```
+
+Il ne semble pas y avoir un effet flagrant. Voyons ce que donne le modèle (nous ne considérons pas les interactions possibles ici, mais cela doit être fait dans le cas de plusieurs effets significatifs au moins). Avec 4 variables explicatives, le modèle est déjà très complexe sans interactions. Nous serions trop ambitieux de vouloir ici ajuster un modèle complet !
+
+```{r}
+# Modèle linéaire généralisé avec fonction de lien de type logit
+Babies_glm <- glm(data = Babies_prem, premat ~ smoke + race + bmi + age,
+  family = binomial(link = logit))
+summary(Babies_glm)
+```
+
+Nous voyons que le résumé de l'objet `glm` est très similaire à celui d'un objet `lm`, notamment avec un tableau des `Coefficients` identique et qui s'interprète de la même manière. Ici, nous pouvons confirmer que ni le fait de fumer, ni l'âge, ni le BMI de la mère n'a d'incidence sur les bébés prématurés au seuil alpha de 5%. En revanche, certaines ethnies sont significativement plus susceptibles d'accoucher avant terme. Cela suggère soit un facteur génétique, soit un facteur environnemental/culturel lié à ces ethnies. Naturellement, il faudrait ici simplifier le modèle qui se ramène en fin de compte à l'équivalent d'une ANOVA à un facteur, mais en version `glm()` une fois que les variables non significatives sont éliminées. De même, on pourrait légitimement se demander si la variable `premat` ne pourrait pas aussi être modélisée avec une autre fonction de lien en considérant une distribution de Poisson par exemple. A vous de voir...
+
+##### À vous de jouer ! {.unnumbered}
+
+```{r assign_B03Ia_ovocyte, echo=FALSE, results='asis'}
+if (exists("assignment"))
+  assignment("B03Ia_ovocyte", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B03Ia_ovocyte",
+    course.ids = c(
+      'S-BIOG-015' = !"B03Ia_{YY}M_ovocyte",
+      'S-BIOG-937-958-959' = !"B03Ia_{YY}C_ovocyte"),
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/L_X1PWO0",
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    course.starts = c(
+      'S-BIOG-015' = !"{W[10]+1} 13:00:00"),
+    course.ends = c(
+      'S-BIOG-015' = !"{W[15]+1} 23:59:59"),
+    term = "Q1", level = 3,
+    toc = "Modèle linéaire généralisé (ovocyte)")
+```
+
+## Récapitulatif des exercices
+
+Ce quatrième module vous a permis de comprendre le modèle linéaire généralisé. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
+
+`r show_ex_toc()`
+
+##### Progression {.unnumbered}
+
+`r launch_report("03", height = 800)`

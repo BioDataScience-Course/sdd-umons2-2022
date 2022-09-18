@@ -1,6 +1,4 @@
-# (PART) SDD II: analyse {.unnumbered}
-
-# Classification hiérarchique {#hierarchique}
+# Classification hiérarchique & k-moyennes {#hierarchique}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 SciViews::R
@@ -57,9 +55,9 @@ C'est la racine carré de la somme dans les *n* dimensions des écarts entre les
 
 ### Matrice de distances
 
-Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes planctoniques... mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu'il y a de paires possibles parmi 1262 individus[^05-classi-hierarchique-1]. La **matrice de distance** est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.
+Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes planctoniques... mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu'il y a de paires possibles parmi 1262 individus[^09-cah-kmeans-1]. La **matrice de distance** est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.
 
-[^05-classi-hierarchique-1]: Le nombre de paires uniques et distinctes (pas *j*, *j* ou *k*, *k*) possibles parmi *n* items est $n(n-1)/2$, soit ici pour 1262 éléments nous avons 795.691 paires.
+[^09-cah-kmeans-1]: Le nombre de paires uniques et distinctes (pas *j*, *j* ou *k*, *k*) possibles parmi *n* items est $n(n-1)/2$, soit ici pour 1262 éléments nous avons 795.691 paires.
 
 $$\mathrm{D_{Euclidean}}_{j, j} = 0$$
 
@@ -692,9 +690,9 @@ Voici comment interpréter ce graphique. Les deux individus les plus semblables 
 
 ```
 
-Notez que nous n'avons *pas* utilisé l'information concernant les classes taxonomiques auxquelles les individus appartiennent (nous avons éliminé la variable `class` en tout début d'analyse). Ce type de regroupement s'appelle une **classification non supervisée** parce que nous n'imposons pas les groupes que nous souhaitons réaliser[^05-classi-hierarchique-2]. Cependant, comme nous possédons cette indication du groupe taxonominque de nos six individus par ailleurs dans `class`, nous pouvons en profiter pour l'utiliser à des fins de vérification :
+Notez que nous n'avons *pas* utilisé l'information concernant les classes taxonomiques auxquelles les individus appartiennent (nous avons éliminé la variable `class` en tout début d'analyse). Ce type de regroupement s'appelle une **classification non supervisée** parce que nous n'imposons pas les groupes que nous souhaitons réaliser[^09-cah-kmeans-2]. Cependant, comme nous possédons cette indication du groupe taxonominque de nos six individus par ailleurs dans `class`, nous pouvons en profiter pour l'utiliser à des fins de vérification :
 
-[^05-classi-hierarchique-2]: Les techniques complémentaires de classification supervisées seront abordées dans le cours de Science des Données Biologiques III l'an prochain.
+[^09-cah-kmeans-2]: Les techniques complémentaires de classification supervisées seront abordées dans le cours de Science des Données Biologiques III l'an prochain.
 
 ```{r}
 zoo$class[13:18]
@@ -1013,4 +1011,3 @@ Ce cinquième module vous a permis de comprendre la classification hiérarchique
 ##### Progression {.unnumbered}
 
 `r launch_report("05", height = 800)`
-

@@ -1,4 +1,4 @@
-# AFM, biodiversité et Open Data {#afm}
+# AFM & indices de biodiversité {#afm}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 SciViews::R
@@ -20,9 +20,9 @@ SciViews::R
 
 Jusqu'ici nous avons étudié différentes techniques pour explorer des données multivariées *soit* quantitatives (ACP), *soit* qualitatives (AFC). Nous n'avons pas abordé encore la question de données *mixtes* avec des tableaux qui contiennent *à la fois* des variables quantitatives et des données qualitatives.
 
-Une première approche consiste à convertir des variables afin d'homogénéiser le tableau. La conversion ne peut se faire qu'en dégradant l'information, soit dans le sens quantitatif continu -\> quantitatif discret -\> qualitatif ordonné -\> qualitatif non ordonné -\> binaire. Ainsi, dans un tableau contenant quelques variables quantitatives, nous pouvons créer des classes pour convertir les variables quantitatives en qualitatives. C'est par exemple ce que nous faisons quand nous remplaçons les indices de masse corporelle IMC dans nos données de biométrie humaine (quantitatif) en classes (tableau des classes proposées par l'OMS[^08-afm-1]).
+Une première approche consiste à convertir des variables afin d'homogénéiser le tableau. La conversion ne peut se faire qu'en dégradant l'information, soit dans le sens quantitatif continu -\> quantitatif discret -\> qualitatif ordonné -\> qualitatif non ordonné -\> binaire. Ainsi, dans un tableau contenant quelques variables quantitatives, nous pouvons créer des classes pour convertir les variables quantitatives en qualitatives. C'est par exemple ce que nous faisons quand nous remplaçons les indices de masse corporelle IMC dans nos données de biométrie humaine (quantitatif) en classes (tableau des classes proposées par l'OMS[^08-bd2-afm-1]).
 
-[^08-afm-1]: OMS = Organisation Mondiale de la Santé, voir [ici](https://apps.who.int/bmi/index.jsp?introPage=intro_3.html).
+[^08-bd2-afm-1]: OMS = Organisation Mondiale de la Santé, voir [ici](https://apps.who.int/bmi/index.jsp?introPage=intro_3.html).
 
 | IMC [kg/m^2^] | Classification OMS |
 |:-------------:|:-------------------|
@@ -35,9 +35,9 @@ Une première approche consiste à convertir des variables afin d'homogénéiser
 |    35 - 40    | obésité classe II  |
 |     \> 40     | obésité classe III |
 
-A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours_r_module_analyse_multi_dimensionnelles/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici[^08-afm-2].
+A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours_r_module_analyse_multi_dimensionnelles/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici[^08-bd2-afm-2].
 
-[^08-afm-2]: Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).
+[^08-bd2-afm-2]: Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).
 
 L'analyse factorielle multiple (AFM, *multiple factorial analysis* ou MFA en anglais) va permettre d'analyser simultanément plusieurs tableaux de données multivariés, et éventuellement mélanger des tableaux quantitatifs et qualitatifs (pour autant que les variables soient homogènes au sein de chaque tableau).
 
@@ -385,9 +385,9 @@ Ici, les deux premiers axes comptent pour 74,6% de variance cumulée. Le graphe 
 chart$scree(mar_mfa2, fill = "cornsilk")
 ```
 
-Le graphique des variables ne montre plus que celles relatives à l'ACP, donc seulement le groupe environnement. Les conclusions à leur sujet sont les mêmes, mais attention, le premier plan de la nouvelle AFM se présente en miroir haut-bas par rapport à notre première analyse[^08-afm-3].
+Le graphique des variables ne montre plus que celles relatives à l'ACP, donc seulement le groupe environnement. Les conclusions à leur sujet sont les mêmes, mais attention, le premier plan de la nouvelle AFM se présente en miroir haut-bas par rapport à notre première analyse[^08-bd2-afm-3].
 
-[^08-afm-3]: Les ACP sont définies au signe près. or une inversion de signe dans une dimension a pour effet de faire apparaître les graphiques en miroir.
+[^08-bd2-afm-3]: Les ACP sont définies au signe près. or une inversion de signe dans une dimension a pour effet de faire apparaître les graphiques en miroir.
 
 ```{r}
 chart$loadings(mar_mfa2, choices = c(1, 2))
@@ -717,10 +717,10 @@ Le contexte c'est :
 
 -   un code unique et persistant associé aux données et au contexte,
 -   une description du projet associée aux données,
--   des métadonnées riches (y compris un dictionnaire des données[^08-afm-4]),
+-   des métadonnées riches (y compris un dictionnaire des données[^08-bd2-afm-4]),
 -   la licence associée aux données
 
-[^08-afm-4]: Vous avez déjà rédigé un dictionnaire des données lorsque vous avez planifié vos mesures concernant la biométrie humaine l'an dernier au cours de science des données biologiques I.
+[^08-bd2-afm-4]: Vous avez déjà rédigé un dictionnaire des données lorsque vous avez planifié vos mesures concernant la biométrie humaine l'an dernier au cours de science des données biologiques I.
 
 Dans le cadre de vos futures recherches, un outil comme Zenodo est très intéressant pour publier vos donnes sur l'Internet tout en suivant au mieux le principe **FAIR**.
 
