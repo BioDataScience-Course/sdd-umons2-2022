@@ -1169,9 +1169,9 @@ L'interprétation se fait d'abord sur les points d'une couleur (niveau de la pre
 
 -   Les réponses à la question B (en bleu turquoise) sont également rangés globalement de gauche à droite (avec une légère inversion entre `+` et `++`) depuis ceux qui sont tout-à-fait d'accord que la science moderne est néfaste à la gauche jusqu'à ceux qui ne le sont pas du tout à la droite.
 
--   Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d'inertie à la coordonnée {0, 0} matérialisée par la croix grise[^acp-afc-1]. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plutôt répondu qu'ils sont tout-à-fait d'accord (`++`), alors qu'à l'opposé, les universitaires ne sont pas du tous d'accord avec l'affirmation (`--`).
+-   Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d'inertie à la coordonnée {0, 0} matérialisée par la croix grise[^07-acp-afc-1]. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plutôt répondu qu'ils sont tout-à-fait d'accord (`++`), alors qu'à l'opposé, les universitaires ne sont pas du tous d'accord avec l'affirmation (`--`).
 
-[^acp-afc-1]: Attention : les valeurs sur les axes ne sont pas à interpréter quantitativement. Elles ne portent pas une information utile ici.
+[^07-acp-afc-1]: Attention : les valeurs sur les axes ne sont pas à interpréter quantitativement. Elles ne portent pas une information utile ici.
 
 L'essentiel se lit ici effectivement sur un seul axe (dimension 1) qui capture environ 90% de la variation totale. Le second axe vient moduler légèrement ce classement avec 8,5% de variabilité, mais sans tout bouleverser.
 
@@ -1397,7 +1397,7 @@ if (!file_exists("~/shared/database.sqlite"))
 # Make sure we have the iris table intact in it
 con <- dbConnect(SQLite(),
 dbname = "~/shared/database.sqlite")
-dbWriteTable(con, "iris", iris)
+dbWriteTable(con, "iris", iris, overwrite = TRUE)
 dbDisconnect(con)
 ```
 
