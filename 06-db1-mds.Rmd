@@ -1,6 +1,6 @@
 # (PART) SDD II: analyse {.unnumbered}
 
-# Bases de donnés I & MDS {#db1-mds}
+# Bases de données I & MDS {#db1-mds}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 SciViews::R
