@@ -24,7 +24,7 @@ RStudio et (R) Markdown ne doivent plus avoir de secrets pour vous. Les modifica
 
 `r h5p(190, height = 270, toc = NULL)`
 
-Vous devez aussi maîtriser les bases de Git et de GitHub (avoir un compte GitHub, savoir cloner un dépôt localement, travailler dans GitHub et l'onglet **Git** de Rstudio pour faire vos "commits", "pulls" et "pushes").
+Vous devez aussi maîtriser les bases de Git et de GitHub (avoir un compte GitHub, savoir cloner un dépôt localement, travailler dans GitHub et l'onglet **Git** de RStudio pour faire vos "commits", "pulls" et "pushes").
 
 ##### À vous de jouer ! {.unnumbered}
 
@@ -44,7 +44,7 @@ Les tutoriels `learnr` auxquels vous êtes maintenant habitués seront là pour 
 
 Réalisez le tutoriel ci-dessous afin de revoir une série de notions du cours de science des données 1.
 
-`r learnr("B01La_rappel", title = "Révision des notions de SDD I", toc = NULL)`
+`r learnr("B00La_refresh", title = "Rappel de SDD I", toc = NULL)`
 
 ## Modèle
 
@@ -142,13 +142,19 @@ C'est une pratique cruciale de toujours confirmer son modèle, et donc, de prend
 
 Nous allons découvrir les bases de la régression linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs *Prunus serotina* Ehrh.
 
+L'objectif ici est de pouvoir **prédire le volume de bois** que ces arbres pourront produire si on les abattaient (mais avant de le faire). Le jeu de donnée correspond à 31 arbres de différentes tailles abattus et dont il est donc possible de mesurer le volume de bois.
+
 ![Cerisier noir dans le Tennessee, par Patrick Phoebus, voir <http://bioimages.vanderbilt.edu/phoebusp/rse02.htm>.](http://bioimages.vanderbilt.edu/gq/phoebusp/gprse02.JPG)
 
-L'objectif ici est de pouvoir prédire le volume de bois que ces arbres pourront produire si on les abattaient (mais avant de le faire). Le jeu de donnée correspond à 31 arbres de différentes tailles abattus et dont il est donc possible de mesurer le volume de bois.
+Nous chargeons les packages R relatifs à SciViews à l'aide de `SciViews::R`. Nous précisons que nous voulons aussi les packages de la section `"model"` pour la modélisation, ainsi que la langue par défaut en français.
 
 ```{r}
 SciViews::R("model", lang = "fr")
-# Importation des données
+```
+
+Ensuite, nous importons le jeu de données `trees` depuis le package {datasets} à l'aide de la fonction `read()` comme nous en avons l'habitude.
+
+```{r}
 trees <- read("trees", package = "datasets")
 ```
 
@@ -170,7 +176,7 @@ plot(trees_corr, type = "lower")
 
 `r h5p(195, height = 270, toc = "Les coefficients de corrélation")`
 
-Cependant, n'oubliez pas qu'il est indispensable de visualiser les nuages de points pour ne pas tomber dans le piège mis en avant par le [jeu de données artificiel appelé "quartet d'Anscombe"](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/association-de-deux-variables.html#importance-des-graphiques) qui montre très bien comment des données très différentes peuvent avoir une même moyenne, une même variance et un même coefficient de corrélation. Un graphique de type matrice de nuages de points est tout indiqué ici.
+Cependant, n'oubliez pas qu'il est indispensable de visualiser le nuage de points pour ne pas tomber dans le piège mis en avant par le [jeu de données artificiel appelé "quartet d'Anscombe"](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/association-de-deux-variables.html#importance-des-graphiques) qui montre très bien comment des données très différentes peuvent avoir une même moyenne, une même variance et un même coefficient de corrélation. Un graphique de type matrice de nuages de points est tout indiqué ici.
 
 ```{r, message=FALSE, warning=FALSE}
 GGally::ggscatmat(trees, 1:3)
@@ -187,9 +193,9 @@ Si vous deviez ajouter une droite permettant de représenter au mieux les donné
 
 $$y = a \cdot x + b$$
 
-dont `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
+dont `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais). Voici quatre droites différentes candidates pour représenter au mieux les observations. Quelle est la meilleure d'entre elles selon vous ? Comment pourrions-nous le quantifier ?
 
-```{r}
+```{r, echo=FALSE}
 # Sélection de pentes et d'ordonnées à l'origine
 models <- dtx(
   model     = paste("modèle", 1:4, sep = "-"),
@@ -203,8 +209,6 @@ chart(data = trees, volume ~ diameter) +
     aes(slope = slope, intercept = intercept, color = model)) + 
   labs( color = "Modèle")
 ```
-
-Nous avons quatre droites candidates pour représenter au mieux les observations. Quelle est la meilleure d'entre elles selon vous ? Comment pourrions-nous le quantifier ?
 
 ### Quantifier l'ajustement d'un modèle
 
@@ -252,7 +256,7 @@ sum(resid)
 
 Appliquons ces calculs sur nos quatre modèles afin de les comparer... Le modèle pour lequel notre métrique serait minimale serait alors considéré comme le meilleur.
 
-```{r, echo = FALSE}
+```{r, echo=FALSE}
 dist_calc <- list()
 for (i in 1:nrow(models)) {
   dist_calc[i] <- sum(trees$volume -
@@ -266,7 +270,7 @@ knitr::kable(as_dtf(dist_calc), digits = 2)
 
 Selon notre méthode, le modèle 4 est considéré comme le plus approprié. Qu'en pensez vous ?
 
-```{r, echo = FALSE}
+```{r, echo=FALSE}
 chart(data = trees, volume ~ diameter) +
   geom_point() +
   geom_abline(data = models,
@@ -278,7 +282,7 @@ chart(data = trees, volume ~ diameter) +
 
 `r h5p(196, height = 270, toc = "Qualité d'ajustement d'un modèle")`
 
-```{r, echo = FALSE}
+```{r, echo=FALSE}
 yhat4 <- model_predict(slope = models$slope[4], intercept = models$intercept[4],
   x = trees$diameter)
 
@@ -300,7 +304,7 @@ Ainsi avec notre première méthode naïve de somme des résidus, il suffit d'av
 
 Nous obtenons les résultats suivants :
 
-```{r, echo = FALSE}
+```{r, echo=FALSE}
 dist_calc <- list()
 for (i in 1:nrow(models)) {
   dist_calc[i] <- sum((trees$volume - 
@@ -316,7 +320,7 @@ knitr::kable(as_dtf(dist_calc), digits = 2)
 
 Voici ce que cela donne :
 
-```{r, echo = FALSE}
+```{r, echo=FALSE}
 dist_calc <- list()
 for (i in 1:nrow(models)) {
   dist_calc[i] <- sum(abs(trees$volume - 
@@ -356,7 +360,7 @@ chart(data = trees, volume ~ diameter) +
     data = models1, alpha = 1/6) 
 ```
 
-Nous voyons sur le graphique qu'un grand nombre de droites différentes sont testées, mais nous ne distinguons pas grand chose de plus. Cependant, sur ces `r nrow(models1)` modèles, nous pouvons maintenant calculer la somme des carrés des résidus et ensuite déterminer quel est le meilleur d'entre eux.
+Nous voyons sur le graphique qu'un grand nombre de droites différentes sont testées et qu'elles couvrent toute la surface du graphique explorant ainsi un grand nombre de possibilités, mais nous ne distinguons pas grand chose de plus. Cependant, sur ces `r nrow(models1)` modèles, nous pouvons maintenant calculer la somme des carrés des résidus et ensuite déterminer quel est le meilleur d'entre eux.
 
 ```{r}
 # Fonction de calcul de la somme des carrés des résidus (fonction objective)
@@ -381,13 +385,13 @@ models1 <- smutate(models1, fobj = purrr::map2_dbl(intercept, slope, f_obj_trees
 Si nous réalisons un graphique de valeurs de pentes, d'ordonnées à l'origine et de la valeur de la fonction objective en couleur, nous obtenons le graphique suivant :
 
 ```{r}
-plot <- chart(data = models1, slope ~ intercept %col=%  fobj) +
+p <- chart(data = models1, slope ~ intercept %col=%  fobj) +
   geom_point() +
   geom_point(data = sfilter(models1, frank(fobj) <= 10),
     shape = 1, color = 'red', size = 3) +
   labs(x = "Ordonnée à l'origine", y = "Pente",  color = "F(obj)") +
   scale_color_viridis_c(direction = -1)
-plotly::ggplotly(plot)
+plotly::ggplotly(p)
 ```
 
 Les dix valeurs les plus faibles sont mises en évidence sur le graphique par des cercles rouges. Le modèle optimal que nous recherchons se trouve dans cette région.
@@ -542,6 +546,10 @@ devient[^01-reg-lineaire-3] :
 
 $$volume \ de \ bois = 5.65 \cdot diamètre \ à \ 1.4 \ m  - 1.05$$
 
+##### À vous de jouer ! {.unnumbered}
+
+`r learnr("B01La_reg_lin", title = "Régression linéaire simple", toc = "Récapitulatif régression linéaire simple")`
+
 ## Outils de diagnostic
 
 Une fois la meilleure droite de régression obtenue, le travail est loin d'être terminé. Il se peut que le nuage de point ne soit pas tout-à-fait linéaire, que sa dispersion ne soit pas homogène, que les résidus n'aient pas une distribution Normale, qu'il existe des valeurs extrêmes aberrantes, ou qui "tirent la droite vers elle" de manière excessive (points trop influents).
@@ -554,7 +562,9 @@ Le tableau numérique obtenu à l'aide de `summary()` peut faire penser que l'é
 
 #### Graphique résidus *versus* valeurs prédites
 
-Le premier de ces graphique, que l'on obtient en indiquant un **type** différent soit par `chart(objet_lm, type = "mon_type")`, soit en abrégé via `chart$mon_type(objet_lm)` permet de vérifier la distribution homogène des résidus (valeurs prédites sur l'axe *X* et résidus sur l'axe *Y*). C'est le type **resfitted**.
+Avant de se lancer dans l'analyse des résidus on vérifie le nombre d'observations qui se trouvent dans le set d'apprentissage utilisé. Si ce nombre est trop faible, nous ne pourrons pas faire grand chose (pour fixer les idées, moins d'une dizaine de points). S'il est moyennement bas, nous n'aurons qu'une analyse approchante (entre une dizaine et une trentaine observations). Entre une trentaine et quelques centaines de points, nous sommes dans une zone idéale. Mais si nous avons un très gros jeu de données avec plusieurs milliers de points, alors les graphiques seront très lents à se construire et seront peu lisibles. Avec un très grand nombre d'observations, on peut facilement séparer un set d'apprentissage et un set de test et plutôt travailler sur base du set de test avec des métriques adaptées. Nous ferons cela dans le cours de science des données III. Naturellement, si le jeu de données est très volumineux, on peut aussi commencer par en échantillonner quelques centaines de points au hasard pour le ramener à un tableau plus raisonnable pour les graphiques d'analyse des résidus. **Ici, avec 31 points on est dans la plage inférieure, mais utilisable.**
+
+Le premier des graphiques d'analyse des résidus, que l'on obtient en indiquant un **type** différent soit par `chart(objet_lm, type = "mon_type")`, soit en abrégé via `chart$mon_type(objet_lm)` permet de vérifier visuellement la distribution des résidus (valeurs prédites sur l'axe *X* et résidus sur l'axe *Y*). C'est le type **resfitted**.
 
 ```{r}
 chart$resfitted(trees_lm)
@@ -638,9 +648,11 @@ chart$residuals(trees_lm)
 
 Cette composition offre une vision d'ensemble synthétique. Pour une inspection rapide, c'est le meilleur candidat. À l'issue de l'analyse des résidus de **trees_lm**, nous observons donc différents problèmes qui suggèrent que le modèle choisi n'est peut être pas le plus adapté. Nous expliquerons pourquoi plus loin, mais à ce stade si vous avez compris le principe et le type d'anomalies que l'on recherche à l'aide de ces différents graphiques de diagnostic, c'est suffisant. Bien analyser les résidus d'une régression n'est pas une tâche facile et on n'y arrive qu'après avoir observé un certain nombre de situations différentes.
 
+<!-- TODO: ajouter quelques cas fictifs de bonnes et mauvaises régressions et commenter les 4 graphiques que l'on obtient à chaque fois pour que l'étudiant commence à "sentir" ce qui fonction ou pas.-->
+
 ##### À vous de jouer ! {.unnumbered}
 
-`r learnr("B01Lb_reglin1", title = "Régression linéaire simple", toc = "Récapitulatif régression linéaire simple")`
+`r learnr("B01Lb_residuals", title = "Analyse des résidus d'une régression", toc = "Analyse des résidus d'une régression")`
 
 ##### Pièges et astuces : extrapolation {.unnumbered}
 
@@ -691,25 +703,20 @@ Le **principe de parcimonie** veut que l'on ne teste pas toutes les combinaisons
 
 ##### À vous de jouer ! {.unnumbered}
 
-<!-- PhG - Attention: ce travail GitHub (même le template) n'existe pas encore ! Elle est placée ici pour mémoire et pour concrétisation peut-être plus tard. Cet exercice a été réalisé individuellement et via Wooclap en réalité en 2020-2021. Il s'agit de B01Wb_residus. Mais je voudrais transformer cela plutôt en un mini-challenge ou un projet GitHub Classroom par paires à l'avenir. -->
-
-```{r assign_B01Ga_residus, echo=FALSE, results='asis'}
-if (exists("assignment2"))
-  assignment2("B01Ga_residus", part = NULL,
-    url = "https://github.com/BioDataScience-Course/B01Ga_residus",
+```{r assign_B01Ia_debug, echo=FALSE, results='asis'}
+if (exists("assignment"))
+  assignment("B01Ia_debug", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B01Ia_debug",
     course.ids = c(
-      'S-BIOG-015'         = !"B01Ga_{YY}M_residus", 
-      'S-BIOG-937-958-959' = !"B01Ga_{YY}C_residus"),
+      'S-BIOG-015'         = !"B01Ia_{YY}M_debug"),
     course.urls = c(
-      'S-BIOG-015'         = "https://classroom.github.com/a/...", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-015'         = "https://classroom.github.com/a/..."),
     course.starts = c(
-      'S-BIOG-015'         = !"{W[6]+1} 13:00:00"),
+      'S-BIOG-015'         = !"{W[3]+1} 11:15:00"),
     course.ends = c(
-      'S-BIOG-015'         = !"{W[6]+1} 16:00:00"),
-    term = "Q1", level = 4, n = 2,
-    toc = "Analyse des résidus d'une régression linéaire",
-    clone = FALSE)
+      'S-BIOG-015'         = !"{W[3]+1} 12:45:00"),
+    term = "Q1", level = 2,
+    toc = "Débogage de script R")
 ```
 
 ### Enveloppe de confiance
@@ -757,28 +764,20 @@ Nous aborderons certaines de ces métriques dans le prochain module.
 
 ##### À vous de jouer ! {.unnumbered}
 
-```{r assign_B01Ia_reglin, echo=FALSE, results='asis'}
+```{r assign_B01Ib_abalone, echo=FALSE, results='asis'}
 if (exists("assignment"))
-  assignment("B01Ia_reglin", part = NULL,
-    url = "https://github.com/BioDataScience-Course/B01Ia_21_reglin",
+  assignment("B01Ib_abalone", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B01Ib_abalone",
     course.ids = c(
-      'S-BIOG-015'         = !"B01Ia_{YY}M_reglin", 
-      'S-BIOG-937-958-959' = !"B01Ia_{YY}C_reglin",
-      'sdd2late'           = !"B01Ia_{YY}M_reglin"),
+      'S-BIOG-015'         = !"B01Ia_{YY}M_abalone"),
     course.urls = c(
-      'S-BIOG-015'         = "https://classroom.github.com/a/...", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/...",
-      'sdd2late'           = "https://classroom.github.com/a/H4naiWlc"),
+      'S-BIOG-015'         = "https://classroom.github.com/a/..."),
     course.starts = c(
-      'S-BIOG-015'         = !"{W[6]+1} 08:00:00", 
-      'S-BIOG-937-958-959' = NA,
-      'sdd2late'           = !"{W[6]+1} 08:00:00"),
+      'S-BIOG-015'         = !"{W[3]+4} 08:00:00"),
     course.ends = c(
-      'S-BIOG-015'         = !"{W[15]+5} 23:59:59",
-      'S-BIOG-937-958-959' = NA,
-      'sdd2late'           = !"{W[15]+6} 23:59:59"),
+      'S-BIOG-015'         = !"{W[3]+4} 13:00:00"),
     term = "Q1", level = 3,
-    toc = "Régression linéaire simple")
+    toc = "Régression linéaire simple (ormeaux)")
 ```
 
 ## Récapitulatif des exercices
