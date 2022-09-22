@@ -163,10 +163,10 @@ plot(zoo_som, type = "codes", codeRendering = "segments")
 Ce graphique est riche en informations. Nous voyons que :
 
 -   les très grands individus (`ecd`, `area`, `perimeter`, etc.), soit les segments verts sont en haut à gauche de la carte et les petits sont à droite,
--   les individus opaques (variables `mean`, `mode`, `max`, etc.[^06-k-moyenne-som-5]), soit des segments dans les tons jaunes sont en haut à droite. Les organismes plus transparents sont en bas à gauche,
+-   les individus opaques (variables `mean`, `mode`, `max`, etc.[^10-som-div-1]), soit des segments dans les tons jaunes sont en haut à droite. Les organismes plus transparents sont en bas à gauche,
 -   au delà de ces deux principaux critères qui se dégagement prioritairement, les aspects de forme (segments rose-rouges) se retrouvent exprimés moins nettement le long de gradients. La `circularity` mesure la silhouette plus ou moins arrondie des items (sa valeur est d'autant plus élevée que la forme se rapproche d'un cercle). Les organismes circulaires se retrouvent dans le haut de la carte. L'`elongation` et l'`aspect` mesurent l'allongement de la particule et se retrouvent plutôt exprimés positivement dans le bas de la carte.
 
-[^06-k-moyenne-som-5]: Attention : la variable `transparency`, contrairement à ce que son nom pourrait suggérer n'est pas une mesure de la transparence de l'objet, mais de l'aspect plus ou moins régulier et lisse de sa silhouette.
+[^10-som-div-1]: Attention : la variable `transparency`, contrairement à ce que son nom pourrait suggérer n'est pas une mesure de la transparence de l'objet, mais de l'aspect plus ou moins régulier et lisse de sa silhouette.
 
 Nous pouvons donc **orienter** notre carte SOM en indiquant l'information relative aux variables. Lorsque le nombre de variables est élevé ou relativement élevé comme ici, cela devient néanmoins difficile à lire. Il est aussi possible de colorer les cartes en fonction d'une et une seule variable pour en faciliter la lecture à l'aide de `type = "property"`. Voici quelques exemples (notez la façon de diviser une page graphique en lignes et colonnes à l'aide de `par(mfrow = ))` en graphiques R de base, ensuite une boucle `for` réalise les six graphiques l'un après l'autre) :
 
@@ -566,9 +566,9 @@ groupes <- predict(zoo_som_cah, h = 10.5)
 groupes
 ```
 
-Visualisons ce découpage sur la carte SOM (l'argument `bgcol =` colorie le fond des cellules en fonction des groupes[^06-k-moyenne-som-6], et `add.cluster.boudaries()` individualise des zones sur la carte en fonction du regroupement choisi).
+Visualisons ce découpage sur la carte SOM (l'argument `bgcol =` colorie le fond des cellules en fonction des groupes[^10-som-div-2], et `add.cluster.boudaries()` individualise des zones sur la carte en fonction du regroupement choisi).
 
-[^06-k-moyenne-som-6]: Nous avons choisi ici encore une autre palette de couleurs provenant du package {RColorBrewer}, voir [ici](http://www.sthda.com/french/wiki/couleurs-dans-r).
+[^10-som-div-2]: Nous avons choisi ici encore une autre palette de couleurs provenant du package {RColorBrewer}, voir [ici](http://www.sthda.com/french/wiki/couleurs-dans-r).
 
 ```{r}
 plot(zoo_som, type = "mapping", pch = ".", main = "SOM zoo, six groupes",
@@ -606,7 +606,7 @@ if (exists("assignment"))
       'S-BIOG-061' = !"B06Ia_{YY}M_fish_market",
       'S-BIOG-937-958-959' = !"B06Ia_{YY}C_fish_market"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/zo4SVCCt",
+      'S-BIOG-061' = "https://classroom.github.com/a/...",
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-061' = !"{W[24]+1} 15:00:00"),

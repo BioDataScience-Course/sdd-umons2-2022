@@ -198,7 +198,7 @@ if (exists("assignment"))
       'S-BIOG-015' = !"B02Ia_{YY}M_anscombe", 
       'S-BIOG-937-958-959' = !"B02Ia_{YY}C_anscombe"),
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/a/niVlWfpm", 
+      'S-BIOG-015' = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-015' = !"{W[8]+3} 13:00:00"),
@@ -495,7 +495,7 @@ L'erreur moyenne d'estimation du volume de bois passe de 0,07 m^3^ pour le modè
 
 <!-- TODO: discuter également le cas du jeu de données ANSCOMBE pour montrer les biais qui peuvent apparaître si on ne visualise pas l'ajustement du modèle sur un graphique-->
 
-<center>![Différentes méthodes d\'ajustement par xkcd.](https://imgs.xkcd.com/comics/curve_fitting.png)</center>
+<center>![Différentes méthodes d'ajustement par xkcd.](https://imgs.xkcd.com/comics/curve_fitting.png)</center>
 
 ##### À vous de jouer ! {.unnumbered}
 
@@ -509,7 +509,7 @@ if (exists("assignment"))
       'S-BIOG-015' = !"B02Ib_{YY}M_achatina", 
       'S-BIOG-937-958-959' = !"B02Ib_{YY}C_achatina"),
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/a/67rYDHzR", 
+      'S-BIOG-015' = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-015' = !"{W[8]+3} 13:00:00"),
@@ -527,7 +527,7 @@ if (exists("assignment2"))
       'S-BIOG-015' = !"B02Ga_{YY}M_urchin", 
       'S-BIOG-937-958-959' = !"B02Ga_{YY}C_urchin"),
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/a/wqol1C5h", 
+      'S-BIOG-015' = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
     course.starts = c(
       'S-BIOG-015' = !"{W[8]+4} 13:00:00"),

@@ -329,7 +329,7 @@ if (exists("assignment"))
       'S-BIOG-015'         = !"B04Ia_{YY}M_speed_reaction", 
       'S-BIOG-937-958-959' = !"B04Ia_{YY}C_speed_reaction"),
     course.urls = c(
-      'S-BIOG-015'         = "https://classroom.github.com/a/o7PG28iR", 
+      'S-BIOG-015'         = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-015'         = !"{W[12]+1} 08:00:00"),
@@ -834,7 +834,7 @@ if (exists("assignment2"))
       'S-BIOG-015' = !"B04Gb_{YY}M_bacterial_growth", 
       'S-BIOG-937-958-959' = !"B04Gb_{YY}C_bacterial_growth"),
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/a/cj9NgLMG", 
+      'S-BIOG-015' = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-015' = !"{W[12]+1} 08:00:00"),
@@ -857,7 +857,7 @@ if (exists("challenge"))
     course.ids = c(
       'S-BIOG-015' = !"B04Ca_{YY}M_models"),
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/a/QyWgve1a"),
+      'S-BIOG-015' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-015' = !"{W[13]+1} 10:00:00"),
     course.ends = c(

@@ -103,17 +103,19 @@ Ce livre en ligne ainsi que tout le matériel pédagogique cité plus haut a ét
 
 ### Classe inversée & pédagogie active {.unnumbered}
 
-Jans la plus grande partie de vos cours vous avez donc suivi **passivement** un cours *ex cathedra* suivi par une séance d'exercice ou de travaux pratiques.
+Dans la plus grande partie de vos cours vous avez donc suivi **passivement** un cours *ex cathedra* suivi par une séance d'exercice ou de travaux pratiques.
 
-On peut schématiser ce mode d'apprentissage comme cela
+On peut schématiser ce mode d'apprentissage comme cela :
 
 ![](images/sdd2_00/organisation1.png)
 
 A la fin, un examen est indispensable pour valider l'acquisition des concepts.
 
-Le cours de science des données I utilise une autre approche et se donne en classe inversée. Le schéma ci-dessous vous propose l'organisation d'un module du cours. Vous devrez donc préparer en distanciel chaque session de cours en présentiel. Lors de chaque heure de travail lié à ce cours vous serez donc **actif**.
+Les cours de science des données utilisent une autre approche et se donnent en classe inversée. Le schéma ci-dessous vous illustre l'organisation d'un module du cours. Vous devrez donc préparer en distanciel la matière avant les séances en présentiel. Lors de chaque heure de travail lié à ce cours vous serez donc **actif**.
 
 ![](images/sdd2_00/organisation2.png)
+
+Une présentation des changements introduits par rapport à l'année précédente vous est faite en première séance. La présentation est disponible au format PDF [ici](https://github.com/BioDataScience-Course/sdd_lessons/raw/2022-2023/B00/presentations/B00Pa_intro.pdf).
 
 ### Quatre niveaux d'exercices {.unnumbered}
 

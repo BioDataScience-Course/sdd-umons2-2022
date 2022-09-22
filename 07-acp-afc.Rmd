@@ -934,7 +934,7 @@ if (exists("assignment"))
       'S-BIOG-061' = !"B07Ia_{YY}M_acp_afc", 
       'S-BIOG-937-958-959' = !"B07Ia_{YY}C_acp_afc"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/CN0e73d0", 
+      'S-BIOG-061' = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-061' = !"{W[26]+1} 08:00:00"),
@@ -1309,7 +1309,7 @@ if (exists("assignment"))
       'S-BIOG-061' = !"B07Ia_{YY}M_acp_afc", 
       'S-BIOG-937-958-959' = !"B07Ia_{YY}C_acp_afc"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/CN0e73d0", 
+      'S-BIOG-061' = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     course.starts = c(
       'S-BIOG-061' = !"{W[26]+1} 08:00:00"),
@@ -1577,7 +1577,7 @@ if (exists("assignment2"))
       'S-BIOG-061' = !"B07Ga_{YY}M_doubs", 
       'S-BIOG-937-958-959' = !"B07Ga_{YY}C_doubs"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/V9LRaz2i", 
+      'S-BIOG-061' = "https://classroom.github.com/a/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
     course.starts = c(
       'S-BIOG-061' = !"{W[26]+1} 08:00:00"),
