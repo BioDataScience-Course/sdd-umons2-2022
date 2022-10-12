@@ -36,7 +36,7 @@ Nous n'avons pas encore étudié la signification des trois dernières lignes de
 
 -   Residual standard error :
 
-Il s'agit de l'écart-type résiduel, considérant que les degrés de liberté du modèle est le nombre d'observations $n$ (ici 31) soustrait du nombre de paramètres à estimer (ici 2, la pente et l'ordonnée à l'origine de la droite). C'est donc une mesure globale de l'importance (c'est-à-dire de l'étendue) des résidus de manière générale.
+Il s'agit de l'erreur type des résidus, considérant que les degrés de liberté du modèle est le nombre d'observations $n$ (ici 31) soustrait du nombre de paramètres à estimer (ici 2, la pente et l'ordonnée à l'origine de la droite). C'est donc une mesure globale de l'importance (c'est-à-dire de l'étendue) des résidus de manière générale.
 
 $$\sqrt{\frac{\sum(y_i - \hat{y_i})^2}{n-2}}$$
 
@@ -98,6 +98,10 @@ anova(trees_lm)
 
 Nous y retrouvons les mêmes informations, fortement résumées en une ligne à la fin de la sortie de `summary()`. Ici elles sont présentées sous une forme plus classique de tableau de l'analyse de la variance.
 
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(202, height = 270, toc = "Résumé lm() et résidus")`
+
 ### Comparaison de régressions
 
 Vous pouvez à présent comparer ces résultats avec une régression réalisée sans la valeur supérieure à 0,5m de diamètre. **Attention, On ne peut supprimer une valeur sans raison valable.** La suppression de points aberrants doit être justifiée (par exemple, vous pouvez montrer qu'il y a eu une erreur de mesure, ou que l'individu mesuré est aberrant, ou qu'il y a un autre problème dans le jeu de données, problème explicable). La raison de la suppression de ce point ici est liée au fait qu'il n'y a qu'un seul arbre mesuré dont le diamètre soit supérieur à 0.5m. Dès lors, nous pourrions souhaiter réduire l'étendue du jeu de données à des arbres plus petits (mais par la même occasion, nous réduisons aussi la portée du modèle, bien sûr). Le nettoyage du jeu de donnée peut se faire avant l'appel de `lm()`, ou plus simple, nous pouvons utiliser l'argument `subset=` de la fonction.
@@ -122,6 +126,8 @@ chart$residuals(trees_lm2)
 Comparez ces résultats avec ceux du modèle qui utilise tous les points. Lequel conserver ? Pas facile de décider. Il nous faut des métriques qui permettent de comparer fiablement des modèles pour nous aider. Cela apparaîtra d'ailleurs d'autant plus utile que la situation va passablement se complexifier (dans le bon sens) avec l'introduction de la régression multiple et polynomiale.
 
 ##### À vous de jouer ! {.unnumbered}
+
+`r h5p(203, height = 270, toc = "Métrique pour modèle prédictif")`
 
 ```{r assign_B02Ia_anscombe, echo=FALSE, results='asis'}
 if (exists("assignment"))
@@ -182,7 +188,15 @@ Les graphes d'analyse des résidus sont toujours disponibles :
 chart$residuals(trees_lm3) 
 ```
 
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(204, height = 270, toc = "Graphiques d'analyse des résidus")`
+
 Ce modèle est-il préférable à celui n'utilisant que le diamètre ? Le *R^2^ ajusté* est passé de 0,93 avec le modèle simple `trees_lm` utilisant uniquement le diamètre à 0,94 dans le présent modèle `trees_lm3` utilisant le diamètre et la hauteur. Cela semble une amélioration, mais le test de significativité de la pente pour la hauteur ne nous indique pas un résultat hautement significatif. De plus, cela a un coût en pratique de devoir mesurer deux variables au lieu d'une seule pour estimer le volume de bois. Cela en vaut-il la peine ? Nous sommes encore une fois confrontés à la question de comparer deux modèles, cette fois-ci ayant une complexité différente (comprenez, un nombre de paramètres à estimer différent).
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(205, height = 270, toc = "Coefficient de détermination et régression multiple")`
 
 Dans le cas particulier de modèles **imbriqués** (un modèle *contient* l'autre, mais rajoute un ou plusieurs termes), une ANOVA est possible en décomposant la variance selon les composantes reprises respectivement par chacun des deux modèles. La fonction `anova()` est programmée pour faire ce calcul en lui indiquant chacun des deux objets contenant les modèles à comparer :
 
@@ -243,7 +257,11 @@ Si le modèle est très nettement significatif (ANOVA, valeur *p* \< 0,001), et 
 
 De plus, considérez ici la simplification d'un modèle polynomial d'ordre 2 comme une exception. Dans le cas d'une régression polynomiale d'ordre supérieur, les différents termes étant corrélés par définition, puisqu'il s'agit en fait de puissances croissantes de la *même* variable, une instabilité dans l'estimation des différents paramètres apparaît, sauf pour le terme de plus haute puissance. Par conséquent, vous ne pouvez plus vous fier aux tests de Student pour les autres paramètres et vous êtes obligé de **considérer le polynôme comme un tout indissociable**.
 
-Ceci étant précisé, voyons ce que donnevla simplification de notre modèle (la formule devient `volume ~ I(diameter^2) - 1` ou `volume ~ I(diameter^2) + 0`, ce qui a une signification identique dans R) :
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(206, height = 270, toc = "Choix de modèle polynomial")`
+
+Ceci étant précisé, voyons ce que donne la simplification de notre modèle (la formule devient `volume ~ I(diameter^2) - 1` ou `volume ~ I(diameter^2) + 0`, ce qui a une signification identique dans R) :
 
 ```{r}
 trees_lm5 <- lm(data = trees, volume ~  I(diameter^2) + 0)
@@ -268,7 +286,7 @@ trees_lm6 <- lm(data = trees, volume ~  diameter + I(diameter^2) + height)
 summary(trees_lm6)
 ```
 
-Ah ha, ceci est bizarre ! Le *R^2^* ajusté nous indique que le modèle serait très bon puisqu'il grimpe à 0,98. Le terme en diamètre^2^ reste très significatif, ... mais la pente relative à la hauteur est maintenant elle aussi très significative alors que dans le modèle multiple `trees_lm3` ce n'était pas le cas. De plus, l'ordonnée à l'origine n'est plus significativement différnet de zéro. Bienvenue dans les instabilités liées aux intercorrélations entre paramètres dans les modèles linéaires complexes.
+Ah ha, ceci est bizarre ! Le *R^2^* ajusté nous indique que le modèle serait très bon puisqu'il grimpe à 0,98. Le terme en diamètre^2^ reste très significatif, ... mais la pente relative à la hauteur est maintenant elle aussi très significative alors que dans le modèle multiple `trees_lm3` ce n'était pas le cas. De plus, l'ordonnée à l'origine n'est plus significativement différent de zéro. Bienvenue dans les instabilités liées aux intercorrélations entre paramètres dans les modèles linéaires complexes.
 
 ## RMSE & critère d'Akaike
 
@@ -279,6 +297,10 @@ rmse(trees_lm, trees)
 ```
 
 Cela signifie que l'on peut s'attendre à ce que, en moyenne, les valeurs prédites de volume de bois s'écartent (dans un sens ou dans l'autre) de 0,12 m^3^ de la valeur effectivement observée. Évidemment, plus un modèle est bon, plus le RMSE est **faible**, contrairement au *R^2^* qui lui doit être **élevé**.
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(207, height = 270, toc = "Erreur quadratique moyenne RMSE")`
 
 Si le *R^2^* comme le RMSE sont utiles pour quantifier la qualité d'ajustement d'*une* régression, ces mesures sont peu adaptées pour la comparaison de modèles entre eux. En effet, nous avons vu que, plus le modèle est complexe mieux il s'ajuste dans les données. Le *R^2^ ajusté* tente de remédier partiellement à ce problème, mais cette métrique reste peu fiable pour comparer des modèles très différents. Le **critère d'Akaike**, du nom du statisticien japonais qui l'a conçu, est une métrique plus adaptée à de telles comparaisons. Elle se base au départ sur encore une autre mesure de la qualité d'ajustement d'un modèle : la **log-vraisemblance**. Les explications relatives à cette mesure sont obligatoirement complexes d'un point de vue mathématique et nous vous proposons ici d'en retenir la définition sur un plan purement conceptuel. Un **estimateur de maximum de vraisemblance** est une mesure qui permet d'inférer le meilleur ajustement possible d'une loi de probabilité par rapport à des données. Dans le cas de la régression par les moindres carrés, la distribution de probabilité à ajuster est celle des résidus (pour rappel, il s'agit d'une distribution Normale de moyenne nulle et d'écart type constant $\sigma$). La **log-vraisemblance**, pour des raisons purement techniques est souvent préféré au maximum de vraisemblance. Il s'agit du logarithme de sa valeur.
 
@@ -303,6 +325,10 @@ AIC(trees_lm6) # Multiple et polynomial
 ```
 
 D'après ce critère, le modèle linéaire est le moins bon, et le dernier modèle le plus complexe serait le meilleur. Notez toutefois que la différence est relativement minime (en regard du gain total) entre le modèle polynomial complet `trees_lm4` et la version simplifié au seul terme diamètre^2^ en `trees_lm5`, ce qui donne à penser que cette simplification est justifiée.
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(208, height = 270, toc = "Critère d'akaike")`
 
 Dans l'hypothèse où nous déciderions de conserver le modèle `trres_lm6`, en voici l'analyse des résidus qui est bonne dans l'ensemble :
 
@@ -342,6 +368,57 @@ if (exists("assignment"))
     term = "Q1", level = 3,
     toc = "Régression linéaire sur achatina")
 ```
+
+## Modèle empirique et mécaniste
+
+Un **modèle empirique** est issu de l'observation. Nous collectons des données et nous cherchons à les prédire via un modèle statistique. L'important ici est d'obtenir une bonne prédiction, c'est-à-dire, une erreur quadratique moyenne du modèle la plus faible possible. Cependant, la forme mathématique du modèle n'a, éventuellement, rien à voir avec le mécanisme qui génère les données. C'est typiquement le cas pour un modèle polynomial d'ordre élevé.
+
+Outre les prédictions pour lesquelles ce modèle est taillé par construction, un modèle linéaire simple ou multiple peut s'avérer également utile pour révéler les relations qui existent entre les variables impliquées... tout en restant très prudent concernant la colinéarité qui peut faire penser que des variables fortement corrélées entre elles aient faussement un pouvoir explicatif.
+
+Dans le cas de `trees`, nos différents essais suggèrent que le diamètre du tronc pourrait être une variable explicative lorsqu'elle est élevée au carré. La hauteur est également utile, sous forme non transformée.
+
+Un **modèle mécaniste** vise à expliciter le mécanisme qui est responsable de la relation observée. De tels modèles sont plus courants en physique, voire en chime qu'en biologie, mais il y en a. Le modèle mécaniste est plus difficile à définir car il implique une compréhension profonde de ce qui se passe. Dans cas de `trees`, il ne faut pas être un génie pour se rendre compte que le tronc de l'arbre peut être assimilé, en première approximation, à un cône. Par conséquent, le volume de bois peut être approximé par la formule suivante :
+
+$$volume = \frac{1}{3} . \pi . rayon^2 . hauteur$$
+
+Avec notre diamètre au carré et notre hauteur, nous n'étions pas loin, à ceci près que les deux variables sont additionnées, et non multipliées dans notre modèle. La régression linéaire, et comme nous le verrons au chapitre suivant, le modèle linéaire sont fondamentalement des modèles additifs où les différents termes s'additionnent. Cependant, nous pouvons faire intervenir un terme qui multiplie nos deux variables explicatives par l'intermédiaire des **interactions** comme pour l'ANOVA à deux facteurs, voir [section 11.3 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/mod%25C3%25A8le-crois%25C3%25A9-complet.html). Afin de nous rapprocher de la formule du volume d'un cône, calculons à présent le carré du rayon et ajustons un modèle linéaire multiple **avec interactions** :
+
+```{r}
+trees <- smutate(trees, radius2 = (diameter/2)^2)
+trees_lm7 <- lm(data = trees, volume ~ radius2 * height) # Forme compacte
+# Forme développée, équivalente à la forme compacte
+trees_lm7 <- lm(data = trees, volume ~ radius2 + height + radius2:height)
+summary(trees_lm7)
+```
+
+Ce modèle est le suivant :
+
+$$volume = a_1.radius^2 + a_2.height + a_3. radius^2.height + b + \epsilon$$
+
+Or, le résumé du modèle nous indique clairement que $a_1$, $a_2$ et $b$ sont tous les trois non significativement différents de zéro. Nous pouvons donc simplifier notre modèle à :
+
+$$volume = a_3 . radius^2.height + \epsilon$$
+
+... qui est mathématiquement équivalent à la formule qui calcule le volume d'un cône. Cela donne :
+
+```{r}
+trees_lm8 <- lm(data = trees, volume ~ radius2:height + 0)
+summary(trees_lm8)
+AIC(trees_lm8)
+rmse(trees_lm8, trees)
+```
+
+Avec ce dernier modèle, nous avons une équation très simple pour laquelle un seul paramètre doit être évalué. L'estimateur de ce paramètre vaut 1,21. Il n'est pas très éloigné de la valeur théorique $1/3 . \pi = 1.05$. Souvenons-nous que le tronc de nos cerisiers noirs a une forme plus complexe qu'un cône et que le diamètre est mesuré à 4 pieds 6 pouces = 1,37m au dessus du sol (voir `?trees`) alors que la formule du cône utilise le rayon *à la base* du cône, sachant que le bûcheron coupe son arbre quand même plus bas que cela.
+
+Avec ce modèle, nous obtenons le critère d'Akaiké et l'erreur quadratique moyenne les plus faibles aussi. Tout indique que c'est le meilleur modèle, et en plus, il est **mécaniste** en ce sens qu'il fait intervenir la géométrie pour expliquer un volume à partir de deux dimensions dont l'une est élevée au carré. D'ailleurs, une **analyse dimensionnelle** (comparaison des unités intervenant à gauche et à droite dans l'équation) montre aussi qu'il est cohérent de ce point de vue : un volume en **m^3^** s'obtient bien par la multiplication d'une dimension en **m^2^** (le rayon au carré) par une dimension en **m** (la hauteur). Voici pour finir à quoi ressemblent les graphiques d'analyse des résdius de ce dernier modèle :
+
+```{r}
+chart$residuals(trees_lm8)
+```
+
+Clairement, nous aurions pu nous économiser de nombreux essais si nous étions partis directement sur cette piste-là. Malheureusement, la biologie fait intervenir souvent un ensemble de mécanismes (bio)chimiques et physiques qui rendent la compréhension mécanistique du phénomène difficile, voire impossible. Heureusement, les modèles empiriques sont également utiles à condition d'être conscient de leurs limites qui impliquent de ne pas chercher à interpréter les termes et les paramètres comme autant d'indicateurs des mécanismes responsables de la distribution des données et sans tirer de conclusions au delà de la relation entre variables (pas d'établissement de causalité sur base d'une régression, jamais).
+
+##### À vous de jouer ! {.unnumbered}
 
 ```{r assign_B02Ga_urchin_I, echo=FALSE, results='asis'}
 if (exists("assignment2"))
