@@ -129,7 +129,9 @@ Comparez ces résultats avec ceux du modèle qui utilise tous les points. Lequel
 
 `r h5p(203, height = 270, toc = "Métrique pour modèle prédictif")`
 
-```{r assign_B02Ia_anscombe, echo=FALSE, results='asis'}
+```{=html}
+<!--
+{r assign_B02Ia_anscombe, echo=FALSE, results='asis'}
 if (exists("assignment"))
   assignment("B02Ia_anscombe", part = NULL,
     url = "https://github.com/BioDataScience-Course/B02Ia_anscombe",
@@ -143,8 +145,8 @@ if (exists("assignment"))
       'S-BIOG-015' = !"{W[7]+1} 13:00:00"),
     term = "Q1", level = 3,
     toc = "Quartet d’Anscombe")
+-->
 ```
-
 ## Régression linéaire multiple
 
 Dans le cas de la régression linéaire simple, nous considérions le modèle statistique suivant (avec $\epsilon$ représentant les résidus, terme statistique dans l'équation) :
@@ -347,7 +349,7 @@ L'erreur moyenne d'estimation du volume de bois passe de 0,07 m^3^ pour le modè
 
 <!-- TODO: discuter également le cas du jeu de données ANSCOMBE pour montrer les biais qui peuvent apparaître si on ne visualise pas l'ajustement du modèle sur un graphique-->
 
-<center>![Différentes méthodes d'ajustement par xkcd.](https://imgs.xkcd.com/comics/curve_fitting.png)</center>
+<center>![Différentes méthodes d\'ajustement par xkcd.](https://imgs.xkcd.com/comics/curve_fitting.png)</center>
 
 ##### À vous de jouer ! {.unnumbered}
 
@@ -360,11 +362,11 @@ if (exists("assignment"))
     course.ids = c(
       'S-BIOG-015' = !"B02Ib_{YY}M_achatina"),
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/a/..."),
+      'S-BIOG-015' = "https://classroom.github.com/a/tUkmYGbw"),
     course.starts = c(
       'S-BIOG-015' = !"{W[7]+4} 08:00:00"),
     course.ends = c(
-      'S-BIOG-015' = !"{W[7]+4} 10:30:00"),
+      'S-BIOG-015' = !"{W[7]+4} 13:00:00"),
     term = "Q1", level = 3,
     toc = "Régression linéaire sur achatina")
 ```
@@ -418,9 +420,10 @@ chart$residuals(trees_lm8)
 
 Clairement, nous aurions pu nous économiser de nombreux essais si nous étions partis directement sur cette piste-là. Malheureusement, la biologie fait intervenir souvent un ensemble de mécanismes (bio)chimiques et physiques qui rendent la compréhension mécanistique du phénomène difficile, voire impossible. Heureusement, les modèles empiriques sont également utiles à condition d'être conscient de leurs limites qui impliquent de ne pas chercher à interpréter les termes et les paramètres comme autant d'indicateurs des mécanismes responsables de la distribution des données et sans tirer de conclusions au delà de la relation entre variables (pas d'établissement de causalité sur base d'une régression, jamais).
 
-##### À vous de jouer ! {.unnumbered}
+```{=html}
+<!-- À vous de jouer ! {.unnumbered}
 
-```{r assign_B02Ga_urchin_I, echo=FALSE, results='asis'}
+{r assign_B02Ga_urchin_I, echo=FALSE, results='asis'}
 if (exists("assignment2"))
   assignment2("B02Ga_urchin", part = "I",
     url = "https://github.com/BioDataScience-Course/B02Ga_urchin",
@@ -434,8 +437,8 @@ if (exists("assignment2"))
       'S-BIOG-015' = !"{W[8]+7} 23:59:59"),
     term = "Q1", level = 4, n = 2,
     toc = "Régressions linéaires libres en binômes (urchin)")
+-->
 ```
-
 ## Récapitulatif des exercices
 
 Ce deuxième module vous a permis de prendre connaissance de différents outils de diagnostic pour sélectionner le meilleur modèle et de découvrir la régression linéaire multiple et polynomiale. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
