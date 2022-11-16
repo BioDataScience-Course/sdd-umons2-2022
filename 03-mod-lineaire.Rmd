@@ -36,6 +36,13 @@ Donc, la principale différence entre ANOVA et régression linéaire telles que 
 Par la suite, un encodage correct des variables sera *indispensable* afin de distinguer correctement ces différentes situations. En effet, R considèrera automatiquement comment mener l'analyse en fonction de la classe des variables fournies. Donc, si la classe est incorrecte, l'analyse le sera aussi\ ! Si vous avez des doutes concernant les types de variables, relisez la section [type de variables](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/types-de-variables.html) avant de continuer ici. 
 ```
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(217, height = 270, toc = NULL)`
+-->
+```
 ## ANOVA et régression linéaire
 
 Avez-vous remarqué une ressemblance particulière entre la régression linéaire que nous avons réalisée précédemment et l'analyse de variance (ANOVA) ? Les plus observateurs auront mis en avant que la fonction de base dans R est la même dans les deux cas : `lm()`. Cette fonction est donc capable de traiter aussi bien des variables réponses qualitatives que quantitatives, et effectue alors une ANOVA dans un cas ou une régression linéaire dans l'autre.
@@ -55,6 +62,13 @@ Donc, nous retrouvons bien au niveau du modèle mathématique sous-jacent que la
 
 Le calcul est, en réalité, identique en interne. Il est donc possible de généraliser ces deux approches en une seule appelée **modèle linéaire**, mais à condition d'utiliser une astuce pour modifier nos modèles afin qu'ils soient intercompatibles.
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(218, height = 270, toc = NULL)`
+-->
+```
 ### Modèle linéaire commun
 
 Le nœud du problème revient donc à transformer nos modèles pour qu'ils puissent être fusionnés en un seul. Comment homogénéiser ces deux modèles ?
@@ -111,6 +125,13 @@ $$
 
 L'encodage tel que présenté plus haut s'appelle un encodage en variable muette (*dummy variable* en anglais). Lorsque les différents niveaux sont encodés à l'aide des variables indicatrices $I_i$ qui prennent des valeurs 0 ou 1, il faut remarquer que l'une d'entre elle est redondante. En effet, avec deux niveaux, comme il s'agit nécessairement de l'un des deux, si $I_1$ vaut zéro, alors $I_2$ vaudra nécessairement un et vice versa. Donc, nous pouvons n'en garder qu'une des deux. Dans l'équation ci-dessus, nous ne gardons que $I_2$. Dans un cas général à $n$ niveau, nous ne garderons que $n-1$ niveaux. Ce n'est pas simplement utile de le faire, mais c'est indispensable pour éviter une redondance dans les termes du modèle !
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(219, height = 270, toc = NULL)`
+-->
+```
 ## Matrice de contraste
 
 La version que nous avons étudiée jusqu'ici pour nos variables indicatrices, à savoir, une seule prend la valeur 1 lorsque toutes les autres prennent une valeur zéro, n'est qu'un cas particulier de ce qu'on appelle les **contrastes** appliqués à ces variables indicatrices. En réalité, nous pouvons leur donner bien d'autres valeurs (on parle de **poids**), et cela permettra de considérer des contrastes différents, eux-mêmes représentatifs de situations différentes.
@@ -181,6 +202,13 @@ plot(contr.poly(10)[, 3], type = "b")
 
 Sur le graphique, l'axe X nommé `index` correspond en réalité à la succession des dix niveaux de la variable présentés dans l'ordre du plus petit au plus grand. Nous voyons maintenant clairement comment les contrastes sont construits ici. Pour le contraste linéaire, on contraste les petits niveaux avec les grands, et ce, de manière proportionnelle par rapport à la progression d'un niveau à l'autre (polynôme d'ordre un = droite). Pour le contraste quadratique, on place "dans le même sac" les petits et grands niveaux qui sont contrastés avec les niveaux moyens (nous avons une parabole ou polynôme d'ordre deux). Pour le troisième graphique, la situation se complexifie encore un peu plus avec un polynôme d'ordre trois, et ainsi de suite pour des polynômes d'ordres croissants jusqu'à remplir complètement la matrice de contrastes.
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(220, height = 270, toc = NULL)`
+-->
+```
 ```{block2, type='note'}
 
 R utilise par défaut des **contrastes de traitement pour les facteurs non ordonnés** et des **contrastes polynomiaux pour des facteurs ordonnés**. Ces valeurs par défaut sont stockées dans l'option `"contrasts"` que l'on peut lire à l'aide de `getOption()`.
@@ -197,6 +225,13 @@ getOption("contrasts")
 
 Avant l'apparition du modèle linéaire, une version particulière d'un mélange de régression linéaire et d'une ANOVA avec une variable indépendante quantitative et une autre variable indépendante qualitative s'appelait une ANCOVA (ANalyse de la COVariance). Un tel modèle d'ANCOVA peut naturellement également se résoudre à l'aide de la fonction `lm()` qui, en outre, peut faire bien plus. Nous allons maintenant ajuster un tel modèle à titre de première application concrète de tout ce que nous venons de voir sur le modèle linéaire et sur les matrices de contrastes associées.
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(221, height = 270, toc = NULL)`
+-->
+```
 ### Bébés à la naissance
 
 Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu'elle fume ou non. Cette analyse s'inspire de @verzani2005. Nous avons donc ici une variable dépendante `wt`, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives `wt1`, la masse de la mère, et `smoke` le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (`wt1`) et l'autre (`smoke`) est une variable facteur à quatre niveaux (0 = la mère n'a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait, mais a arrêté à la grossesse, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveau-nés et des mères sont des unités impériales (américaines) respectivement en "onces" et en "livres". Enfin, nous devons prendre soin de bien encoder la variable `smoke` comme une variable `factor` (ici nous ne considérons pas qu'il s'agit d'un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n'ont jamais fumé). **Un remaniement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle !**
@@ -324,6 +359,13 @@ anova(Babies_lm2)
 
 Maintenant que nous avons éliminé les interactions, nous avons toujours une régression significative entre `wt` et `wt1` (mais avec un $R^2$ toujours très faible de 7,7%), mais maintenant, nous faisons apparaître un effet significatif du contraste avec `smoke1` au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l'ANOVA. **D'une manière générale, un modèle avec interactions est toujours plus difficile à analyser du point de vue du tableau de l'ANOVA.**
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(222, height = 270, toc = NULL)`
+-->
+```
 Le graphique correspondant est l'ajustement de droites parallèles les unes aux autres pour les quatre sous-populations en fonction de `smoke`. Ce graphique est difficile à réaliser. Il faut ruser, et les détails du code vont au-delà de ce cours (il n'est pas nécessaire de les comprendre à ce stade).
 
 ```{r}
