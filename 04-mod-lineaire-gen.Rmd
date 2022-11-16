@@ -28,6 +28,13 @@ $$
 
 La différence par rapport au modèle linéaire, c'est que notre variable dépendante $y$ est **transformée** à l'aide d'une fonction $f(y)$ que l'on appelle **fonction de lien**. Cette fonction de lien est choisie soigneusement pour transformer une variable qui a une distribution non-Normale vers une distribution Normale ou quasi-Normale. Du coup, il ne faut rien changer à la droite du signe égal dans l'équation par rapport au modèle linéaire, et les outils existants peuvent être réemployés, une fois la transformation réalisée.
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(214, height = 270, toc = NULL)`
+-->
+```
 Toute la difficulté ici tient donc à la définition des fonctions de liens pertinentes par rapport à la distribution de $y$. Le tableau suivant reprend les principales situations prises en compte par la fonction `glm()` dans R qui calcule le modèle linéaire généralisé.
 
 | Distribution de Y    | Fonction de lien           | Code R                                         |
@@ -46,6 +53,15 @@ $$
 
 La transformation **logit** calcule alors : $\ln(y / (1 - y)) = \beta x$. Les situations correspondant à ce cas de figure concernent par exemple des variables de type (vivant *versus* mort) par rapport à une situation potentiellement létale, ou alors, le développement d'une maladie lors d'une épidémie (sain *versus* malade).
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(216, height = 270, toc = NULL)`
+
+`r h5p(215, height = 270, toc = NULL)`
+-->
+```
 ### Exemple
 
 Continuons à analyser nos données concernant les bébés à la naissance. Un bébé prématuré est un bébé qui naît avant 37 semaines de grossesse. Dans notre jeu de données `Babies`, nous pouvons déterminer si un enfant est prématuré ou non (variable binaire) à partir de la variable `gestation` (en jours). Transformons nos données pour obtenir les variables d'intérêt.
