@@ -298,7 +298,7 @@ La fonction `lme4::allFit()` utilise tous les optimiseurs qu'elles connait pour 
 
 L'équation du modèle qui est ajusté ici est assez complexe. Le package {equatiomatic} offre une fonction `extract_eq` qui génère l'équation LaTeX relative au modèle. Voici ce que cela donne dans le cas de `spe_m2` :
 
-`r equatiomatic::extract_eq(spe_m1)`
+`r equatiomatic::extract_eq(spe_m2)`
 
 Le modèle est décrit en trois lignes. La première indique que la variable réponse `mobile` suit une distribution binomiale avec un nombre d'essais *n* = 1 et une probabilité de succès (spermatozoïde mobile) estimée à $\hat P$. Dans la seconde ligne, nous avons la transformation probit de notre variable réponse ($log[\hat P / (1 - \hat P)]$, notre fameuse fonction de lien) qui est modélisée comme une droite $\alpha + \beta (conc)$. La troisième ligne indique enfin que $\alpha$ suit une distribution Normale de moyenne $\mu_\alpha$ qui est notre ordonnée à l'origine moyenne, et d'écart type $\sigma^2_\alpha$ qui est l'écart type calculé pour notre facteur aléatoire avec un indice *j* qui varie de donneur en donneur.
 
