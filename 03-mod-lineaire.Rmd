@@ -526,7 +526,7 @@ if (exists("assignment2"))
     course.starts = c(
       'S-BIOG-015' = !"{W[9]+4} 08:00:00"),
     course.ends = c(
-      'S-BIOG-015' = !"{W[12]+1} 23:59:59"),
+      'S-BIOG-015' = !"{W[13]+1} 23:59:59"),
     term = "Q1", level = 4, n = 3,
     toc = "Modèle linéaire (cardiovascular)")
 ```
