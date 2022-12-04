@@ -319,7 +319,7 @@ Concernant les modèles utiles en chimie et biochimie, le modèle à compartimen
 
 ```{r assign_B05Ia_abies_balsamea, echo=FALSE, results='asis'}
 if (exists("assignment"))
-  assignment("B05Ia_speed_reaction", part = NULL,
+  assignment("B05Ia_abies_balsamea", part = NULL,
     url = "https://github.com/BioDataScience-Course/B05Ia_abies_balsamea",
     course.ids = c(
       'S-BIOG-015'         = !"B05Ia_{YY}M_abies_balsamea"),
