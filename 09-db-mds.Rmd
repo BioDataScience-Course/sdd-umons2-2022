@@ -1,14 +1,10 @@
-# (PART) SDD II: analyse {.unnumbered}
-
-# Bases de données I & MDS {#db1-mds}
+# Bases de données & MDS {#db-mds}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
-SciViews::R
+SciViews::R("explore")
 ```
 
 ##### Objectifs {.unnumbered}
-
--   Maîtriser la technique de classification par les k-moyennes comme alternative à la CAH pour les gros jeux de données.
 
 -   Comprendre la représentation d'une matrice de distances sur un carte (ordination) et la réduction de dimensions via le positionnement multidimensionnel MDS.
 
@@ -18,348 +14,266 @@ SciViews::R
 
 Ces techniques étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(hierarchique) doit être assimilé avant de s'attaquer au présent module.
 
-## K-moyennes
+## Accès aux bases de données
 
-Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaître cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
-
-##### À vous de jouer ! {.unnumbered}
-
-`r h5p(93, height = 270, toc = "Avantages des k-moyennes")`
-
-Le principe des k-moyennes est très simple[^06-db1-mds-1] :
-
-[^06-db1-mds-1]: En pratique, différents algorithmes avec diverses optimisations existent. Le plus récent et le plus sophistiqué est celui de Hartigan-Wong. Il est utilisé par défaut par la fonction `kmeans()`. En pratique, il y a peu de raison d'en changer.
-
--   L'utilisateur choisi le nombre de groupes *k* qu'il veut obtenir à l'avance.
--   La position des *k* centres est choisie au hasard au début.
--   Les individus sont attribués aux *k* groupes en fonction de leurs distances aux centres (attribution au groupe de centre le plus proche).
--   Les *k* centres sont replacés au centre de gravité des groupes ainsi obtenus.
--   Les individus sont réaffectés en fonction de leurs distances à ces nouveaux centres.
--   Si au moins un individu a changé de groupe, le calcul est réitéré. Sinon, nous considérons avoir atteint la configuration finale.
-
-La technique est illustrée dans la vidéo suivante :
-
-```{r, echo=FALSE}
-#vembedr::embed_youtube("Aic2gHm9lt0", width = 770, height = 433)
-vembedr::embed_youtube("5I3Ei69I40s", width = 770, height = 433)
-```
-
-Essayez par vous même via l'application ci-dessous qui utilise le [célèbre jeu de données `iris`](https://archive.ics.uci.edu/ml/datasets/iris). Notez que vous devez utiliser des variables **numériques**. Par exemple, `Species` étant une variable qualitative, vous verrez que cela ne fonctionne pas dans ce cas.
-
-```{r, echo=FALSE, include=TRUE, out.extra='style="border: none;"', out.width='100%'}
-knitr::include_app("https://jjallaire.shinyapps.io/shiny-kmeans/", height = "600px")
-```
-
-### Exemple simple
-
-R propose la fonction `kmeans()` et différents packages la supplémente pour enrichir votre boite à outils. Nous rassemblons tout cela sous une interface cohérente dans SciViews autour d'une fonction légèrement différente : `k_means()`. Cependant, ce code n'est pas encore inclus dans un package. Vous aurez donc à intégrer le contenu du chunk suivant dans vos scripts et documents R Markdown avant de pouvoir utiliser nos fonctions (cliquez sur "voir le code" pour le dérouler).
-
-```{r, class.source='hidden-code'}
-# k_means for SciViews, version 1.0.0
-# Copyright (c) 2021-2022, Philippe Grosjean (phgrosjean@sciviews.org)
-
-SciViews::R
-
-# scale() is a generic function, but it does not provide a method for data
-# frames. As such, data frames and tibbles are converted into matrices by the
-# default method, which is not what we want
-scale.data.frame <- function(x, center = TRUE, scale = TRUE)
-  as.data.frame(scale(as.matrix(x)))
-# This is for tibbles
-scale.tbl_df <- function(x, center = TRUE, scale = TRUE)
-  tibble::as_tibble(scale(as.matrix(x)))
-# This is for data.tables
-scale.data.table <- function(x, center = TRUE, scale = TRUE)
-  data.table::as.data.table(scale(as.matrix(x)))
-
-# This is a reworked version of factoextra::fviz_nbclust() to help chosing the
-# number of clusters for kmeans()
-profile_k <- function(x, FUNcluster = kmeans, method = "wss", k.max = NULL, ...) {
-  if (NROW(x) < 2)
-    stop("You must provide an data frame or matrix with at least two rows")
-  if (is.null(k.max))
-    k.max <- min(nrow(x) - 1, 10) # Avoid error with very small datasets in fviz_nbclust()
-  factoextra::fviz_nbclust(x, FUNcluster = FUNcluster, method = method,
-    k.max = k.max, ...)
-}
-
-# Traditional kmeans does not store the data... and this is a problem for plot
-# later on. So, we define k_means() which store the original data by default
-k_means <- function(x, k, centers = k, iter.max = 10L, nstart = 1L,
-algorithm = c("Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"), trace = FALSE,
-keep.data = TRUE) {
-  # k and centers are synonyms
-  res <- kmeans(x, centers = centers, iter.max = iter.max, nstart = nstart,
-    algorithm = algorithm, trace = trace)
-  if (isTRUE(keep.data))
-    res$data <- as.data.frame(x)
-  class(res) <- unique(c("k_means", class(res)))
-  res
-}
-
-# broom::augment.kmeans() seems buggy when data is called 'x'
-augment.kmeans <- function(object, data) {
-  res <- broom::fix_data_frame(data, newcol = ".rownames")
-  res$.cluster <- factor(object$cluster)
-  res
-}
-
-# No predict() method for kmeans, but we add one for k_means
-predict.k_means <- function(object, ...)
-  factor(object$cluster)
-
-# There is no plot, autoplot and chart methods for kmeans objects => make them
-# for k_means objects, because we have both the k-means results and the data
-# Since data is no contained in the kmeans object, one has to provide it also
-plot.k_means <- function(x, y, data = x$data, choices = 1L:2L,
-  col = NULL, c.shape = 8, c.size = 3, ...) {
-  nclust <- nrow(x$centers)
-  if (is.null(col))
-    col <- 1:nclust
-  plot(as.data.frame(data)[, choices], col = col[x$cluster], ...)
-  points(as.data.frame(x$centers)[, choices], col = col[1:nclust],
-    pch = c.shape, cex = c.size)
-}
-
-autoplot.k_means <- function(object, data = object$data, choices = 1L:2L,
-alpha = 1, c.shape = 8, c.size = 3, theme = NULL, use.chart = FALSE, ...) {
-  data <- as.data.frame(data)
-  vars <- choices
-  if (is.numeric(choices))
-    vars <- colnames(data)[choices]
-  var_x <- as.name(vars[1])
-  var_y <- as.name(vars[2])
-  centers <- broom::tidy(object, col.names = colnames(data))
-  cluster <- factor(object$cluster)
-  if (isTRUE(use.chart)) {
-    fun <- chart::chart
-  } else {
-    fun <- ggplot2::ggplot
-  }
-  res <- fun(data = data, mapping = aes(x = {{var_x}}, y = {{var_y}},
-    col  = cluster)) +
-    geom_point(alpha = alpha) +
-    geom_point(data = centers, size = c.size, shape = c.shape)
-  if (!is.null(theme))
-    res <- res + theme
-  res
-}
-
-chart.k_means <- function(data, ..., type = NULL, env = parent.frame())
-  autoplot(data, type = type, theme = theme_sciviews(), use.chart = TRUE, ...)
-
-```
-
-Vous avez les méthodes `print()`, `plot()`, `autoplot()`, `chart()`, `augment()`, `tidy()`, `glance()`, `predict()` et `fitted()`. Nous verrons leur utilisation au fur et à mesure des explications dans cette partie. Enfin, la fonction `profile_k()` permet de recherche *k*, le nombre optimal de clusters à réaliser.
-
-Afin de comparer la classification par k-moyennes à celle par CAH, nous reprendrons ici le même jeu de données `zooplankton`.
-
-```{r}
-zoo <- read("zooplankton", package = "data.io")
-zoo
-```
-
-Commençons par l'exemple simplissime de la réalisation de deux groupes à partir de six individus issus de ce jeu de données, comme nous l'avons fait avec la CAH :
-
-```{r, echo=FALSE}
-set.seed(38)
-```
-
-```{r}
-zoo %>.%
-  select(., -class) %>.% # Élimination de la colonne class
-  slice(., 13:18) %->%   # Récupération des lignes 13 à 18
-  zoo6
-
-zoo6_kmn <- k_means(zoo6, k = 2)
-zoo6_kmn
-```
-
-Nous voyons que la fonction `k_means()` effectue notre classification[^06-db1-mds-2]. Nous lui fournissons le tableau de départ et spécifions le nombre *k* de groupes souhaités via l'argument `k =`. Ne pas oublier d'assigner le résultat du calcul à une nouvelle variable, ici `zoo6_kmn`, pour pouvoir l'inspecter et l'utiliser par la suite. L'impression du contenu de l'objet nous donne plein d'information dont :
-
-[^06-db1-mds-2]: Utilisez l'aide en ligne de `?kmeans` pour connaître les arguments. Seul `centers =` est changé en `k =` dans `k_means()`, mais avec `centers =` aussi accepté.
-
--   le nombre d'individus dans chaque groupe (ici 3 et 3),
--   la position des centres pour les *k* groupes dans `Cluster means`,
--   l'appartenance aux groupes dans `Clustering vector` (dans le même ordre que les lignes du tableau de départ),
--   la sommes des carrés des distances entre les individus et la moyenne au sein de chaque groupe dans `Within cluster sum of squares` ; le calcul `between_SS / total_SS` est à mettre en parallèle avec le $R^2$ de la régression linéaire : c'est une mesure de la qualité de regroupement des données (plus la valeur est proche de 100% mieux c'est, mais attention que cette valeur augmente d'office en même temps que *k*),
--   et enfin, la liste des composants accessibles via l'opérateur `$` ; par exemple, pour obtenir la taille de chaque groupe (en nombre d'individus), nous ferons :
-
-```{r}
-zoo6_kmn$size
-```
-
-Le package {broom} contient trois fonctions complémentaires qui nous seront utiles : `tidy()`, `augment()` et `glance()`. `broom::glance()` retourne un **data.frame** avec les statistiques permettant d'évaluer la qualité de la classification obtenue :
-
-```{r}
-glance(zoo6_kmn)
-```
-
-Si nous voulons déterminer la valeur optimale de *k*, nous pouvons utiliser `profile_k()` appliqué au jeu de données initial, ou à la composante `data` de notre objet `k_means` (spécifier éventuellement une valeur différente de celle par défaut pour l'argument `k.max =` de la fonction, voir l'aide en ligne de `?factoextra::fviz_nbclust`) :
-
-```{r}
-profile_k(zoo6) # ou zoo6_kmn$data
-```
-
-Le graphique obtenu montre la décroissance de la somme des carrés des distances intra-groupes en fonction de *k*. Avec *k* = 1, nous considérons toutes les données dans leur ensemble et nous avons simplement la somme des carrés des distances euclidiennes entre tous les individus et le centre de gravité du nuage de points dont les coordonnées sont les moyennes de chaque variable. C'est le point de départ qui nous indique de combien les données sont dispersées (la valeur absolue de ce nombre n'est pas importante).
-
-Ensuite, avec *k* croissant, notre objectif est de faire des regroupement qui diminuent la variance intra-groupe autant que possible, ce que nous notons par la diminution de la somme des carrés intra-groupes (la variance du groupe est, en effet, la somme des carrés des distances euclidiennes entre les points et le centre du groupe, divisée par les degrés de liberté).
-
-Nous recherchons ici des sauts importants dans la décroissance de la somme des carrés, tout comme dans le dendrogramme obtenu par la CAH nous recherchions des sauts importants dans les regroupements (hauteur des barres verticales du dendrogramme). Nous observons ici un saut important pour *k* = 2, puis une diminution un peu moins forte pour *k* = 3 et ensuite une stagnation. Ceci *suggère* que nous pourrions considérer deux voire trois groupes.
+Puisque nous traitons de jeux de données multivariés potentiellement très gros, il devient important de pouvoir accéder aux données stockées de manière plus structurée que dans un fichier au format CSV ou Excel, par exemple. Les bases de données, et notamment les **bases de données relationnelles**, sont prévue pour stocker de grandes quantités de données de manière structurée et pour pouvoir en extraire la partie qui nous intéresse à l'aide de **requêtes**. Nous allons ici étudier les rudiments indispensables pour nous permettre de réaliser de telles requêtes depuis R.
 
 ```{block2, type='note'}
-Le nombre de groupes proposé par `profile_k()` n'est qu'indicatif\ ! Si vous avez par ailleurs d'autres informations qui vous suggèrent un regroupement différent, ou si vous voulez essayer un regroupement plus ou moins détaillé par rapport à ce qui est proposé, c'est tout aussi correct.
-
-La fonction `profile_k()` propose d'ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes *k*, avec `method = "silhouette"` ou `method = "gap_stat"`. Voyez l'aide en ligne de cette fonction `?factoextra::fviz_nbclust`. Ces différentes méthodes peuvent d'ailleurs suggérer des regroupements différents pour les mêmes données... preuve qu'il n'y a pas *une et une seule* solution optimale\ !
+SQL est un langage dédié aux requêtes et la manipulation de bases de données relationnelles, constituées de tables (équivalent à des tableaux cas par variables en statistiques) reliées entre elles par une ou plusieurs *clés*. Par exemple, le champ `auteur` d'une liste de livres dans la table `Livres` renvoie (est lié à) vers le champs `nom` d'une autre table `Ecrivains` qui fournit plus de détails sur chaque auteur de livres.
 ```
 
-A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données avec `augment()`. Notez que si vous voulez *juste* récupérer les groupes, vous pouvez utiliser alors `predict(zoo6_kmn)`. `augment()` crée une nouvelle colonne nommée `.cluster` que nous renommons ici immédiatement en `cluster`, et ensuite, nous enregistrons le tout dans un nouveau jeu de données nommé `zoo6b`[^06-db1-mds-3].
+Il existe différents moteurs de bases de données relationnelles. Les plus courants sont : SQLite, MySQL/MariaDB, PosgreSQL, SQL Server, Oracle, ... La plupart de ces solutions nécessitent d'installer un **serveur** de base de données centralisé. Cependant, SQLite, est une solution légère qui permet d'explorer le langage SQL ([prononcez "S.Q.L." ou "Sequel"](https://www.vertabelo.com/blog/notes-from-the-lab/sql-or-sequel)), y compris avec des petites bases de données test en mémoire ou contenues dans un fichier.
 
-[^06-db1-mds-3]: De manière générale, éviter de rajouter des données calculées dans le jeu de données initial. Cela peut amener à des erreurs particulièrement délicates si vous relancer ensuite l'analyse sur ce tableau.
+### Installation de SQLite
+
+Dans la SciViews Box, les drivers SQLite pour la version 2 et la version 3 sont préinstallés. Sous R, vous pouvez utiliser le package `RSQLite` pour accéder à des bases de données qui sont de simples fichiers sur le disque. Cependant, l'onglet **Connections** dans RStudio n'est pas compatible avec `RSQLite`. Il fonctionne, par contre avec les **drivers odbc** qui sont un format commun de drivers pour différentes bases de donnes dont SQLite. Les drivers SQLite, MySQL et PosgreSQL sont préinstallés dans la SciViews Box. Nous utiliserons également une interfaces graphique vers SQLite : **DB Browser for SQLite** disponible depuis le menu principal `Applications`, dans la section `Development`.
+
+![](images/sdd2_07/sqlite-pgm1.png)
+
+### Base de données en mémoire
+
+La simplicité de SQLite tient au fait qu'il n'est pas nécessaire d'installer un serveur de bases de données pour l'utiliser. La version la plus simple permet même de travailler directement en mémoire. Ainsi, nous pouvons facilement placer le contenu d'un jeu de données comme `mtcars` et tester ensuite des **requêtes SQL** (l'équivalent des fonctions d'extraction et de remaniement de tableau dans `dplyr`) sur ces données en mémoire.
+
+Voici un petit aperçu qui vous montre comment créer, et puis manipuler une base de données SQLite en mémoire depuis R.
+
+```{r in-memory}
+library('RSQLite')
+
+# Base de données en mémoire
+con <- dbConnect(RSQLite::SQLite(), dbname = ":memory:")
+
+# Ne contient encore rien
+dbListTables(con)
+
+# Ajoute une table
+dbWriteTable(con, "mtcars", mtcars)
+dbListTables(con)
+
+# Que contient cette table?
+dbListFields(con, "mtcars")
+
+# Lire toute la table
+dbReadTable(con, "mtcars")
+
+# Effectuer une requête SQL sur la table
+res <- dbSendQuery(con, "SELECT * FROM mtcars WHERE cyl = 4")
+dbFetch(res)
+dbClearResult(res)
+
+# On peut aussi récupérer les données morceau par morceau
+res <- dbSendQuery(con, "SELECT * FROM mtcars WHERE cyl = 4")
+while (!dbHasCompleted(res)) {
+  chunk <- dbFetch(res, n = 5)
+  print(nrow(chunk))
+}
+dbClearResult(res)
+
+# Se déconnecter de la base de données
+dbDisconnect(con)
+```
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(111, height = 270, toc = "Stratégie d'utilisation d'une base de données")`
+
+### Base de données dans un fichier
+
+La SciViews Box contient une base de données test dans `~/shared/database.sqlite`. Vous pouvez facilement vous connecter dessus via l'onglet `Connections` de RStudio. Vous pouvez également vous y connecter via du code R directement. Notez que la même syntaxe est utilisée pour **créer une nouvelle base de données** si le fichier n'existe pas encore au moment de la connexion.
+
+```{r dbconstruct, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
+if (!file_exists("~/shared/database.sqlite"))
+  dir_create("~/shared")
+# Make sure we have the iris table intact in it
+con <- dbConnect(SQLite(),
+dbname = "~/shared/database.sqlite")
+dbWriteTable(con, "iris", iris, overwrite = TRUE)
+dbDisconnect(con)
+```
+
+```{r connection-sqlite}
+library('RSQLite')
+con <- dbConnect(SQLite(),
+  dbname = "~/shared/database.sqlite")
+```
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(110, height = 270, toc = "Connection à une base de données")`
+
+Voici quelques instructions typiques pour interroger cette base de données depuis R :
+
+```{r setosa}
+# Liste les tables présentes dans la base de données
+dbListTables(con)
+# Extraction de données à l'aide d'une requête SQL
+(setosa <- dbGetQuery(con, "SELECT * FROM iris WHERE Species is 'setosa'"))
+```
+
+La dernière instruction nécessite quelques explications supplémentaires. La fonction `dbGetQuery()` envoie une requête sur la base en langage SQL. Ici, nous indiquons les colonnes que nous souhaitons récupérer avec le mot clé `SELECT`. L'utilisation de `*` indique que nous voulons toutes les colonnes, sinon, on nomme celles que l'on veut à la place. Ensuite, le mot clé `FROM` nous indique depuis quelle table, ici celle nommée `iris`, et enfin, le mot clé `WHERE` introduit une expression de condition qui va *filtrer* les lignes de la table à récupérer, par exemple `'Sepal.Length' > 1.5` ou comme ici `Species is 'setosa'`.
+
+Il est également possible d'effectuer une requête SQL directement dans un chunk. A la place d'indiquer ```` ```{r} ````, on indiquera ```` ```{sql, connection=con} ````, et nous pourrons alors directement indiquer la requête SQL dans le chunk :
+
+```{sql setosa-direct, connection=con}
+SELECT * FROM iris WHERE Species is 'setosa'
+```
+
+Par défaut, cette requête est imprimée dans le document, et son résultat est perdu ensuite. Il est cependant possible de l'enregistrer sous un nom avec l'option de chunk `output.var=`. Dans ce cas, rien n'est imprimé, mais comme le résultat de la requête est contenu dans l'objet créé, il est facile de le manipuler dans R ensuite plus loin dans notre document.
+
+```{sql virginica, connection=con, output.var="virginica"}
+SELECT * FROM iris WHERE Species is 'virginica'
+```
+
+Ensuite, dans un chunk R, vous pouvez manipuler la table contenue dans `virginica` :
 
 ```{r}
-augment(zoo6_kmn, zoo6) %>.%
-  rename(., cluster = .cluster) %->%
-  zoo6b
-names(zoo6b)
+nrow(virginica)
+summary(virginica)
 ```
 
-La nouvelle variable `cluster` contient ceci :
+Ne pas oublier de se déconnecter de la base de données une fois terminé.
 
 ```{r}
-zoo6b$cluster
+dbDisconnect(con)
 ```
 
-C'est le contenu de `zoo6_kmn$cluster`, mais transformé en variable `factor`.
+### Driver ODBC dans RStudio
 
-```{r}
-class(zoo6b$cluster)
+RStudio facilite l'utilisation de bases de données à condition d'utiliser un driver "compatible". Nous avons installé un tel driver ODBC pour les bases de données SQLite. Pour nous connecter à `/home/sv/shared/database.sqlite` depuis RStudio, nous entrons dans l'onglet **Connections** et nous cliquons sur le bouton `New Connection`, ou nous cliquons sur la connexion correspondante si elle est déjà créée dans la liste.
+
+![](images/sdd2_07/sqlite-rstudio1.png)
+
+Pour créer une nouvelle connexion, sélectionnons **SQLite3**. Ensuite, nous rentrons `Database=/home/sv/shared/database.sqlite` comme paramètre dans la fenêtre suivante.
+
+![](images/sdd2_07/sqlite-rstudio2.png)
+
+Le bouton **Test** permet de vérifier que R/RStudio peut se connecter à cette base de données. Ensuite, dans **Connect from:**, vous pouvez choisir où vous voulez placer l'instruction de connexion. L'option `Clipboard` est intéressante. Elle place l'instruction dans le presse-papier et vous pouvez alors décider vous-même où la placer. Nous la placerons dans un chunk R dans notre notebook.
+
+```{r, eval=FALSE}
+library(odbc)
+con <- dbConnect(odbc::odbc(), .connection_string = paste0("Driver={SQLite3};Database=/home/", Sys.info()['user'],
+  "/shared/database.sqlite"))
 ```
 
-Nous pouvons enfin utiliser `tidy()` pour obtenir un tableau avec les coordonnées des *k* centres. Nous l'enregistrerons dans la variable `zoo6_centers`, en ayant bien pris soin de nommer les variables du même nom que dans le tableau original `zoo6` (argument `col.names = names(zoo6)`, afin de conserver le noms de nos variables initiales dans ce nouveau tableau :
+Une fois connecté, vous pouvez voir le contenu de la base de données dans l'onglet **Connections**. Pour ajouter une table que nous remplissons à partir des données issues du jeu de données `mtcars`, nous écririons dans R :
 
-```{r}
-zoo6_centers <- tidy(zoo6_kmn, col.names = names(zoo6))
-zoo6_centers
+```{r, eval=FALSE}
+dbWriteTable(con, "mtcars", mtcars)
 ```
 
-La dernière colonne de ce tableau est également nommée `cluster`. C'est le lien entre le tableau `zoo6b` augmenté et `zoo6_centers`. Nous avons maintenant tout ce qu'il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable `cluster`.
+A partir de ce moment, vous pouvez voir votre table `mtcars` (il faut peut être cliquer sur le bouton en forme de flèche qui se mord la queue pour rafraîchir l'affichage). Comme dans **Environnement**, si vous cliquez sur la flèche dans un rond bleu devant le nom de la table, vous pouvez voir les colonnes qu'elle contient. En cliquant sur l'icône tableau à droite, vous visualisez la table directement dans RStudio.
 
-```{r}
-chart(data = zoo6b, area ~ circularity %col=% cluster) +
-  geom_point() + # Affiche les points représentant les individus
-  geom_point(data = zoo6_centers, size = 5, shape = 17) # Ajoute les centres
-```
+![](images/sdd2_07/sqlite-rstudio3.png)
 
-Comparez avec le graphique équivalent au module précédent consacré à la CAH. Outre que l'ordre des groupes est inversé et que les données n'ont pas été standardisées ici, un point est classé dans un groupe différent par les deux méthodes. Il s'agit du point ayant environ 0.25 de circularité et 0.5 de surface. Comme nous connaissons par ailleurs la classe à laquelle appartient chaque individu, nous pouvons la récupérer comme colonne supplémentaire du tableau `zoo6b` et ajouter cette information sur notre graphique.
+A part cela, vous travaillez avec cette base de données dans R en utilisant l'objet `con` comme d'habitude, et vous pouvez aussi utiliser directement des chunks sql.
 
-```{r}
-zoo6b$class <- zoo$class[13:18]
-zoo6_centers$class <- "" # Ceci est nécessaire pour éviter le label des centres
-chart(data = zoo6b, area ~ circularity %col=% cluster %label=% class) +
-  geom_point() +
-  ggrepel::geom_text_repel() + # Ajoute les labels intelligemment
-  geom_point(data = zoo6_centers, size = 5, shape = 17)
-```
+### Utilisation de DB Browser
 
-Nous constatons que le point classé différemment est un "Poecilostomatoïd". Or, l'autre groupe des k-moyennes contient aussi un individu de la même classe. Donc, CAH a mieux classé notre plancton que les k-moyennes dans le cas présent. Ce n'est pas forcément toujours le cas, mais souvent.
+Lancez **DB Browser**. Connectez-vous à `/home/sv/shared/database.sqlite` Vous avez un accès visuel à votre base de données. Explorez les différentes possibilités du logiciel.
 
-Maintenant que nous comprenons bien la logique de création de ce graphique en l'ayant réalisé par l'extraction des groupes avec `augment()` et des centres de ces groupes à l'aide de `tidy()`, nous pouvons nous simplifier la vie en utilisant `chart()` simplement sur notre objet `k_means` pour obtenir directement ce graphique. Dans ce cas, nous n'utilisons pas une formule pour indiquer les variables à utiliser, mais un vecteur de deux nombre qui indique l'index de ces variables, ou leur noms directement dans `choices =` :
+![DB Browser for SQLite](images/sdd2_07/sqlite-pgm2-dbbrowser.png)
 
-```{r}
-chart(zoo6_kmn, choices = c("circularity", "area"),
-  alpha = 0.6, c.size = 5, c.shape = 17)
-```
-
-La taille et la forme des centres sont indiqués respectivement par `c.size =` et `c.shape =` , tandis que `alpha =` modifie la transparence des points. Ce dernier argument est surtout utile pour des gros jeux de données avec beaucoup de points à afficher sur le graphique.
-
-Comme les k-moyennes partent d'une position aléatoire des *k* centres, le résultat final peut varier et n'est pas forcément optimal. Pour éviter cela, nous pouvons indiquer à `k_means()` d'essayer différentes situations de départ via l'argument `nstart =`. Par défaut, nous prenons une seule situation aléatoire de départ `nstart = 1`, mais en indiquant une valeur plus élevée pour cet argument, il est possible d'essayer plusieurs situations de départ et ne garder que le meilleur résultat final. Cela donne une analyse plus robuste et plus reproductible... mais le calcul est naturellement plus long.
+### Utilisation de {dplyr}
 
 ```{r, echo=FALSE}
-set.seed(9768)
+#dbWriteTable(con, "iris", iris, overwrite = TRUE)
 ```
+
+Les fonctions du package {dplyr} fonctionnent aussi très bien sur des bases de données. Les commandes sont converties en interne en requêtes SQL. Il suffit d'utiliser `collect()` à la fin pour exécuter la requête.
+
+```{r dplyr1}
+#dbfile <- "~/shared/database.sqlite"
+dbfile <- file_temp("database", ext = "sqlite")
+my_db <- DBI::dbConnect(RSQLite::SQLite(), dbfile)
+my_db
+# Ajouter une table iris dans la base de données
+iris <- read("iris", package = "datasets")
+copy_to(my_db, iris)
+# Récupérer toutes les données de la table iris
+my_table <- tbl(my_db, sql("SELECT * FROM iris"))
+(df2 <- collect_dtx(my_table))
+```
+
+Voici maintenant ce que cela donne en utilisant les verbes de {dplyr}. La fonction `explain()` permet d'expliquer ce qui est fait.
 
 ```{r}
-k_means(zoo6, k = 2, nstart = 50) # 50 positions de départ différentes
+# Sélectionner des variables
+select(my_table, sepal_width, petal_length:species)
+# Filtrer les fleurs à gros pétales
+filter(my_table, petal_length > 1.5)
+# Réarranger les lignes par longueur de pétale croissante et largeur de sépale décroissant
+arrange(my_table, petal_length, desc(sepal_width))
+# Créer une nouvelle variables
+mutate(my_table, logpl = log10(petal_length))
+# Résumer les données
+explain(summarise(my_table, taille = median(petal_length)))
 ```
 
-Dans ce cas simple, cela ne change pas grand chose. Mais avec un plus gros jeu de données plus complexe, cela peut être important.
+Il est possible de réaliser des choses plus complexes ! On peut naturellement chaîner tout cela avec le pipe `%>.%`, ou combiner les requêtes comme on veut. Rien n'est fait avant de collecter les résultats avec `collect_dtx()` ou l'assignation alternative `%<-%` ou `%->%`.
 
-##### À vous de jouer ! {.unnumbered}
-
-`r h5p(94, height = 270, toc = "Les arguments de la fonction k_means()")`
-
-### Classification du zooplancton
-
-Maintenant que nous savons utiliser `k_means()` et les fonctions annexes, nous pouvons classer le jeu de données `zoo` tout entier.
-
-```{r}
-zoo %>.%
-  fselect(., -class) %>.%
-  profile_k(., k.max = 15)
+```{r dplyr2}
+my_table %>.%
+  filter(., petal_length > 1.5) %>.%
+  select(., petal_length, sepal_width, species) %>.%
+  mutate(., logpl = log10(petal_length)) -> # Assignation normale, résultats pas encore collectés
+  query1
+# On peut continuer tant que l'on n'a pas collecté les résultats
+query2 <- arrange(query1, petal_length, desc(sepal_width))
+query2
+# Récupérer le résultat
+#res <- collect_dtx(query2) # Plus explicite, mais plus long que:
+res %<-% query2
+res
 ```
 
-Nous observons un saut maximal pour *k* = 2, mais le saut pour *k* = 3 est encore conséquent. Afin de comparer avec ce que nous avons fait par CAH, nous utiliserons donc *k* = 3. Enfin, comme un facteur aléatoire intervient, qui définira au final le numéro des groupes, nous utilisons `set.seed()` pour rendre l'analyse reproductible. **Pensez à donner une valeur différente à cette fonction pour chaque utilisation !** Et pensez aussi à éliminer les colonnes non numériques à l'aide de `select()`.
+Enfin, la fonction `sql_translate()` du package {dbply} va indiquer comment une instruction R est convertie en code SQL équivalent. **C'est très pratique aussi pour apprendre SQL quand on connait R !**
 
-```{r}
-set.seed(562)
-zoo_kmn <- k_means(fselect(zoo, -class), k = 3, nstart = 50)
-zoo_kmn
+```{r, error=TRUE}
+dbplyr::translate_sql(x^3 < 15 || y > 20)
+dbplyr::translate_sql(mean(x))
+dbplyr::translate_sql(mean(x, na.rm = TRUE))
+# Tout ne fonctionne pas, car R offre plus de possibilités que SQL
+dbplyr::translate_sql(plot(x)) #???
+dbplyr::translate_sql(mean(x, trim = TRUE)) # Argument trim= non reconnu
 ```
 
-Récupérons les groupes dans `zoob`
-
-```{r}
-augment(zoo_kmn, zoo) %>.%
-  rename(., cluster = .cluster) %->%
-  zoob
-```
-
-Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n'importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l'aide de `stat_ellipse()`. Elles contiennent 95% des points du groupe à l'exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l'argument `alpha = 0.2` pour plus de lisibilité du graphique.
-
-```{r}
-chart(zoo_kmn, choices = c("ecd", "compactness"), alpha = 0.2) +
-  stat_ellipse()
-```
-
-Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (`Compactness`). La tabulation des groupes en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu'à pu faire la CAH :
-
-```{r}
-table(zoob$class, zoob$cluster)
-```
-
-Le groupe numéro 3 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 2 a une majorité de calanoïdes, de cyclopoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données zoo standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
-
-##### À vous de jouer ! {.unnumbered}
-
-`r h5p(95, height = 270, toc = "Transformation des données avant k_means()")`
+Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler des bases de données avec R et RStudio. En pratique, revenez sur cette section, et approfondissez vos connaissances via les ressources proposées ci-dessous lorsque vous serez confrontés "en vrai" à des données présentées dans une base de données relationnelle.
 
 ##### Pour en savoir plus {.unnumbered}
 
-Il existe une approche mixte qui combine la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Elle est expliquée [ici](https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/), et l'implémentation dans la fonction `factoextra::hkmeans()` est détaillée [ici (en anglais)](https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/).
+-   [RStudio et bases de données](https://db.rstudio.com) : tout un site web dédié à l'accès aux bases de données depuis RStudio (en anglais).
 
-Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analysis-k-means-and-hierarchical-clustering-by-hand-and-in-r/) explique dans le détail `kmeans()` et `hclust()` dans R, et montre aussi comment on peut calculer les k-moyennes à la main pour bien en comprendre la logique (en anglais).
+-   La [documentation](https://github.com/sqlitebrowser/sqlitebrowser/wiki) de DB Browser for SQLite (en anglais).
+
+-   Une introduction des [requêtes SQL dans R](http://dept.stat.lsa.umich.edu/~jerrick/courses/stat701/notes/sql.html) un peu plus développée (en anglais).
+
+-   Un [tutorial SQL](https://www.w3schools.com/sql/) avec des exercices (en anglais).
+
+-   Un [cours en ligne sur SQL](https://fr.khanacademy.org/computing/computer-programming/sql/sql-basics/v/welcome-to-sql) par vidéos par la Kahn Academy (en anglais).
+
+-   Un autre [tutorial complet sur SQL](http://blog.paumard.org/cours/sql/). Remarquez qu'il en existe beaucoup. Faites une recherche via Google et choisissez le tutoriel qui vous plaît le plus.
+
+-   Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
 
 ##### À vous de jouer ! {.unnumbered}
 
-`r learnr("B06La_kmeans", title = "Partitionnement par k-moyennes", toc = "Partitionnement par k-moyennes")`
+**Ce projet est un travail par groupe de quatre personnes et se poursuivra au module 8.**
 
-```{r assign_B06Ia_fish_market_I, echo=FALSE, results='asis'}
-if (exists("assignment"))
-  assignment("B06Ia_fish_market", part = "I",
-    url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
+```{r assign_B07Ga_doubs_I, echo=FALSE, results='asis'}
+if (exists("assignment2"))
+  assignment2("B07Ga_doubs", part = "I",
+    url = "https://github.com/BioDataScience-Course/B07Ga_doubs",
     course.ids = c(
-      'S-BIOG-061' = !"B06Ia_{YY}M_fish_market", 
-      'S-BIOG-937-958-959' = !"B06Ia_{YY}C_fish_market"),
+      'S-BIOG-061' = !"B07Ga_{YY}M_doubs", 
+      'S-BIOG-937-958-959' = !"B07Ga_{YY}C_doubs"),
     course.urls = c(
       'S-BIOG-061' = "https://classroom.github.com/a/...", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
     course.starts = c(
-      'S-BIOG-061' = !"{W[24]+1} 15:00:00"),
+      'S-BIOG-061' = !"{W[26]+1} 08:00:00"),
     course.ends = c(
-      'S-BIOG-061' = !"{W[26]+1} 23:59:59"),
-    term = "Q2", level = 3,
-    toc = "Analyse multivarée sur 7 poissons (I)")
+      'S-BIOG-061' = !"{W[37]+5} 23:59:59"),
+    term = "Q2", level = 4, n = 4,
+    toc = "Étude écologique sur le Doubs (I)")
 ```
 
 ## Positionnement multidimensionnel (MDS)
@@ -372,12 +286,12 @@ Au départ, nous avons *p* colonnes et *n* lignes dans le tableau cas par variab
 
 Ce que nous allons faire avec la MDS correspond exactement à cela : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions. C'est donc ce qu'on appelle une technique de **réduction de dimensions**. Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant :
 
--   A partir d'un tableau multivarié de *n* lignes et *p* colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici[^06-db1-mds-4]).
+-   A partir d'un tableau multivarié de *n* lignes et *p* colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici[^09-db-mds-1]).
 -   Nous souhaitons représenter une carte (nuage de points) à *k* dimensions (*k* = 2, éventuellement *k* = 3) où les *n* individus seront placés de telle façon que les proximités exprimées par des valeurs faibles dans la matrice de dissimilarité soient respectées *autant que possible* entre tous les points.
 -   Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une **fonction de coût**, encore appelée **fonction de stress** qui quantifie de combien nous avons dû tordre le réseau à *p* dimensions initial représentant les distances entre toutes les paires. C'est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.
 -   Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résultat final peut varier d'une fois à l'autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.
 
-[^06-db1-mds-4]: Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.
+[^09-db-mds-1]: Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.
 
 Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique en biologie.
 
@@ -828,10 +742,10 @@ if (exists("assignment"))
 
 ## Récapitulatif des exercices
 
-Ce sixième module vous a permis de comprendre trois nouvelles techniques des statistiques exploratoires. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
+Ce neuvième module vous a permis de découvrir les MDS, ainsi que le travail sur les bases de données. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
 
 `r show_ex_toc()`
 
 ##### Progression {.unnumbered}
 
-`r launch_report("06", height = 800)`
+`r launch_report("09", height = 800)`

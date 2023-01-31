@@ -1,0 +1,314 @@
+# AFM & big data {#afm-big-data}
+
+```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
+SciViews::R("explore")
+```
+
+##### Objectifs {.unnumbered}
+
+-   Être capable d'analyser des données présentes dans des tableaux multiples et/ou hétérogènes simultanément à l'aide de l'analyse factorielle multiple
+
+-   Être capable de choisir les meilleurs outils en fonction de la taille des jeux de données à traiter, en particulier pour les (très) gros jeux de données (= big data)
+
+##### Prérequis {.unnumbered}
+
+-   Les modules 6 et 7 doivent être assimilés avant d'attaquer le présent module.
+
+## Analyse factorielle multiple (AFM)
+
+Jusqu'ici nous avons étudié différentes techniques pour explorer des données multivariées *soit* quantitatives (ACP), *soit* qualitatives (AFC). Nous n'avons pas abordé encore la question de données *mixtes* avec des tableaux qui contiennent *à la fois* des variables quantitatives et des données qualitatives.
+
+Une première approche consiste à convertir des variables afin d'homogénéiser le tableau. La conversion ne peut se faire qu'en dégradant l'information, soit dans le sens quantitatif continu -\> quantitatif discret -\> qualitatif ordonné -\> qualitatif non ordonné -\> binaire. Ainsi, dans un tableau contenant quelques variables quantitatives, nous pouvons créer des classes pour convertir les variables quantitatives en qualitatives. C'est par exemple ce que nous faisons quand nous remplaçons les indices de masse corporelle IMC dans nos données de biométrie humaine (quantitatif) en classes (tableau des classes proposées par l'OMS[^08-afm-big-data-1]).
+
+[^08-afm-big-data-1]: OMS = Organisation Mondiale de la Santé, voir [ici](https://apps.who.int/bmi/index.jsp?introPage=intro_3.html).
+
+| IMC [kg/m^2^] | Classification OMS |
+|:-------------:|:-------------------|
+|    \< 16,5    | sous-poids sévère  |
+|    16 - 17    | sous-poids modéré  |
+|   17 - 18,5   | sous-poids léger   |
+|   18.5 - 25   | normal             |
+|    25 - 30    | préobésité         |
+|    30 - 35    | obésité classe I   |
+|    35 - 40    | obésité classe II  |
+|     \> 40     | obésité classe III |
+
+A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours_r_module_analyse_multi_dimensionnelles/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici[^08-afm-big-data-2].
+
+[^08-afm-big-data-2]: Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).
+
+L'analyse factorielle multiple (AFM, *multiple factorial analysis* ou MFA en anglais) va permettre d'analyser simultanément plusieurs tableaux de données multivariés, et éventuellement mélanger des tableaux quantitatifs et qualitatifs (pour autant que les variables soient homogènes au sein de chaque tableau).
+
+### AFM dans SciViews::R
+
+Lorsque vous chargez les packages nécessaires à l'analyse exploratoire dans SciViews R à l'aide de `SciViews::R("explore")`, vous avez à disposition la fonction `mfa(data = ...., formula)` qui fera les calculs qui nous intéressent. Ensuite nous utiliserons `summary()` et `chart$type()` pour les graphiques, où `type` pourra être `screeplot`, `altscreeplot`, `loadings`, `scores`, `groups`, `axes`, `frequences` ou `ellipses` (nous verrons plus loin ce que représentent tous ces graphiques).
+
+Nous allons aborder cette technique puissante mais un peu plus complexe qu'est l'AFM sur la base d'un jeu de données que nous connaissons bien maintenant via nos exercices précédents : la communauté de plancton le long d'un transect entre Nice et la Corse.
+
+### Plancton en Méditerranée
+
+Les jeux de données `marphy` et `marbio` dans le package {pastecs} présentent deux tableaux de données complémentaires. Le premier, `marphy` reprend les mesures environnementales de base (température, salinité et densité des masses d'eaux), ainsi qu'une information indirecte sur la concentration en phytoplancton : la fluorescence de la chlorophylle. Le second tableau `marbio` reprend les effectifs observés dans 24 groupes de zooplancton mesurés sur des échantillons issus des mêmes stations que `marphy`. Ces stations sont réparties de manière équidistante le long d'un transect entre le continent (vers Nice, station n°1) et la Corse (à Calvi, station n°68).
+
+![Exemple d'organismes appartenant au zooplancton (Matt Wilson & Jay Clark, NOAA NMFS AFSC, licence : domaine public)](images/sdd2_08/zooplankton.jpg)
+
+Jusqu'à présent, nous avions utilisé ces deux tableaux séparément. Notre objectif ici est de les analyser ensemble. Nous allons commencer par considérer ces deux tableaux comme **quantitatifs**. Dans ce cas, l'AFM réalisera deux ACP, une par tableau. Ensuite, elle pondérera les données de chacun en fonction de la part de variance sur le premier axe respectif. Pour finir, elle réalisera une ACP globale avec toutes les données qui conservera la structure de chacun des deux tableaux initiaux grâce à la pondération appliquée en interne.
+
+Les données environnementales dans `marphy` étant mesurées dans des unités différentes, nous les standardiserons. Concernant le plancton dans `marbio`, nous allons pondérer les espèces rares par rapport aux espèces abondantes en transformant $log(x + 1)$ les abondances observées avec la fonction `log1p()`. Enfin, nous rajouterons les différentes masses d'eaux identifiées par ailleurs (voir l'aide `?pastecs::marphy`) dans `marzones` que nous utiliserons comme troisième tableau de **variables supplémentaires** (un tableau que nous n'utilisons *pas* dans l'analyse, mais que nous représenterons dans les graphiques afin d'aider à leur interprétation). Voici donc la constitution d'un gros tableau qui reprend toutes les données dans la variable `mar` :
+
+```{r}
+marzones <- factor(c(
+  rep("périphérique", 16),
+  rep("divergente1", 8),
+  rep("convergente", 5),
+  rep("frontale", 11),
+  rep("divergente2", 5),
+  rep("centrale", 23)),
+  levels = c("périphérique", "divergente1", "convergente",
+    "frontale", "divergente2", "centrale"))
+
+bind_cols(
+  read("marphy", package = "pastecs"),
+  log1p(read("marbio", package = "pastecs"))) %>.%
+  smutate(., Zone = marzones) %->%
+  mar
+```
+
+Ce tableau n'a aucunes valeurs manquantes et il contient 29 variables :
+
+```{r}
+names(mar)
+```
+
+Il y a trois groupes distincts :
+
+-   les 4 premières colonnes comme variables quantitatives continues pour l'**environnement**,
+-   les 24 colonnes suivantes comme quantitatives pour le **plancton**,
+-   la dernière colonne qui caractérise les masses d'eaux (**zone**) comme variable qualitative supplémentaire.
+
+![Représentation des trois groupes du tableau dans les couleurs qui seront utilisées ensuite dans l'AFM.](images/sdd2_08/groupes_mfa.png)
+
+Avant de pouvoir réaliser notre AFM, nous devons comprendre comment écrire la formule qui va décrire nos données. Pour chaque groupe, nous ajouterons un terme à la formule qui contient trois composantes :
+
+1.  Le nombre `n` de colonnes constituant le groupe (les colonnes du tableau composite sont comptées de gauche à droite),
+2.  Le `type` de variable considérée. Quatre types sont possibles. Les variables continues à standardiser avant d'être utilisées dans une ACP sont de type **std**. Les variables quantitative également à utiliser selon l'ACP mais *sans* standardisation sont de type **num**. Les données qualitatives assimilables à un tableau de contingence à double entrée (données de fréquences d'observations, dénombrements, etc.) sont de type **cnt** et seront traitées comme une AFC, et enfin, les variables qualitatives classiques sont de type **fct** et seront traitées selon une analyse factorielle multiple AFM.
+3.  Le `nom` que l'on veut donner à chaque groupe de variables pour l'identifier dans l'analyse.
+
+Un groupe est décrit dans la formule comme `n * type %as% nom` (donc avec les opérateurs `*` et `%as%`). Chaque groupe inclus dans l'analyse est précédé d'un signe plus `+` (le premier plus peut être omis de la formule). Les groupes supplémentaires (à soustraire à l'analyse) sont précédés d'un signe moins `-`. Et enfin, tous les groupes sont décrits à la droite de la formule, donc, après le `~`.
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(120, height = 270, toc = "Formule de l'AFM")`
+
+Dans notre cas concret ici, cela donne :
+
+    ~ 4*std %as% environnement + 24*num %as% plancton - 1*fct %as% zone
+
+L'analyse se fait en appelant `mfa(data = ...., formula)`. Nous assignons le résultat du calcul à `mar_mfa` :
+
+```{r}
+mar_mfa <- mfa(data = mar,
+  ~ 4*std %as% environment + 24*num %as% plancton - 1*fct %as% zone)
+```
+
+Le résumé de l'analyse renvoyé par `summary()` donne beaucoup d'information.
+
+```{r}
+summary(mar_mfa)
+```
+
+Ne nous intéressons pour l'instant qu'au tableau `Eignenvalues` qui reprend les valeurs propres, c'est-à-dire, la part de variance sur les axes de l'ACP globale réalisée. Nous voyons qu'une variance cumulée de 74% (`Cumulative % of var.`) est représentée sur les deux premiers axes `Dim.1` et `Dim.2`. Le graphe des éboulis nous représente la partition de la variance sur les différents axes comme pour l'ACP :
+
+```{r}
+chart$scree(mar_mfa, fill = "cornsilk")
+```
+
+Ici, on voit très clairement que deux axes suffisent. La suite de l'analyse se fait à peu près comme une ACP, mais des données et graphes supplémentaires nous permet d'interpréter les groupes de variables les uns par rapport aux autres. Le graphique des variables s'obtient comme pour l'ACP avec `chart$loadings()`. Il est ici plus encombré car nous avons 28 variables. La direction des différents vecteurs par rapport aux dimensions de l'AFM et entre eux nous indique la corrélation directe (même sens), inverse (opposition), ou l'absence de corrélation (vecteurs orthogonaux). Ce graphique permet aussi d'orienter le plan de l'AFM pour nos graphiques ultérieurs.
+
+```{r}
+chart$loadings(mar_mfa, choices = c(1, 2))
+```
+
+Toutes les variables environnementales sont très bien représentées dans le premier plan de l'AFM (normes quasiment de un). Nous observons une corrélation inverse entre la température (en bas à gauche du premier plan de l'AFM) et la fluorescence (qui pointe en haut à droite du plan). La salinité et la densité sont corrélées positivement entre elles, mais ne le sont pas avec les deux autres variables environnementales. Les salinités et densités élevées sont en bas à droite sur le plan de l'AFM.
+
+Pour le plancton, nous avons pas mal de choses car plusieurs vecteurs ont une norme importante (nous ignorons les autres, trop mal représentés dans le premier plan de l'AFM). Il faut pointer l'opposition entre des groupes comme GasteropodsLarvae, EchinodermLarvae, Cladocerans et Pteropods qui pointent vers la gauche, et les copépodes (Calanus, Clausocalanus, CopepoditsX, etc.) qui pointent vers la droite. Le découpage selon le second axe pour le plancton est moins net.
+
+D'autre part, les variables environnementales pour lesquelles deux dimensions fortes se dégagent sont placées en oblique par rapport à la dimension forte du plancton sur Dim 1. cela signifie que les deux dimensions environnementales sont partiellement corrélées avec la présence de ces groupes planctoniques.
+
+L'AFM est en fait un compromis réalisé entre des analyses indépendantes faites sur chaque groupe. Le graphique suivant montre comment ce compromis a été construit :
+
+```{r}
+chart$axes(mar_mfa, choices = c(1, 2))
+```
+
+Ce graphique est similaire au précédent, si ce n'est qu'au lieu de projeter les variables initiales dans le plan de l'AFM, il projette les composantes principales des différentes ACP séparées dans ce même plan. Il montre comment un *compromis* entre les différentes ACP est réalisé dans l'AFM globale. Ici, nous voyons que ce compromis est relativement proche de l'ACP plancton (Dim.1 et Dim.2 plancton en vert pointant dans la même direction que les axes de l'AFM). Nous voyons aussi que les deux premières dimensions de l'ACP environnement (Dim.1 et Dim.2 environnement en rouge) pointent en oblique par rapport à ces mêmes axes. La variable supplémentaire zone est également projetée, mais elle est moins corrélée avec les autres axes (sauf sa Dim. 5 avec l'axe 1).
+
+Tout comme pour l'ACP, nous pouvons maintenant interpréter le graphique dans l'espace des individus, normalement avec `chart$scores()`.
+
+```{r}
+chart$scores(mar_mfa, choices = c(1, 2))
+```
+
+Cependant, nous pouvons aussi profiter de la variable supplémentaire zone pour colorer les points en fonction des masses d'eaux et représenter des ellipses pour chaque masse d'eau sur le graphique. La variante avec ces ellipses se réalise avec `chart$ellipses()` et il est plus clair dans pareil cas.
+
+```{r}
+chart$ellipses(mar_mfa, choices = c(1, 2), keepvar = "Zone")
+```
+
+Les différentes zones sont bien individualisées, à l'exception de :
+
+-   Certaines stations en bordure de zones (par exemple, la 16 est dans la zone de convergence1 sur le graphique alors qu'elle est libellée comme zone périphérique). La dynamique des masses d'eaux est complexe autour d'une zone frontale comme ici. Il y a des turbulences, et les frontières ne sont toujours très nettes. Ce graphique propose clairement un découpage légèrement différent... intéressant !
+
+-   La zone de divergence2 n'est pas fondamentalement différente de la zone centrale.
+
+Notez qu'on a une progression le long du transect de la gauche (Nice) vers le centre, puis vers le haut à droite (le front) et puis vers le bas à droite (Calvi).
+
+Si on interprète ce graphique des individus en fonction de l'orientation donnée sur base des variables, on peut dire que :
+
+-   Nice (zone périphérique) s'individualise très fort du reste, et c'est le plancton qui explique essentiellement cette différence avec les groupes identifiés tirant vers la gauche (GasteropodsLarvae, EchinodermLarvae, Cladocerans et Pteropods). Nice est aussi à une température et fluorescence moyenne.
+
+-   Toutes les autres zones sont caractérisées par une communauté planctonique différente de Nice, mais homogène, avec la zone divergente1 qui est logiquement intermédiaire (zone de mélange des masses d'eaux périphérique et frontale).
+
+-   La zone frontale est caractérisée par la température la plus basse et la fluorescence la plus élevée alors que la salinité est moyenne. C'est logique : on a une remontée d'eaux froides des profondeurs riches en nutriments que le phytoplancton utilise (fluorescence élevée signifie phytoplancton élevé).
+
+-   La zone centrale en Corse à Calvi est caractérisée par la salinité la plus élevée, une température élevée et une fluorescence basse, caractéristiques d'une zone oligothrophe. Comme nous l'avons déjà noté, la communauté planctonique est similaire à ce qu'on rencontre au large au milieu du transect, et elle tranche sensiblement avec celle rencontrée du côté niçois.
+
+Revenons sur la façon dans l'AFM est construite (le fameux "compromis"), et son interprétation par rapport aux masses d'eaux. Le graphique suivant montre les relations entre les groupes.
+
+```{r}
+chart$groups(mar_mfa, choices = c(1, 2))
+```
+
+Ce graphique représente les groupes proches des axes dont ils sont responsables dans la structure générale de l'AFM. Nous voyons ici plancton proche de l'axe 1. Part contre, environnement est bien représenté (car il est loin du centre), mais est entre l'axe 1 et l'axes 2. Nous avons déjà noté cela précédemment.
+
+La variable supplémentaire zone est aussi représentée à proximité de la structure qui lui correspond le mieux. Nous voyons que zone est plus proche d'environnement, ce qui signifie que les masses d'eau sont plutôt structurées en rapport avec les variables environnementales qu'en rapport avec les communautés planctoniques.
+
+### AFM avec données mixtes
+
+Jusqu'ici, nous avons réalisé une AFM avec uniquement des données quantitatives, mais l'AFM peut aussi traiter des données qualitatives, sous forme de tableaux de contingence à double entrée, ou sous forme de variables facteurs. Nous allons tester cette variante sans sortir de notre exemple du plancton méditerranéen. En effet, le tableau plancton peut *aussi* être considéré comme un tableau de contingence à double entrée. Il nous suffit de changer le type de **cnum** à **cnt** (pour l'analyse des fréquences) dans la formule pour traiter à présent le plancton sous la forme d'une AFC dans `mar_mfa2` :
+
+```{r}
+mar_mfa2 <- mfa(data = mar,
+  ~ 4*std %as% environment + 24*cnt %as% plancton - 1*fct %as% zone)
+```
+
+Rappelons-nous que l'AFC se ramène à une étape de son analyse à une ACP. C'est comme cela qu'il est possible de l'introduire dans l'AFM : à partir de l'étape ACP, les pondérations sont calculées et ajustées, et ensuite, une ACP globale est réalisée en la mélangeant avec les autres ACP.
+
+Au lieu d'imprimer tout à l'aide de `summary()`, si nous souhaitons seulement les premières valeurs propres, nous pouvons aussi les extraire de l'objet comme ceci :
+
+```{r}
+head(mar_mfa2$eig)
+```
+
+Ici, les deux premiers axes comptent pour 74,6% de variance cumulée. Le graphe des éboulis confirme que deux axes suffisent :
+
+```{r}
+chart$scree(mar_mfa2, fill = "cornsilk")
+```
+
+Le graphique des variables ne montre plus que celles relatives à l'ACP, donc seulement le groupe environnement. Les conclusions à leur sujet sont les mêmes, mais attention, le premier plan de la nouvelle AFM se présente en miroir haut-bas par rapport à notre première analyse[^08-afm-big-data-3].
+
+[^08-afm-big-data-3]: Les ACP sont définies au signe près. or une inversion de signe dans une dimension a pour effet de faire apparaître les graphiques en miroir.
+
+```{r}
+chart$loadings(mar_mfa2, choices = c(1, 2))
+```
+
+```{r}
+chart$axes(mar_mfa2, choices = c(1, 2))
+```
+
+Les conclusions sont similaires sur les axes. Voyons maintenant l'espace des individus, toujours avec les couleurs et les ellipses par zones :
+
+```{r}
+chart$ellipses(mar_mfa2, choices = c(1, 2), keepvar = "Zone")
+```
+
+Encore une fois ici, le résultat est sensiblement le même (gardez à l'esprit que ce graphique est la visualisation en miroir haut-bas par rapport à l'analyse précédente).
+
+Les groupes montrent toujours le groupe zone plus proche d'environnement que de plancton.
+
+```{r}
+chart$groups(mar_mfa2, choices = c(1,2))
+```
+
+La partie AFC de l'analyse est accessible via `chart$frequences()` :
+
+```{r}
+#Check this! chart$frequences(mar_mfa2, choices = c(1, 2))
+```
+
+Ici aussi les quatre classes de plancton `EchinodermLarvae`, `GasteropodsLarvae`, `Cladocerans` et `Pteropods` s'individualisent à gauche, contre tous les autres à droite. Également les stations proches de Nice se retrouvent à la gauche, et toutes les autres à droite.
+
+```{block2, type='note'}
+Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comptage exhaustif d'espèces ou de classes taxonomiques par station, les deux sont envisageables) ne donne pas de résultats franchement différents ici. Il n'en est pas forcément toujours le cas. Veuillez à bien choisir vos types de variables dans l'AFM.
+```
+
+##### Pour en savoir plus {.unnumbered}
+
+-   Des [slides](http://factominer.free.fr/more/tutorial_2010_MFA.pdf) (en anglais) qui détaillent les calculs sous-jacents à l'AFM, ainsi que d'autres calculs non abordés ici (le RV, les points partiels, ...),
+
+-   Une [vidéo d'introduction à l'AFM](https://www.youtube.com/watch?v=1U-s8u1rcpo) en français (8:37, première partie d'une série de 4 vidéos),
+
+-   La [résolution de l'exemple sur les vins de Loire](http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/116-mfa-multiple-factor-analysis-in-r-essentials/) présenté dans la vidéo ci-dessus dans R (en anglais).
+
+-   Le site de [FactoMineR](http://factominer.free.fr/index.html) qui implémente la fonction `MFA()` sur laquelle notre analyse se base,
+
+-   Un exemple d'[application en biologie avec des données de génomique](https://link.springer.com/article/10.1186/s13059-017-1362-4) faisant intervenir une AFM,
+
+-   [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivariées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
+
+##### À vous de jouer ! {.unnumbered}
+
+`r learnr("B08La_mfa", title = "Analyse factorielle multiple", toc = "Analyse factorielle multiple")`
+
+```{r assign_B08Ia_mfa, echo=FALSE, results='asis'}
+if (exists("assignment"))
+  assignment("B08Ia_mfa", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B08Ia_mfa",
+    course.ids = c(
+      'S-BIOG-061' = !"B08Ia_{YY}M_mfa", 
+      'S-BIOG-937-958-959' = !"B08Ia_{YY}C_mfa"),
+    course.urls = c(
+      'S-BIOG-061' = "https://classroom.github.com/a/...", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    course.starts = c(
+      'S-BIOG-061' = !"{W[28]+1} 15:00:00"),
+    course.ends = c(
+      'S-BIOG-061' = !"{W[29]+5} 23:59:59"),
+    term = "Q2", level = 3,
+    toc = "AFM sur oiseaux alpins")
+```
+
+**Continuez votre projet par groupe de quatre sur l'étude de la rivière Doubs.**
+
+```{r assign_B07Ga_doubs_II, echo=FALSE, results='asis'}
+if (exists("assignment2"))
+  assignment2("B07Ga_doubs", part = "II",
+    url = "https://github.com/BioDataScience-Course/B07Ga_doubs",
+    course.ids = c(
+      'S-BIOG-061' = !"B07Ga_{YY}M_doubs", 
+      'S-BIOG-937-958-959' = !"B07Ga_{YY}C_doubs"),
+    course.urls = c(
+      'S-BIOG-061' = "https://classroom.github.com/a/...", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
+    course.starts = c(
+      'S-BIOG-061' = !"{W[26]+1} 08:00:00"),
+    course.ends = c(
+      'S-BIOG-061' = !"{W[37]+5} 23:59:59"),
+    term = "Q2", level = 4, n = 4,
+    toc = "Étude écologique sur le Doubs (II)")
+```
+
+## Big data
+
+TODO...
+
+## Récapitulatif des exercices
+
+Ce module 8 vous a permis de découvrir l'AFM, et de traiter des jeux de données volumineux au mieux. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
+
+`r show_ex_toc()`
+
+##### Progression {.unnumbered}
+
+`r launch_report("08", height = 800)`

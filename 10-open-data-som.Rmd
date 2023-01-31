@@ -1,18 +1,188 @@
-# SOM & indices de diversité {#som-div}
+# Données ouvertes & SOM {#open-data-som}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
-SciViews::R
+SciViews::R("explore")
 ```
 
 ##### Objectifs {.unnumbered}
 
--   Être capable de créer des cartes auto-adaptatives ou SOM, de les interpréter et de les utiliser comme autre technique de classification.
+-   Se sensibiliser aux données ouvertes : quand et pourquoi rendre ses données ouvertes ? Comment le faire correctement (format, métadonnées, dictionnaire des données, licences, principe FAIR, DMP, ...)
 
--   Utiliser à bon escient les différents indices de biodiversité.
+-   Être capable de créer des cartes auto-adaptatives ou SOM, de les interpréter et de les utiliser comme autre technique de classification.
 
 ##### Prérequis {.unnumbered}
 
 TODO...
+
+## Données ouvertes
+
+L'*"Open Data"* ou données ouvertes est un phénomène en pleine expansion. Vous y serez certainement confrontés dans votre carrière. Autant bien comprendre de quoi il s'agit et rendre vos données accessibles et publiques de la meilleure façon qui soit. Cette dernière partie est une brève introduction en la matière, qui devrait vous permettre de bien démarrer.
+
+### Gestion des données
+
+Lors de la préparation d'une expérience, vous devez réfléchir à un plan d'expérience. Vous avez donc défini des protocoles d'expérience, le nombre de répliquas,... Vous devez cependant intégrer à votre réflexion, un plan de gestion de vos données. Dans ce plan, vous aurez à définir l'acquisition, la description ou encore le partage des données.
+
+#### Principe FAIR
+
+Pour assurer une gestion cohérente des données scientifiques, il faut respecter le plus possible l'acronyme en anglais **FAIR** : *Findable, Accessible, Interoperable, Reusable* [@Wilkinson2016].
+
+| Acronyme en anglais | Acronyme en français | Description                                                                                  |
+|---------------------|----------------------|----------------------------------------------------------------------------------------------|
+| *Findable*          | Facile à trouver     | Les données ont besoin d'un code unique et persistant pour les retrouver                     |
+| *Accessible*        | Accessible           | Les données et surtout les métadonnées avec une licence sont mises à disposition.            |
+| *Interoperable*     | Intéropérable        | Les données et les métadonnées doivent respecter les standards internationaux                |
+| *Reusable*          | Réutilisable         | Les données doivent être réutilisable grâce à des métadonnées riches et des licences claires |
+
+##### Facile à retrouver (*Findable*)
+
+Vos données et vos métadonnées détaillées doivent être facile à retrouver. Vous devez donc fournir un identifiant **unique et permanent**. Il existe de nombreux identifiants comme ISBN, ISSN, DOI, ...
+
+Dans le cadre de la recherche scientifique, Le Digital Object Identifier (*DOI*) est la méthode standardisée conseillée. Vous avez déjà été confronté à des DOI. Par exemple, le DOI suivant <https://doi.org/10.1038/sdata.2016.18> fait référence à l'article *The FAIR Guiding Principles for scientific data management and stewardship*. Ce code est unique et persistant. Ce code va toujours renvoyer vers cet article de la revue Scientific Data. Imaginons que la revue Scientific Data disparaissent, le DOI sera toujours associé à cet article. Ainsi, la publication pourra être retrouvée ailleurs sur Internet grâce à ce DOI.
+
+Le DOI ne couvre pas que les articles scientifiques, il est également utilisé pour les données. Par exemple, le DOI suivant <https://doi.org/10.5281/zenodo.3711592> fait référence au données intitulé. *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* publié par Zenodo. Nous reviendrons dans les sections suivantes sur [zenodo](https://zenodo.org).
+
+##### Accessible (*Accessible*)
+
+Les données et les métadonnées que vous collectez doivent de plus en plus souvent être rendue disponible. Certaines revues scientifiques requièrent la mise à disposition des données. Les recherches financées par des fonds publics (nationaux, Européen,...) requièrent également la mise à disposition des données. Les données ne doivent pas être disponible à tous. Par contre les métadonnées doivent l'être. Il est, de plus, important de préciser la procédure afin d'obtenir les données.
+
+Il parait presque logique et évident de mettre à disposition ces données afin d'en faire profiter la recherche académique dans son ensemble. La recherche va progresser plus rapidement si les chercheurs collaborent. Un scientifique seul dans son laboratoire ne peut pas espérer progresser plus rapidement que 20 scientifiques qui collaborent et utilisent les données.
+
+Il ne s'agit cependant pas de donner ces données sans aucune sécurité. En effet, il serait frustrant de travailler très dur sur un sujet précis et qu'un autre scientifique vole le fruit de ces nombreuses heures de travail et publie un article avant vous. Il existe une solution pour spécifier les droits d'utilisation de vos données. Vous devez associer une **licence** à vos données et métadonnées.
+
+Vous avez très certainement déjà entendu parlé des licences [Creative Commons](https://creativecommons.org). Il est de plus en plus courant de voir apparaître ce genre d'information sur des sites web comme [CC0](https://creativecommons.org/share-your-work/public-domain/cc0), [CC-by](https://creativecommons.org/licenses/by/4.0/), ou encore [CC-by-sa](https://creativecommons.org/licenses/by-sa/4.0/).
+
+Vous êtes peut être plus familié avec les logos ci-dessous :
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a>
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a>
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a>
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a>.
+
+**Que se cache-t-il derrière ces logos ? Nous allons détailler ensemble ces abréviations.** Nous pouvons résumer cela de manière simple en se posant deux questions :
+
+-   Souhaitez-vous autoriser le partage des adaptations de votre œuvre ?
+    -   Oui
+    -   Non
+    -   Oui, sous condition de partage dans les mêmes conditions.
+-   Autorisez-vous les utilisations commerciales de votre œuvre ?
+    -   Oui
+    -   Non
+
+Ces deux questions proviennent de l'outil mis à disposition sur le site Creative Commons <https://creativecommons.org/choose/> pour définir la licence la plus adaptée pour vous.
+
+Dans le cadre de la recherche, tout n'est pas si simple. Vous devez tenir compte l'avis de vos supérieurs hiérarchiques, de votre institution et de la ou des institutions qui financent le travail. La bonne pratique est donc de discuter avec l'ensemble des acteurs pour décider de la bonne licence à employer, *le plus tôt possible, c'est-à-dire, déjà lors de l'élaboration du projet de recherche*.
+
+Repartons de notre jeu de données sur la COVID-19 : [Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands](https://doi.org/10.5281/zenodo.3711592). Nous pouvons voir que l'auteur a décidé d'employer la licence
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a><br />Ce(tte) œuvre est mise à disposition selon les termes de la <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Licence Creative Commons Attribution 4.0 International</a>.
+
+Il est donc autorisé d'adapter l'œuvre et de l'utiliser à des fins commerciales. Il s'agit d'une licence très peu contraignantes. Il suffit simplement de créditer l'auteur de l'œuvre originale.
+
+Il existe également des licences plus spécifiques aux bases de données, de la moins contraignante à la plus contraignante [PDDL](https://opendatacommons.org/licenses/pddl/) , [ODC-by](https://opendatacommons.org/licenses/by/) et [ODbL](https://opendatacommons.org/licenses/odbl/)
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(123, height = 270, toc = "Choix des licenses")`
+
+##### Intéropérable (*Interoperable*)
+
+Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisable, compréhensible et *combinable avec d'autres données*. Le choix du format des données est également important Ce principe est difficile à mettre en place et requiert donc une réflexion approfondie.
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(124, height = 270, toc = "Choix du format des données")`
+
+##### Réutilisable (*Reusable*)
+
+Les données doivent autant que possible être associées à des métadonnées riches avec une licence claire afin de pouvoir être *réutilisées*, nous l'avons déjà vu.
+
+Vous avez certainement le sentiment que ces quatre principes se mélangent un peu. En effet, ils insistent avec des petites nuances sur des concepts particuliers.
+
+En Résumé :
+
+$$Données \ inutilisables = données \ seules$$
+
+$$Données \ utilisables = données + contexte$$
+
+Le contexte c'est :
+
+-   un code unique et persistant associé aux données et au contexte,
+-   une description du projet associée aux données,
+-   des métadonnées riches (y compris un dictionnaire des données[^10-open-data-som-1]),
+-   la licence associée aux données
+
+[^10-open-data-som-1]: Vous avez déjà rédigé un dictionnaire des données lorsque vous avez planifié vos mesures concernant la biométrie humaine l'an dernier au cours de science des données biologiques I.
+
+Dans le cadre de vos futures recherches, un outil comme Zenodo est très intéressant pour publier vos donnes sur l'Internet tout en suivant au mieux le principe **FAIR**.
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(125, height = 270, toc = "Principe FAIR")`
+
+#### DMP
+
+Afin de respecter ces principes **FAIR**, des outils ont été développés. Il s'agit des plans de gestion des données (ou Data Management Plan, **DMP**). L'Université de Mons dispose d'un [DMP](https://dmponline.be). Cet outil est partagé par l'ensemble des universités de Belgique.
+
+Lorsque vous allez concevoir un plan d'expérience, n'oubliez pas de concevoir votre plan de gestion des données en même temps. Voici une check-list pour un plan de gestion des données efficaces <http://www.dcc.ac.uk/sites/default/files/documents/resource/DMP_Checklist_2013.pdf>
+
+### Utilisation de données ouvertes
+
+Il existe de nombreux sites qui regroupent un ensemble de données ouvertes. Nous avons parlé précédemment de Zenodo mais de nombreuses bases de données sont également disponibles comme le [Portail européen de données](https://www.europeandataportal.eu/fr), [Portail belge de données](https://data.gov.be/fr), ...
+
+Afin de connaître la qualité des données voici une check-list très utile pour appréhender des données ouvertes. Vous devez être capable de trouver facilement :
+
+-   But des données
+-   Code unique et persistant des données
+-   Licence des données
+-   Format des données
+-   Qualité des données
+
+**A nouveau, vous vous rendez compte que nous revenons à notre principe FAIR expliqué plus haut.** Prenons notre exemple sur le *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* et appliquons notre check-list.
+
+-   Le but des données
+
+Une description des données est proposée. Le nom de l'auteur est spécifié. Il est également précisé la date de publication avec la version des données. Le 16 mars 2020, la version est `v2020.3.16`. Les données sont également associées à un dépôt GitHub qui les traitent : [J535D165/CoronaWatchNL](https://github.com/J535D165/CoronaWatchNL)
+
+-   Un code unique et persistant
+
+Ces données ont un DOI : [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3711592.svg)](https://doi.org/10.5281/zenodo.3711592)
+
+-   La licence
+
+Les données sont mise à disposition avec la licence [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode)
+
+-   le format
+
+Les données sont proposées sous le format `csv`. Ce format est un standard très employé. Il est à privilégier par rapport au format `.xls` ou `.xlsx`. Il est à la fois interopérable et réutilisable facilement.
+
+-   La qualité
+
+Ce dernier critère est le plus difficile à déterminer. Une première chose à vérifier concerne les métadonnées associées à chaque variable. Nous pouvons voir que l'auteur peut encore améliorer les métadonnées associées à ses données. Le nom des variables reste cependant tout à fait compréhensible.
+
+Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir très simplement cette check-list.
+
+##### Pour en savoir plus {.unnumbered}
+
+-   [Qu'est ce que les données ouvertes ?](https://www.europeandataportal.eu/fr/training/what-open-data)
+
+-   [Aide sur l'interprétation et le choix des licences](https://www.europeandataportal.eu/en/training/licensing-assistant)
+
+-   [Choisir la bonne licence Open Source](https://choosealicense.com)
+
+-   [Guide sur les licences Open Data](https://theodi.org/article/publishers-guide-to-open-data-licensing/)
+
+-   Des stockages spécifiques ont été mis en place pour les données scientifiques comme [Zenodo (dépot des données hebergé par le CERN)](https://zenodo.org), [Dataverse](https://dataverse.org), ou encore [Figshare](https://figshare.com)
+
+-   [Data Management Plan](https://www.unil.ch/openscience/fr/home/menuinst/open-research-data/gerer-ses-donnees-de-recherche/data-management-plan-dmp.html)
+
+-   Le [Principe FAIR](https://ogsl.ca/fr/principes-fair) expliqué par l'Observatoire Global du Saint-Laurent
+
+-   Article scientifique sur le FAIR plan : [The FAIR Guiding Principles for scientific data management and stewardship](https://www.nature.com/articles/sdata201618)
+
+-   L'outil institutionnel de l'Université de Mons afin de réaliser un plan de gestion de données est disponible [DMPonline.be](https://dmponline.be)
 
 ## Cartes auto-adaptatives (SOM)
 
@@ -163,10 +333,10 @@ plot(zoo_som, type = "codes", codeRendering = "segments")
 Ce graphique est riche en informations. Nous voyons que :
 
 -   les très grands individus (`ecd`, `area`, `perimeter`, etc.), soit les segments verts sont en haut à gauche de la carte et les petits sont à droite,
--   les individus opaques (variables `mean`, `mode`, `max`, etc.[^10-som-div-1]), soit des segments dans les tons jaunes sont en haut à droite. Les organismes plus transparents sont en bas à gauche,
+-   les individus opaques (variables `mean`, `mode`, `max`, etc.[^10-open-data-som-2]), soit des segments dans les tons jaunes sont en haut à droite. Les organismes plus transparents sont en bas à gauche,
 -   au delà de ces deux principaux critères qui se dégagement prioritairement, les aspects de forme (segments rose-rouges) se retrouvent exprimés moins nettement le long de gradients. La `circularity` mesure la silhouette plus ou moins arrondie des items (sa valeur est d'autant plus élevée que la forme se rapproche d'un cercle). Les organismes circulaires se retrouvent dans le haut de la carte. L'`elongation` et l'`aspect` mesurent l'allongement de la particule et se retrouvent plutôt exprimés positivement dans le bas de la carte.
 
-[^10-som-div-1]: Attention : la variable `transparency`, contrairement à ce que son nom pourrait suggérer n'est pas une mesure de la transparence de l'objet, mais de l'aspect plus ou moins régulier et lisse de sa silhouette.
+[^10-open-data-som-2]: Attention : la variable `transparency`, contrairement à ce que son nom pourrait suggérer n'est pas une mesure de la transparence de l'objet, mais de l'aspect plus ou moins régulier et lisse de sa silhouette.
 
 Nous pouvons donc **orienter** notre carte SOM en indiquant l'information relative aux variables. Lorsque le nombre de variables est élevé ou relativement élevé comme ici, cela devient néanmoins difficile à lire. Il est aussi possible de colorer les cartes en fonction d'une et une seule variable pour en faciliter la lecture à l'aide de `type = "property"`. Voici quelques exemples (notez la façon de diviser une page graphique en lignes et colonnes à l'aide de `par(mfrow = ))` en graphiques R de base, ensuite une boucle `for` réalise les six graphiques l'un après l'autre) :
 
@@ -566,9 +736,9 @@ groupes <- predict(zoo_som_cah, h = 10.5)
 groupes
 ```
 
-Visualisons ce découpage sur la carte SOM (l'argument `bgcol =` colorie le fond des cellules en fonction des groupes[^10-som-div-2], et `add.cluster.boudaries()` individualise des zones sur la carte en fonction du regroupement choisi).
+Visualisons ce découpage sur la carte SOM (l'argument `bgcol =` colorie le fond des cellules en fonction des groupes[^10-open-data-som-3], et `add.cluster.boudaries()` individualise des zones sur la carte en fonction du regroupement choisi).
 
-[^10-som-div-2]: Nous avons choisi ici encore une autre palette de couleurs provenant du package {RColorBrewer}, voir [ici](http://www.sthda.com/french/wiki/couleurs-dans-r).
+[^10-open-data-som-3]: Nous avons choisi ici encore une autre palette de couleurs provenant du package {RColorBrewer}, voir [ici](http://www.sthda.com/french/wiki/couleurs-dans-r).
 
 ```{r}
 plot(zoo_som, type = "mapping", pch = ".", main = "SOM zoo, six groupes",
@@ -618,10 +788,10 @@ if (exists("assignment"))
 
 ## Récapitulatif des exercices
 
-Ce dixième module vous a permis de comprendre les cartes auto-adaptatives et les indices de biodiversité. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
+Ce dixième module vous a permis de comprendre ce que sont des données ouvertes et comment partager ses propres données. Vous avez aussi appris à réaliser des cartes auto-adaptatives. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
 
 `r show_ex_toc()`
 
 ##### Progression {.unnumbered}
 
-`r launch_report("06", height = 800)`
+`r launch_report("10", height = 800)`
