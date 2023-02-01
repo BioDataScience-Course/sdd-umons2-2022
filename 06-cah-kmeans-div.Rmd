@@ -1,6 +1,6 @@
 # (PART) SDD II: analyse {.unnumbered}
 
-# Classification hiérarchique, k-moyennes & indices de diversité {#hierarchique}
+# Classification & indices {#cah-kmeans-div}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 #SciViews::R("explore")
@@ -17,6 +17,8 @@
 -   Maîtriser la technique de classification par les k-moyennes comme alternative à la CAH pour les gros jeux de données.
 
 -   Appliquer ces techniques pour effectuer un regroupement pertinent à partir d'un jeu de données biologique.
+
+-   Découvrir les indices de diversité biologique.
 
 ##### Prérequis {.unnumbered}
 

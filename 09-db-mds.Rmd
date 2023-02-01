@@ -12,7 +12,7 @@ SciViews::R("explore")
 
 ##### Prérequis {.unnumbered}
 
-Ces techniques étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(hierarchique) doit être assimilé avant de s'attaquer au présent module.
+Ces techniques étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(cah-kmeans-div) doit être assimilé avant de s'attaquer au présent module.
 
 ## Accès aux bases de données
 
