@@ -266,15 +266,13 @@ if (exists("assignment"))
   assignment("B08Ia_mfa", part = NULL,
     url = "https://github.com/BioDataScience-Course/B08Ia_mfa",
     course.ids = c(
-      'S-BIOG-061' = !"B08Ia_{YY}M_mfa", 
-      'S-BIOG-937-958-959' = !"B08Ia_{YY}C_mfa"),
+      'S-BIOG-061' = !"B08Ia_{YY}M_mfa"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/...", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-061' = "https://classroom.github.com/a/..."),
     course.starts = c(
-      'S-BIOG-061' = !"{W[28]+1} 15:00:00"),
+      'S-BIOG-061' = !"{W[26]+1} 13:00:00"),
     course.ends = c(
-      'S-BIOG-061' = !"{W[29]+5} 23:59:59"),
+      'S-BIOG-061' = !"{W[27]+1} 23:59:59"),
     term = "Q2", level = 3,
     toc = "AFM sur oiseaux alpins")
 ```
@@ -286,13 +284,11 @@ if (exists("assignment2"))
   assignment2("B07Ga_doubs", part = "II",
     url = "https://github.com/BioDataScience-Course/B07Ga_doubs",
     course.ids = c(
-      'S-BIOG-061' = !"B07Ga_{YY}M_doubs", 
-      'S-BIOG-937-958-959' = !"B07Ga_{YY}C_doubs"),
+      'S-BIOG-061' = !"B07Ga_{YY}M_doubs"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/...", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
+      'S-BIOG-061' = "https://classroom.github.com/a/..."),
     course.starts = c(
-      'S-BIOG-061' = !"{W[26]+1} 08:00:00"),
+      'S-BIOG-061' = !"{W[26]+1} 13:00:00"),
     course.ends = c(
       'S-BIOG-061' = !"{W[37]+5} 23:59:59"),
     term = "Q2", level = 4, n = 4,
@@ -302,6 +298,10 @@ if (exists("assignment2"))
 ## Big data
 
 TODO...
+
+##### À vous de jouer ! {.unnumbered}
+
+`r learnr("B08Lb_bigd", title = "Données volumineuses (big data)", toc = "onnées volumineuses (big data)")`
 
 ## Récapitulatif des exercices
 

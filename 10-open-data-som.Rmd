@@ -766,24 +766,22 @@ Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adap
 
 ##### À vous de jouer ! {.unnumbered}
 
-`r learnr("B06Lc_som", title = "Ordination et regroupement grâce aux cartes auto-adaptatives", toc = "Ordination et regroupement grâce aux cartes auto-adaptatives")`
+`r learnr("B10La_som", title = "Ordination et regroupement grâce aux cartes auto-adaptatives", toc = "Ordination et regroupement grâce aux cartes auto-adaptatives")`
 
-```{r assign_B06Ia_fish_market_III, echo=FALSE, results='asis'}
-if (exists("assignment"))
-  assignment("B06Ia_fish_market", part = "III",
-    url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
+```{r assign_B10Ga_open_data, echo=FALSE, results='asis'}
+if (exists("assignment2"))
+  assignment2("B10Ga_open_data", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B10Ga_open_data",
     course.ids = c(
-      'S-BIOG-061' = !"B06Ia_{YY}M_fish_market",
-      'S-BIOG-937-958-959' = !"B06Ia_{YY}C_fish_market"),
+      'S-BIOG-061' = !"B10Ga_{YY}M_open_data"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/...",
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-061' = "https://classroom.github.com/a/..."),
     course.starts = c(
-      'S-BIOG-061' = !"{W[24]+1} 15:00:00"),
+      'S-BIOG-061' = !"{W[32]+1} 10:00:00"),
     course.ends = c(
-      'S-BIOG-061' = !"{W[26]+1} 23:59:59"),
-    term = "Q2", level = 3,
-    toc = "Analyse multivarée sur 7 poissons (III)")
+      'S-BIOG-061' = !"{W[37]+5} 23:59:59"),
+    term = "Q2", level = 4, n = 4,
+    toc = "Étude libre d'un jeu de données ouvert")
 ```
 
 ## Récapitulatif des exercices

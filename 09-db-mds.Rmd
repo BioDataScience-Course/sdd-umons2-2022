@@ -238,6 +238,10 @@ dbplyr::translate_sql(mean(x, trim = TRUE)) # Argument trim= non reconnu
 
 Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler des bases de données avec R et RStudio. En pratique, revenez sur cette section, et approfondissez vos connaissances via les ressources proposées ci-dessous lorsque vous serez confrontés "en vrai" à des données présentées dans une base de données relationnelle.
 
+##### À vous de jouer ! {.unnumbered}
+
+`r learnr("B09La_db", title = "Bases de données et data model", toc = "Bases de données et data model")`
+
 ##### Pour en savoir plus {.unnumbered}
 
 -   [RStudio et bases de données](https://db.rstudio.com) : tout un site web dédié à l'accès aux bases de données depuis RStudio (en anglais).
@@ -253,28 +257,6 @@ Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler
 -   Un autre [tutorial complet sur SQL](http://blog.paumard.org/cours/sql/). Remarquez qu'il en existe beaucoup. Faites une recherche via Google et choisissez le tutoriel qui vous plaît le plus.
 
 -   Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
-
-##### À vous de jouer ! {.unnumbered}
-
-**Ce projet est un travail par groupe de quatre personnes et se poursuivra au module 8.**
-
-```{r assign_B07Ga_doubs_I, echo=FALSE, results='asis'}
-if (exists("assignment2"))
-  assignment2("B07Ga_doubs", part = "I",
-    url = "https://github.com/BioDataScience-Course/B07Ga_doubs",
-    course.ids = c(
-      'S-BIOG-061' = !"B07Ga_{YY}M_doubs", 
-      'S-BIOG-937-958-959' = !"B07Ga_{YY}C_doubs"),
-    course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/...", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
-    course.starts = c(
-      'S-BIOG-061' = !"{W[26]+1} 08:00:00"),
-    course.ends = c(
-      'S-BIOG-061' = !"{W[37]+5} 23:59:59"),
-    term = "Q2", level = 4, n = 4,
-    toc = "Étude écologique sur le Doubs (I)")
-```
 
 ## Positionnement multidimensionnel (MDS)
 
@@ -720,24 +702,22 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 ##### À vous de jouer ! {.unnumbered}
 
-`r learnr("B06Lb_mds", title = "Positionnement multidimensionnel (MDS)", toc = "Positionnement multidimensionnel (MDS)")`
+`r learnr("B09Lb_mds", title = "Positionnement multidimensionnel (MDS)", toc = "Positionnement multidimensionnel (MDS)")`
 
-```{r assign_B06Ia_fish_market_II, echo=FALSE, results='asis'}
+```{r assign_B09Ia_data_mds, echo=FALSE, results='asis'}
 if (exists("assignment"))
-  assignment("B06Ia_fish_market", part = "II",
-    url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
+  assignment("B09Ia_data_mds", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B09Ia_data_mds",
     course.ids = c(
-      'S-BIOG-061' = !"B06Ia_{YY}M_fish_market", 
-      'S-BIOG-937-958-959' = !"B06Ia_{YY}C_fish_market"),
+      'S-BIOG-061' = !"B09Ia_{YY}M_data_mds"),
     course.urls = c(
-      'S-BIOG-061' = "https://classroom.github.com/a/...", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-061' = "https://classroom.github.com/a/..."),
     course.starts = c(
-      'S-BIOG-061' = !"{W[24]+1} 15:00:00"),
+      'S-BIOG-061' = !"{W[28]+1} 13:00:00"),
     course.ends = c(
-      'S-BIOG-061' = !"{W[26]+1} 23:59:59"),
+      'S-BIOG-061' = !"{W[29]+1} 23:59:59"),
     term = "Q2", level = 3,
-    toc = "Analyse multivarée sur 7 poissons (II)")
+    toc = "Bases de données et analyse MDS")
 ```
 
 ## Récapitulatif des exercices
