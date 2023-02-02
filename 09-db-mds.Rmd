@@ -6,17 +6,19 @@ SciViews::R("explore")
 
 ##### Objectifs {.unnumbered}
 
--   Comprendre la représentation d'une matrice de distances sur un carte (ordination) et la réduction de dimensions via le positionnement multidimensionnel MDS.
+-   Aller plus loin dans la gestion de gros jeux de données et de données réparties en plusieurs tableaux avec les bases de données relationnelles, la normalisation des données et les modèles de données.
 
--   Être capable de créer des cartes auto-adaptatives ou SOM, de les interpréter et de les utiliser comme autre technique de classification.
+-   Comprendre la représentation d'une matrice de distances sur un carte (ordination) et la réduction de dimensions via le positionnement multidimensionnel MDS.
 
 ##### Prérequis {.unnumbered}
 
-Ces techniques étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(cah-kmeans-div) doit être assimilé avant de s'attaquer au présent module.
+La section relative aux bases de données fait suite aux notions vues dans le cadre du traitement de données volumineuses vu à la fin du module 8 et qui doit être donc parfaitement compris et assimilé.
+
+Les techniques MDS étudiées à la fin de ce module étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(cah-kmeans-div) doit être assimilé avant de s'attaquer au présent module.
 
 ## Accès aux bases de données
 
-Puisque nous traitons de jeux de données multivariés potentiellement très gros, il devient important de pouvoir accéder aux données stockées de manière plus structurée que dans un fichier au format CSV ou Excel, par exemple. Les bases de données, et notamment les **bases de données relationnelles**, sont prévue pour stocker de grandes quantités de données de manière structurée et pour pouvoir en extraire la partie qui nous intéresse à l'aide de **requêtes**. Nous allons ici étudier les rudiments indispensables pour nous permettre de réaliser de telles requêtes depuis R.
+Puisque nous traitons de jeux de données multivariés potentiellement très gros, il devient important de pouvoir accéder aux données stockées de manière plus structurée que dans un fichier au format CSV ou Excel, par exemple. Les bases de données, et notamment les **bases de données relationnelles**, sont prévues pour stocker de grandes quantités de données de manière structurée et pour pouvoir en extraire la partie qui nous intéresse à l'aide de **requêtes**. Nous allons ici étudier les rudiments indispensables pour nous permettre de réaliser de telles requêtes depuis R.
 
 ```{block2, type='note'}
 SQL est un langage dédié aux requêtes et la manipulation de bases de données relationnelles, constituées de tables (équivalent à des tableaux cas par variables en statistiques) reliées entre elles par une ou plusieurs *clés*. Par exemple, le champ `auteur` d'une liste de livres dans la table `Livres` renvoie (est lié à) vers le champs `nom` d'une autre table `Ecrivains` qui fournit plus de détails sur chaque auteur de livres.
@@ -26,9 +28,9 @@ Il existe différents moteurs de bases de données relationnelles. Les plus cour
 
 ### Installation de SQLite
 
-Dans la SciViews Box, les drivers SQLite pour la version 2 et la version 3 sont préinstallés. Sous R, vous pouvez utiliser le package `RSQLite` pour accéder à des bases de données qui sont de simples fichiers sur le disque. Cependant, l'onglet **Connections** dans RStudio n'est pas compatible avec `RSQLite`. Il fonctionne, par contre avec les **drivers odbc** qui sont un format commun de drivers pour différentes bases de donnes dont SQLite. Les drivers SQLite, MySQL et PosgreSQL sont préinstallés dans la SciViews Box. Nous utiliserons également une interfaces graphique vers SQLite : **DB Browser for SQLite** disponible depuis le menu principal `Applications`, dans la section `Development`.
+Dans la SciViews Box, les drivers SQLite pour la version 2 et la version 3 sont préinstallés. Sous R, vous pouvez utiliser le package `RSQLite` pour accéder à des bases de données qui sont de simples fichiers sur le disque. Cependant, l'onglet **Connections** dans RStudio n'est pas compatible avec `RSQLite`. Il fonctionne, par contre avec les **drivers odbc** qui sont un format commun de drivers pour différentes bases de donnes dont SQLite. Les drivers SQLite, MySQL et PosgreSQL sont préinstallés dans la SciViews Box. Nous utiliserons également une interface graphique vers SQLite : **DB Browser for SQLite** disponible depuis le menu principal `Applications`, dans la section `Development`.
 
-![](images/sdd2_07/sqlite-pgm1.png)
+![](images/sdd2_09/sqlite-pgm1.png)
 
 ### Base de données en mémoire
 
@@ -109,9 +111,9 @@ dbListTables(con)
 (setosa <- dbGetQuery(con, "SELECT * FROM iris WHERE Species is 'setosa'"))
 ```
 
-La dernière instruction nécessite quelques explications supplémentaires. La fonction `dbGetQuery()` envoie une requête sur la base en langage SQL. Ici, nous indiquons les colonnes que nous souhaitons récupérer avec le mot clé `SELECT`. L'utilisation de `*` indique que nous voulons toutes les colonnes, sinon, on nomme celles que l'on veut à la place. Ensuite, le mot clé `FROM` nous indique depuis quelle table, ici celle nommée `iris`, et enfin, le mot clé `WHERE` introduit une expression de condition qui va *filtrer* les lignes de la table à récupérer, par exemple `'Sepal.Length' > 1.5` ou comme ici `Species is 'setosa'`.
+La dernière instruction nécessite quelques explications supplémentaires. La fonction `dbGetQuery()` envoie une requête sur la base en langage SQL. Ici, nous indiquons les colonnes que nous souhaitons récupérer avec le mot clé `SELECT`. L'utilisation de `*` indique que nous voulons toutes les colonnes, sinon on nomme celles que l'on veut à la place. Ensuite, le mot clé `FROM` nous indique depuis quelle table, ici celle nommée `iris`, et enfin, le mot clé `WHERE` introduit une expression de condition qui va *filtrer* les lignes de la table à récupérer, par exemple `'Sepal.Length' > 1.5` ou comme ici `Species is 'setosa'`.
 
-Il est également possible d'effectuer une requête SQL directement dans un chunk. A la place d'indiquer ```` ```{r} ````, on indiquera ```` ```{sql, connection=con} ````, et nous pourrons alors directement indiquer la requête SQL dans le chunk :
+Il est également possible d'effectuer une requête SQL directement dans un chunk. À la place d'indiquer ```` ```{r} ````, on indiquera ```` ```{sql, connection=con} ````, et nous pourrons alors directement indiquer la requête SQL dans le chunk :
 
 ```{sql setosa-direct, connection=con}
 SELECT * FROM iris WHERE Species is 'setosa'
@@ -140,11 +142,11 @@ dbDisconnect(con)
 
 RStudio facilite l'utilisation de bases de données à condition d'utiliser un driver "compatible". Nous avons installé un tel driver ODBC pour les bases de données SQLite. Pour nous connecter à `/home/sv/shared/database.sqlite` depuis RStudio, nous entrons dans l'onglet **Connections** et nous cliquons sur le bouton `New Connection`, ou nous cliquons sur la connexion correspondante si elle est déjà créée dans la liste.
 
-![](images/sdd2_07/sqlite-rstudio1.png)
+![](images/sdd2_09/sqlite-rstudio1.png)
 
 Pour créer une nouvelle connexion, sélectionnons **SQLite3**. Ensuite, nous rentrons `Database=/home/sv/shared/database.sqlite` comme paramètre dans la fenêtre suivante.
 
-![](images/sdd2_07/sqlite-rstudio2.png)
+![](images/sdd2_09/sqlite-rstudio2.png)
 
 Le bouton **Test** permet de vérifier que R/RStudio peut se connecter à cette base de données. Ensuite, dans **Connect from:**, vous pouvez choisir où vous voulez placer l'instruction de connexion. L'option `Clipboard` est intéressante. Elle place l'instruction dans le presse-papier et vous pouvez alors décider vous-même où la placer. Nous la placerons dans un chunk R dans notre notebook.
 
@@ -160,17 +162,17 @@ Une fois connecté, vous pouvez voir le contenu de la base de données dans l'on
 dbWriteTable(con, "mtcars", mtcars)
 ```
 
-A partir de ce moment, vous pouvez voir votre table `mtcars` (il faut peut être cliquer sur le bouton en forme de flèche qui se mord la queue pour rafraîchir l'affichage). Comme dans **Environnement**, si vous cliquez sur la flèche dans un rond bleu devant le nom de la table, vous pouvez voir les colonnes qu'elle contient. En cliquant sur l'icône tableau à droite, vous visualisez la table directement dans RStudio.
+À partir de ce moment, vous pouvez voir votre table `mtcars` (il faut peut-être cliquer sur le bouton en forme de flèche qui se mord la queue pour rafraîchir l'affichage). Comme dans **Environnement**, si vous cliquez sur la flèche dans un rond bleu devant le nom de la table, vous pouvez voir les colonnes qu'elle contient. En cliquant sur l'icône tableau à droite, vous visualisez la table directement dans RStudio.
 
-![](images/sdd2_07/sqlite-rstudio3.png)
+![](images/sdd2_09/sqlite-rstudio3.png)
 
-A part cela, vous travaillez avec cette base de données dans R en utilisant l'objet `con` comme d'habitude, et vous pouvez aussi utiliser directement des chunks sql.
+À part cela, vous travaillez avec cette base de données dans R en utilisant l'objet `con` comme d'habitude, et vous pouvez aussi utiliser directement des chunks sql.
 
 ### Utilisation de DB Browser
 
 Lancez **DB Browser**. Connectez-vous à `/home/sv/shared/database.sqlite` Vous avez un accès visuel à votre base de données. Explorez les différentes possibilités du logiciel.
 
-![DB Browser for SQLite](images/sdd2_07/sqlite-pgm2-dbbrowser.png)
+![DB Browser for SQLite](images/sdd2_09/sqlite-pgm2-dbbrowser.png)
 
 ### Utilisation de {dplyr}
 
@@ -236,7 +238,7 @@ dbplyr::translate_sql(plot(x)) #???
 dbplyr::translate_sql(mean(x, trim = TRUE)) # Argument trim= non reconnu
 ```
 
-Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler des bases de données avec R et RStudio. En pratique, revenez sur cette section, et approfondissez vos connaissances via les ressources proposées ci-dessous lorsque vous serez confrontés "en vrai" à des données présentées dans une base de données relationnelle.
+Voilà pour ce très rapide tour d'horizon de différentes façons de manipuler des bases de données avec R et RStudio. En pratique, revenez sur cette section, et approfondissez vos connaissances via les ressources proposées ci-dessous lorsque vous serez confrontés "en vrai" à des données présentées dans une base de données relationnelle.
 
 ##### À vous de jouer ! {.unnumbered}
 
@@ -250,27 +252,25 @@ Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler
 
 -   Une introduction des [requêtes SQL dans R](http://dept.stat.lsa.umich.edu/~jerrick/courses/stat701/notes/sql.html) un peu plus développée (en anglais).
 
--   Un [tutorial SQL](https://www.w3schools.com/sql/) avec des exercices (en anglais).
+-   Un [tutoriel SQL](https://www.w3schools.com/sql/) avec des exercices (en anglais).
 
 -   Un [cours en ligne sur SQL](https://fr.khanacademy.org/computing/computer-programming/sql/sql-basics/v/welcome-to-sql) par vidéos par la Kahn Academy (en anglais).
 
--   Un autre [tutorial complet sur SQL](http://blog.paumard.org/cours/sql/). Remarquez qu'il en existe beaucoup. Faites une recherche via Google et choisissez le tutoriel qui vous plaît le plus.
+-   Un autre [tutoriel complet sur SQL](http://blog.paumard.org/cours/sql/). Remarquez qu'il en existe beaucoup. Faites une recherche via Google et choisissez le tutoriel qui vous plaît le plus.
 
 -   Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
 
 ## Positionnement multidimensionnel (MDS)
 
-Le positionnement multidimensionnel, ou *multidimensional scaling* en anglais, d'où son acronyme fréquemment utilisé en français également : le MDS, est une autre façon de représenter clairement l'information contenue dans une matrice de distances. Ici, l'objectif n'est pas de **regrouper** ou de **classifier** les individus du tableau, mais de les **ordonner** sur un graphique en nuage de points en deux ou trois dimensions. Ce graphique s'appelle une "carte", et la technique qui la réalise est une **méthode d'ordination**.
-
-Au départ, nous avons *p* colonnes et *n* lignes dans le tableau cas par variables, c'est-à-dire, *p* variables quantitatives mesurées sur *n* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *n* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distances. Mais comment les représenter ? En effet, une représentation exacte ne peut se faire que dans un espace à *p* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement 2 ou 3, nous allons devoir "tordre" les données et accepter de perdre un peu d'information.
+Revenons à présent sur les techniques statistiques d'analyse de données multivariées. Le positionnement multidimensionnel, ou *multidimensional scaling* en anglais, d'où son acronyme fréquemment utilisé en français également : le MDS, est une façon de représenter clairement l'information contenue dans une matrice de distances. Au départ, nous avons *p* colonnes et *n* lignes dans le tableau cas par variables, c'est-à-dire, *p* variables quantitatives mesurées sur *n* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *n* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distance au module 6. Mais comment les représenter ? En effet, une représentation exacte ne peut se faire que dans un espace à *p* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement deux ou trois, nous allons devoir "tordre" les données tout en acceptant de perdre un peu d'information lors de cette transformation.
 
 `r img("sdd2_06/tenor.gif")`
 
-Ce que nous allons faire avec la MDS correspond exactement à cela : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions. C'est donc ce qu'on appelle une technique de **réduction de dimensions**. Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant :
+Ce que nous allons faire avec la MDS correspond exactement à cela : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions. C'est donc ce qu'on appelle une technique de **réduction de dimensions**. Il existe, en réalité, plusieurs techniques de MDS. Elles répondent toutes au schéma suivant :
 
--   A partir d'un tableau multivarié de *n* lignes et *p* colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici[^09-db-mds-1]).
+-   À partir d'un tableau multivarié de *n* lignes et *p* colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici[^09-db-mds-1]).
 -   Nous souhaitons représenter une carte (nuage de points) à *k* dimensions (*k* = 2, éventuellement *k* = 3) où les *n* individus seront placés de telle façon que les proximités exprimées par des valeurs faibles dans la matrice de dissimilarité soient respectées *autant que possible* entre tous les points.
--   Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une **fonction de coût**, encore appelée **fonction de stress** qui quantifie de combien nous avons dû tordre le réseau à *p* dimensions initial représentant les distances entre toutes les paires. C'est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.
+-   Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une **fonction de coût**, encore appelée **fonction de stress** qui quantifie de combien nous avons dû tordre le réseau à *p* dimensions initiales représentant les distances entre toutes les paires. C'est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réalisé et décider si la représentation est utilisable (pas trop tordue) ou non.
 -   Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résultat final peut varier d'une fois à l'autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.
 
 [^09-db-mds-1]: Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.
@@ -281,304 +281,65 @@ Nous vous épargnons ici les développements mathématiques qui mènent à la d�
 
 `r h5p(96, height = 270, toc = "Objectif du MDS")`
 
-### MDS simplifiée sous SciViews::R
+Dans R, il existe plus d'une dizaine de fonctions différentes pour réaliser le MDS. Afin de vous simplifier le travail et de pouvoir traiter votre MDS comme d'autres analyses similaires, nous vous proposons une interface simplifiée au travers de la fonction `mds()` qui est rendue disponible grâce à l'instruction suivante à utiliser systématiquement en tête de script ou de document R Markdown :
 
-Dans R, il existe plus d'une dizaine de fonctions différentes pour réaliser le MDS. Afin de vous simplifier le travail et de pouvoir traiter votre MDS comme d'autres analyses similaires nous vous proposons les fonctions supplémentaires suivante. **Ces fonctions sont à copier-coller en haut de vos scripts R, ou dans un chunk de "setup" à l'intérieur de vos documents R Markdown/Notebook.** Dérouler la section "voir le code" pour découvrir la définition de ces fonctions.
-
-```{r, class.source='hidden-code'}
-# mds for SciViews, version 1.1.0
-# Copyright (c) 2020-2022, Philippe Grosjean (phgrosjean@sciviews.org)
-
-SciViews::R()
-
-# function mds for several multidimensionnal scaling functions ------
-mds <- function(dist, k = 2, type = c("metric", "nonmetric", "cmdscale",
-"wcmdscale", "sammon", "isoMDS", "monoMDS", "metaMDS"), p = 2, ...) {
-  type <- match.arg(type)
-  res <- switch(type,
-    metric = ,
-    wcmdscale = structure(vegan::wcmdscale(d = dist, k = k, eig = TRUE, ...),
-      class = c("wcmdscale", "mds", "list")),
-    cmdscale = structure(stats::cmdscale(d = dist, k = k, eig = TRUE, ...),
-      class = c("cmdscale", "mds", "list")),
-    nonmetric = ,
-    metaMDS = structure(vegan::metaMDS(comm = dist, k = k, ...),
-      class = c("metaMDS", "monoMDS", "mds", "list")),
-    isoMDS = structure(MASS::isoMDS(d = dist, k = k, ...),
-      class = c("isoMDS", "mds", "list")),
-    monoMDS = structure(vegan::monoMDS(dist = dist, k = k, ...),
-      class = c("monoMDS", "mds", "list")),
-    sammon = structure(MASS::sammon(d = dist, k = k, ...),
-      class = c("sammon", "mds", "list")),
-    stop("Unknown 'mds' type ", type)
-  )
-  # For non-metric MDS, we add also data required for the Shepard plot
-  if (type %in% c("nonmetric", "sammon", "isoMDS", "monoMDS", "metaMDS"))
-    res$Shepard <- MASS::Shepard(d = dist, x = res$points, p = p)
-    res
-}
-class(mds) <- c("function", "subsettable_type")
-
-# plot.mds : MDS2 ~ MDS1 --------------------------------
-plot.mds <- function(x, y, ...) {
-  points <- tibble::as_tibble(x$points, .name_repair = "minimal")
-  colnames(points) <- paste0("mds", 1:ncol(points))
-  
-  plot(data = points, mds2 ~ mds1,...)
-}
-
-autoplot.mds <- function(object, labels, col, ...) {
-  points <- tibble::as_tibble(object$points, .name_repair = "minimal")
-  colnames(points) <- paste0("mds", 1:ncol(points))
-  
-  if (!missing(col))
-    points$.colors <- col
-  
-  if (!missing(labels)) {
-    if (length(labels) != nrow(points))
-      stop("You must provide a character vector of length ", nrow(points),
-        " for 'labels'")
-    points$.labels <- labels
-    if (!missing(col)) {
-      chart::chart(points, mds2 ~ mds1 %col=% .colors %label=% .labels, ...) +
-        geom_point() +
-        ggrepel::geom_text_repel() +
-        coord_fixed(ratio = 1)
-    } else {# col not provided
-      chart::chart(points, mds2 ~ mds1 %label=% .labels, ...) +
-        geom_point() +
-        ggrepel::geom_text_repel() +
-        coord_fixed(ratio = 1)
-    }
-    
-  } else {# Plot without labels
-    if (!missing(col)) {
-      chart::chart(points, mds2 ~ mds1 %col=% .colors, ...) +
-        geom_point() +
-        coord_fixed(ratio = 1)
-    } else {
-      chart::chart(points, mds2 ~ mds1, ...) +
-        geom_point() +
-        coord_fixed(ratio = 1)
-    }
-  }
-}
-
-chart.mds <- function(data, labels, col, ..., type = NULL, env = parent.frame())
-  autoplot(data, labels = labels, col, type = type, ...)
-
-shepard <- function(dist, mds, p = 2)
-  structure(MASS::Shepard(d = dist, x = mds$points, p = p),
-    class = c("shepard", "list"))
-
-plot.shepard <- function(x, y, l.col = "red", l.lwd = 1,
-xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
-  she <- tibble::as_tibble(x, .name_repair = "minimal")
-  
-  plot(data = she, y ~ x, xlab = xlab, ylab = ylab, ...)
-  lines(data = she, yf ~ x, type = "S", col = l.col, lwd = l.lwd)
-}
-
-autoplot.shepard <- function(object, alpha = 0.5, l.col = "red", l.lwd = 1,
-xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
-  she <- tibble::as_tibble(object)
-  
-  chart(data = she, y ~ x) +
-    geom_point(alpha = alpha) +
-    geom_step(chart::f_aes(yf ~ x), direction = "vh", col = l.col, lwd = l.lwd) +
-    labs(x = xlab, y = ylab)
-}
-
-chart.shepard <- function(data, alpha = 0.5, l.col = "red", l.lwd = 1,
-xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ..., type = NULL,
-env = parent.frame())
-  autoplot(data, alpha = alpha, l.col = l.col, l.lwd = l.lwd,
-    xlab = xlab, ylab = ylab, type = type, ...)
-
-# augment.mds -------------------------------------------
-augment.mds <- function(x, data, ...){
-  points <- as_tibble(x$points)
-  colnames(points) <- paste0(".mds", 1:ncol(points))
-  bind_cols(data, points)
-}
-
-# glance.mds -------------------------------------------
-glance.mds <- function(x, ...){
-  if ("GOF" %in% names(x)) {# Probably cmdscale() or wcmdscale() => metric MDS
-    tibble::tibble(GOF1 = x$GOF[1], GOF2 = x$GOF[2])
-  } else {# Non metric MDS
-    # Calculate linear and non linear R^2 from the Shepard (stress) plot
-    tibble::tibble(
-      linear_R2 = cor(x$Shepard$y, x$Shepard$yf)^2,
-      nonmetric_R2 = 1 - sum(vegan::goodness(x)^2)
-    )
-  }
-}
-
-# dissimlarity() from previous module ------------------
-dissimilarity <- function(data, formula = ~ ., subset = NULL,
-  method = "euclidean", scale = FALSE, rownames.col = "rowname",
-  transpose = FALSE, fun = NULL, ...) {
-  # TODO: get more meaningful warnings and errors by replacing fun by actual
-  # name of the function
-  if (is.null(fun)) {# Default function depends on the chosen method
-    if (method %in% c("maximum", "binary", "minkowski")) {
-      fun <- stats::dist
-    } else {
-      fun <- vegan::vegdist # Note: euclidean/manhattan/canberra in both, but
-      # we prioritize vegdist, and canberra is not calculated the same in dist!
-    }
-  }
-  # We accept only formulas with right-hand side => length must be two
-  if (length(formula) == 3)
-    stop("The formula cannot have a left-hand term")
-
-  # With matrices, we don't use rownames.col: rownames are already correctly set
-  if (!is.matrix(data)) {# row names may be in a column (usual for tibbles)
-    data <- as.data.frame(data)
-    if (rownames.col %in% names(data)) {
-      rownames(data) <- data[[rownames.col]]
-      data[[rownames.col]] <- NULL
-    } else {# rownames.col is NOT used
-      rownames.col <- NULL
-    }
-    if (as.character(formula[2] != ".")) {
-      # Subset the columns
-      data <- model.frame(formula, data = data, subset = subset)
-    } else if (!is.null(subset)) {
-      data <- data[subset, ]
-    }
-  } else {# A matrix
-    rownames.col <- NULL
-    if (as.character(formula[2] != ".")) {
-      # Subset the columns (and possibly the rows)
-      if (is.null(subset)) {
-        data <- data[, all.vars(formula)]
-      } else {
-        data <- data[subset, all.vars(formula)]
-      }
-    }
-  }
-
-  if (isTRUE(transpose))
-    data <- t(data)
-
-  # Arguments method =/metric = and stand = not always there
-  if (!is.null(as.list(args(fun))$metric)) {# metric = instead of method =
-    dst <- fun(data, metric = method, stand = scale, ...)
-  } else if (isTRUE(scale)) {
-    if (is.null(as.list(args(fun))$stand)) {# fun has no stand = argument
-      data <- scale(data)
-      dst <- fun(data, method = method, ...)
-    } else {# We don't standardise ourself because there may be also qualitative
-      # or binary data (like for cluster::daisy, for instance)
-      dst <- fun(data, method = method, stand = scale, ...)
-    }
-  } else {# Just method = and scale = FALSE
-    dst <- fun(data, method = method, ...)
-  }
-  attr(dst, "call") <- match.call()
-  # Depending if it is a dist or dissimilarity object, the method is stored in
-  # method or in Metric, but we use metric in our own version to avoid a clash
-  # with the method item in cluster()/hclust() further on (hclust change it
-  # into dist.method, but it is better to have the right name right now)
-  attr(dst, "metric") <- method
-  # dist or dissimilarity object use Labels, but we use labels everywhere else
-  # including in cluster()/hclust()
-  # So, we make sure labels is present (in hclust, it is labels anyway!)
-  attr(dst, "labels") <- rownames(data)
-  # Default values for Diag and Upper set to FALSE
-  if (is.null(attr(dst, "Diag"))) attr(dst, "Diag") <- FALSE
-  if (is.null(attr(dst, "Upper"))) attr(dst, "Upper") <- FALSE
-  # Keep info about how raw data were transformed
-  attr(dst, "rownames.col") <- rownames.col
-  attr(dst, "transpose") <- transpose
-  attr(dst, "scale") <- scale
-  class(dst) <- unique(c("dissimilarity", class(dst)))
-  dst
-}
-
-# We want to print only the first few rows and columns
-print.dissimilarity <- function(x, digits.d = 3L, rownames.lab = "labels",
-...) {
-  mat <- as.matrix(x)
-  mat <- format(round(mat, digits.d))
-  diag(mat) <- ""
-  mat[upper.tri(mat)] <- ""
-  class(mat) <- c("dst", "matrix")
-  tbl <- tibble::as_tibble(mat)
-  #tbl <- tibble::add_column(tbl, {{rownames.lab}} = rownames(mat), .before = 1)
-  # I prefer this
-  tbl <- dplyr::bind_cols(
-    as_tibble_col(rownames(mat), column_name = rownames.lab), tbl)
-  tbl <- tbl[, -ncol(tbl)]
-  more_info <- ""
-  if (isTRUE(attr(x, "scale"))) {
-    if (isTRUE(attr(x, "transpose"))) {
-      more_info <- " (transposed then scaled data)"
-    } else {# Only scaled
-      more_info <- " (scaled data)"
-    }
-  } else {
-    if (isTRUE(attr(x, "transpose")))
-      more_info <- " (transposed data)"
-  }
-  cat("Dissimilarity matrix with metric: ", attr(x, "metric"),
-    more_info, "\n", sep = "")
-  print(tbl)
-  invisible(x)
-}
-
+```{r}
+SciViews::R("explore")
 ```
 
 ### MDS métrique ou PCoA
 
-La forme classique, aussi appelée **MDS métrique** ou **analyse en coordonnées principales** (Principal Coordinates Analysis en anglais ou PCoA), va *projeter* le nuage de points à *p* dimensions dans un espace réduit à *k* = 2 dimensions (voire éventuellement à 3 dimensions). Cette projection se fait de manière similaire à une ombre chinoise projetée d'un objet tridimensionnel sur une surface plane en deux dimensions.
+La forme classique, aussi appelée **MDS métrique** ou **analyse en coordonnées principales** (Principal Coordinates Analysis en anglais ou PCoA), va *projeter* le nuage de points à *p* dimensions dans un espace réduit à *k* = deux dimensions (voire éventuellement à trois dimensions). Cette projection se fait de manière similaire à une ombre chinoise projetée d'un objet tridimensionnel sur une surface plane en deux dimensions.
 
-![Ombre chinoise : un placement astucieux des mains dans le faisceau lumineux permet de projetter l'ombre d'un animal ou d'un objet sur une surface plane. La PCoA fait de même avec vos données.](images/sdd2_06/shadow.jpg)
+![Ombre chinoise : un placement astucieux des mains dans le faisceau lumineux permet de projeter l'ombre d'un animal ou d'un objet sur une surface plane. La PCoA fait de même avec vos données.](images/sdd2_09/shadow.jpg)
 
-Considérons un relevé de couverture végétale en 24 stations concernant 44 plantes répertoriées sur le site de l'étude, par exemple, `Callvulg` est [*Calluna vulgaris*](https://www.tela-botanica.org/bdtfx-nn-12262-synthese), `Empenigr` est [*Empetrum nigrum*](https://www.tela-botanica.org/bdtfx-nn-23935-synthese), etc. Les valeurs sont les couvertures végétales observées pour chaque plante sur le site, exprimées en pour cents. La première colonne nommée `rownames` à l'importation contient les identifiants des stations (chaînes de caractères). Nous la renommons donc pour un intitulé plus explicite : `station`.
+Notez que l'Analyse en Composantes Principales (ACP) que nous avons étudiée au module 7 est en fait équivalente à une Analyse en Coordonnées Principales sur une matrice de distances euclidiennes (MDS métrique). Nous avons vu que l'ACP se résout par un calcul matriciel optimisé. Dans le cas de la MDS métrique, c'est une approche d'optimisation itérative qui est utilisée pour obtenir un résultat sensiblement proche... et cette approche itérative pourra être réutilisée plus tard sur d'autres métriques pour traiter des cas plus généraux.
+
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(103, height = 270, toc = "Comparaison entre l'ACP et PCoA")`
+
+Considérons un relevé de couverture végétale en 24 stations concernant 44 plantes répertoriées sur le site de l'étude, par exemple, `Callvulg` est [*Calluna vulgaris*](https://www.tela-botanica.org/bdtfx-nn-12262-synthese), `Empenigr` est [*Empetrum nigrum*](https://www.tela-botanica.org/bdtfx-nn-23935-synthese), etc. Les valeurs sont les couvertures végétales observées pour chaque plante sur le site, exprimées en pour cent. La première colonne nommée `rownames` à l'importation contient les identifiants des stations (chaînes de caractères). Nous la renommons donc pour un intitulé plus explicite : `station`.
 
 ```{r}
 read("varespec", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   veg
 veg
 ```
 
-Typiquement ce genre de données ne contient pas d'information constructive lorsqu'une plante est simultanément absente de deux stations (double zéros). Donc, les métriques de type euclidienne ou Manhattan ne conviennent pas ici. Nous devons choisir entre distance de Bray-Curtis ou Canberra en fonction de l'importance que nous souhaitons donner aux plantes les plus rares (avec couverture végétale faible et/ou absentes de la majorité des stations).
+Typiquement ce genre de données ne contient pas d'information constructive lorsqu'une plante est simultanément absente de deux stations (doubles zéros). Donc, les métriques de type euclidienne ou Manhattan ne conviennent pas ici. Nous devons choisir entre distance de Bray-Curtis ou Canberra en fonction de l'importance que nous souhaitons donner aux plantes les plus rares (avec couverture végétale faible et/ou absentes de la majorité des stations).
 
 Afin de décider quelle métrique utiliser, visualisons à présent l'abondance ou la rareté des différentes plantes :
 
 ```{r, fig.height=8}
 veg %>.%
-  select(., -station) %>.% # Colonne 'station' pas utile ici
-  pivot_longer(., everything(), names_to = "espèce", values_to = "couverture") %>.%
-  collect_dtx(.) %>.% # Required to get a true data frame!
+  sselect(., -station) %>.% # Colonne 'station' pas utile ici
+  spivot_longer(., everything(), names_to = "espèce", values_to = "couverture") %>.%
   chart(., espèce ~ couverture) +
     geom_boxplot() + # Boites de dispersion
     labs(x = "Espèce", y = "Couverture [%]")
 ```
 
-Comme nous pouvions nous y attendre, sept ou huit espèces dominent la couverture végétales et les autres données sont complètement écrasées à zéro sur l'axe pour la majorité des stations. Si nous utilisons la distance de Bray-Curtis, l'analyse sera pratiquement réalisée sur seulement ces quelques espèces dominantes. Avec Canberra, nous risquons par contre de donner beaucoup trop d'importance aux espèces extrêmement rares (toutes les espèces ont une importance égale avec cette métrique). Une solution intermédiaire est de transformer les données pour réduire l'écart d'importance entre les espèces abondantes et les rares, soit avec $log(x + 1)$, soit avec $\sqrt{\sqrt{x}}$. Voyons ce que donne la transformation logarithmique ici en utilisant la fonction `log1p()` dans R.
+Comme nous pouvions nous y attendre, sept ou huit espèces dominent la couverture végétale et les autres données sont complètement écrasées à zéro sur l'axe pour la majorité des stations. Si nous utilisons la distance de Bray-Curtis, l'analyse sera pratiquement réalisée sur seulement ces quelques espèces dominantes. Avec Canberra, nous risquons par contre de donner beaucoup trop d'importance aux espèces extrêmement rares (toutes les espèces ont une importance égale avec cette métrique). Une solution intermédiaire est de transformer les données pour réduire l'écart d'importance entre les espèces abondantes et les rares, soit avec $log(x + 1)$, soit avec $\sqrt{\sqrt{x}}$. Voyons ce que donne la transformation logarithmique ici en utilisant la fonction `log1p()` dans R.
 
 ```{r, fig.height=8}
 veg %>.%
-  select(., -station) %>.%
-  pivot_longer(., everything(), names_to = "espèce", values_to = "couverture") %>.%
-  collect_dtx(.) %>.% # Required to get a true data frame!
+  sselect(., -station) %>.%
+  spivot_longer(., everything(), names_to = "espèce", values_to = "couverture") %>.%
   chart(., espèce ~ log1p(couverture)) + # Transformation log(couverture + 1)
     geom_boxplot() +
     labs(x = "Espèce", y = "Couverture [%]")
 ```
 
-C'est nettement mieux car les données concernant les espèces rares ne sont plus totalement écrasées vers zéro sur l'axe horizontal ! La matrice de distances de Bray-Curtis sur nos données transformées log est la **première étape** de l'analyse :
+C'est nettement mieux, car les données concernant les espèces rares ne sont plus totalement écrasées vers zéro sur l'axe horizontal ! La matrice de distances de Bray-Curtis sur nos données transformées log est la **première étape** de l'analyse :
 
 ```{r}
 veg %>.%
-  fselect(., -station) %>.%
+  sselect(., -station) %>.%
   log1p(.) %>.%
-  dissimilarity(., method = "bray") -> veg_dist
+  dissimilarity(., method = "bray") %->%
+  veg_dist
 ```
 
 La PCoA va visualiser le contenu -autrement indigeste- de `veg_dist` de manière bien plus utile. La **seconde étape** consiste à calculer notre MDS métrique en utilisant `mds$metric()`
@@ -591,7 +352,7 @@ set.seed(9)
 veg_mds <- mds$metric(veg_dist)
 ```
 
-Ensuite, **troisième étape**, le but étant de visualiser les distances nous effectuons immédiatement un graphique comme suit :
+Ensuite, **troisième étape**, le but étant de visualiser les distances, nous effectuons immédiatement un graphique comme suit :
 
 ```{r}
 chart(veg_mds, labels = veg$station, col = veg$station)
@@ -603,11 +364,11 @@ Ce graphique s'interprète comme suit :
 -   Plus les stations sont éloignées les unes des autres, plus elles sont dissemblables.
 -   Si des regroupements apparaissent sur la carte, il se peut que ce soit des biotopes semblables, et qui diffèrent des autres regroupements. Par exemple ici, les stations 14--16, 20 et 22--25 forment un groupe relativement homogène en haut à gauche du graphique qui s'individualise du reste. Au contraire, les stations 5, 21, ou encore 27 ou 28 sont relativement isolées et constituent donc des assemblages végétaux uniques.
 -   Les stations aux extrémités sont des configurations extrêmes ; celles au centre sont des configurations plus courantes.
--   Par contre, ni l'orientation des axes, ni les valeurs absolues sur ces axes n'ont de significations particulières ici. N'en tenez pas compte.
+-   Par contre, ni l'orientation des axes ni les valeurs absolues sur ces axes n'ont de significations particulières ici. N'en tenez pas compte.
 
 ```{block2, type='warning'}
 
-Attention\ : rien ne garantit que notre MDS métrique projettée en deux dimensions soit suffisamment représentative des données dans leur ensemble. Si la méthode n'a pas réussi à représenter fidèlement les données, c'est que ces dernières sont trop complexes et ne s'y prêtent pas. Contrôlez donc toujours les indicateurs que sont les valeurs de "Goodness-of-fit" (GOF, qualité d'ajustement).
+Attention : rien ne garantit que notre MDS métrique projettée en deux dimensions soit suffisamment représentative des données dans leur ensemble. Si la méthode n'a pas réussi à représenter fidèlement les données, c'est que ces dernières sont trop complexes et ne s'y prêtent pas. Contrôlez donc toujours les indicateurs que sont les valeurs de "Goodness-of-fit" (GOF, qualité d'ajustement).
 
 ```
 
@@ -619,7 +380,7 @@ glance(veg_mds)
 
 Ici `GOF1` est la somme des valeurs propres obtenues lors du calcul (ces valeurs propres vous seront expliquées dans le module suivant consacré à l'ACP). Retenez simplement que c'est une mesure de la part de variance du jeu de données initial qui a pu être représentée sur la carte. Plus la valeur se rapproche de 1, mieux c'est, avec des valeurs \> 0.7 ou 0.8 qui restent acceptables. Le second indicateur, `GOF2` est la somme uniquement des valeurs propres positives. Certains préfèrent ce dernier indicateur. En principe, les deux sont proches ou égaux. Donc, le choix de l'un ou de l'autre ne devrait pas fondamentalement modifier vos conclusions.
 
-**Ici, avec des valeurs de goodness-of-fit à peine supérieures à 50% nous pouvons considérer que la carte n'est pas suffisamment représentative.** Soit nous tentons de la représenter en trois dimensions (mais c'est rarement plus lisible car il faut quand même se résigner à présenter ce graphique 3D dans un plan à deux dimensions -l'écran de l'ordinateur, ou une feuille de papier- au final). Une autre solution lorsque la MDS métrique ne donne pas satisfaction est de se tourner vers la MDS non métrique. Ce que nous allons faire ci-dessous.
+**Ici, avec des valeurs de goodness-of-fit à peine supérieures à 50% nous pouvons considérer que la carte n'est pas suffisamment représentative.** Soit nous tentons de la représenter en trois dimensions (mais c'est rarement plus lisible, car il faut quand même se résigner à présenter ce graphique 3D dans un plan à deux dimensions -l'écran de l'ordinateur, ou une feuille de papier- au final). Une autre solution lorsque la MDS métrique ne donne pas satisfaction est de se tourner vers la MDS non métrique. Ce que nous allons faire ci-dessous.
 
 ##### À vous de jouer ! {.unnumbered}
 
@@ -627,7 +388,7 @@ Ici `GOF1` est la somme des valeurs propres obtenues lors du calcul (ces valeurs
 
 ```{block2, type='note'}
 
-A noter que la PCoA sur matrice euclidienne après standardisation ou non des données est équivalente à une **Analyse en Composantes Principales** (ACP) que nous étudierons dans le module suivant, ... mais avec un calcul nettement moins efficace. Dans ce contexte, la PCoA n'a donc pas grand intérêt. Elle est surtout utile lorsque vous voulez représenter des métriques de distances *différentes* de la distance euclidienne comme c'est le cas ici avec un choix de distances de Bray-Curtis.
+Rappelons que la PCoA sur matrice euclidienne après standardisation ou non des données est équivalente à une **Analyse en Composantes Principales** (ACP), ... mais avec un calcul nettement moins efficace. Dans ce contexte, la PCoA n'a donc pas grand intérêt. Elle est surtout utile lorsque vous voulez représenter des métriques de distances *différentes* de la distance euclidienne comme c'est le cas ici avec un choix de distances de Bray-Curtis.
 
 ```
 
@@ -643,7 +404,7 @@ La logique est la même que pour la MDS métrique :
 -   étape 2 : calcul du positionnement des points,
 -   étape 3 : réalisation de la carte et vérification de sa validité.
 
-Repartons de la même matrice de distances déjà réalisée pour la MDS métrique qui se nomme `veg_dist`. Le calcul est itératif. Comme il n'est pas garanti de converger, ni de donner la meilleure réponse, nous utilisons ici une fonction "intelligente" qui va effectuer une recherche plus poussée de la solution optimale, notamment en partant de différentes configurations au départ. Pour les détails et les paramètres de cet algorithme, voyez l'aide en ligne de la fonction `?vegan::metaMDS`. Dans le cadre de ce cours, nous ferons confiance au travail réalisé et vérifierons juste qu'une solution est trouvée (indication `*** Solution reached` à la fin). Notez toutefois que le stress est quantifié. Il tourne ici autour de 0,126. Plus la valeur de stress est basse, mieux c'est naturellement.
+Repartons de la même matrice de distances déjà réalisée pour la MDS métrique qui se nomme `veg_dist`. Le calcul est itératif. Comme il n'est pas garanti de converger ni de donner la meilleure réponse, nous utilisons ici une fonction "intelligente" qui va effectuer une recherche plus poussée de la solution optimale, notamment en partant de différentes configurations au départ. Pour les détails et les paramètres de cet algorithme, voyez l'aide en ligne de la fonction `?vegan::metaMDS`. Dans le cadre de ce cours, nous ferons confiance au travail réalisé et vérifierons juste qu'une solution est trouvée (indication `*** Solution reached` à la fin). Notez toutefois que le stress est quantifié. Il tourne ici autour de 0,126. Plus la valeur de stress est basse, mieux c'est naturellement.
 
 ```{r, echo=FALSE}
 set.seed(295)
@@ -653,19 +414,19 @@ set.seed(295)
 veg_nmds <- mds$nonmetric(veg_dist) # Calcul
 ```
 
-A présent, nous pouvons représenter la carte.
+À présent, nous pouvons représenter la carte.
 
 ```{r}
 chart(veg_nmds, labels = veg$station)
 ```
 
-Nous avons une représentation assez différente de celle de la MDS métrique. Les stations 5, 21, 27 et 28 sont toujours isolées, mais le reste est regroupé de manière plus homogène. Comment savoir si cette représentation est meilleure que la version métrique qui avait une "goodness-of-fit" décevante ? En visualisant les indicateurs de qualité d'ajustement, ainsi que la fonction de stress sur un graphique dit **graphique de Shepard**. Comme d'habitude, `glance()` nous donne les statistiques voulues.
+Nous avons une représentation assez différente de celle de la MDS métrique. Les stations 5, 21, 27 et 28 sont toujours isolées, mais le reste est regroupé de manière plus homogène. Comment savoir si cette représentation est meilleure que la version métrique qui avait une "goodness-of-fit" décevante ? En visualisant les indicateurs de qualité d'ajustement, ainsi que la fonction de stress sur un graphique dit **graphique de Shepard**. Comme d'habitude, `glance()` nous donnent les statistiques voulues.
 
 ```{r}
 glance(veg_nmds)
 ```
 
-Le premier indicateur (R^2^ linéaire) est le coefficient de corrélation linéaire de Pearson entre les distances ajustées et les distances sur la carte au carré. Plus cette valeur est proche de un, moins les distances sont tordues. Le second indicateur, le R^2^ non métrique est calculé comme 1 - S^2^ où S est le stress (tel que quantifié plus haut lors de l'appel à la fonction `mds$nonmetric()`). Cette dernière statistique indique si l'*ordre* des points respecte l'*ordre* des distances partout sur le graphique. Avec 0,98, la valeur est excellente ici. Ensuite le R^2^ linéaire nous indique de combien les différentes distances sont éventuellement distordues. Avec une valeur de 0,92, la distorsion n'est pas trop forte ici.
+Le premier indicateur (R^2^ linéaire) est le coefficient de corrélation linéaire de Pearson entre les distances ajustées et les distances sur la carte au carré. Plus cette valeur est proche de 1, moins les distances sont tordues. Le second indicateur, le R^2^ non métrique est calculé comme 1 - S^2^ où S est le stress (tel que quantifié plus haut lors de l'appel à la fonction `mds$nonmetric()`). Cette dernière statistique indique si l'*ordre* des points respecte l'*ordre* des distances partout sur le graphique. Avec 0,98, la valeur est excellente ici. Ensuite le R^2^ linéaire nous indique de combien les différentes distances sont éventuellement distordues. Avec une valeur de 0,92, la distorsion n'est pas trop forte ici.
 
 Le diagramme de Shepard permet de visualiser dans le détail la distorsion introduite pour parvenir à réaliser la carte en deux dimensions.
 
@@ -696,7 +457,7 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 ##### Pour en savoir plus {.unnumbered}
 
--   La fonction `mds()` donne accès à d'autres versions de MDS non métriques également. Ainsi, `mds$isoMDS()` ou `mds$monoMDS()` correspondent toutes deux à la version de Kruskal mais en utilisant une seule configuration de départ (donc, moins robustes mais plus rapides à calculer). La `mds$sammon()` est une autre forme de MDS non métrique décrite dans l'aide en ligne de `?MASS::sammon`.
+-   La fonction `mds()` donne accès à d'autres versions de MDS non métriques également. Ainsi, `mds$isoMDS()` ou `mds$monoMDS()` correspondent toutes deux à la version de Kruskal, mais en utilisant une seule configuration de départ (donc, moins robustes, mais plus rapides à calculer). La `mds$sammon()` est une autre forme de MDS non métrique décrite dans l'aide en ligne de `?MASS::sammon`.
 
 -   Des techniques existent pour déterminer la dimension *k* idéale de la carte. Le **graphique des éboulis** (*screeplot* en anglais) sera abordé au module suivante dans le cadre de l'ACP. Il en existe une version pour le MDS, voyez [ici](https://rpubs.com/YaPi/393252) (en anglais).
 
@@ -722,7 +483,7 @@ if (exists("assignment"))
 
 ## Récapitulatif des exercices
 
-Ce neuvième module vous a permis de découvrir les MDS, ainsi que le travail sur les bases de données. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
+Ce neuvième module vous a permis de découvrir le travail sur les bases de données ainsi qu'une autre famille d'analyse multivariée: les MDS. Pour évaluer votre compréhension de cette matière, vous aviez les exercices suivants à réaliser :
 
 `r show_ex_toc()`
 

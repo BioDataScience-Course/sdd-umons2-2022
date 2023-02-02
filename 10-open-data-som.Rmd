@@ -12,7 +12,7 @@ SciViews::R("explore")
 
 ##### Prérequis {.unnumbered}
 
-TODO...
+-   Une bonne connaissance des données et des formats de stockage des données, ainsi que du modèle de données dans le cadre des bases relationnelles est un plus qui complémente la section sur les données ouvertes. Ces notions ont été abordées dans les modules 8 et 9.
 
 ## Données ouvertes
 
@@ -30,28 +30,28 @@ Pour assurer une gestion cohérente des données scientifiques, il faut respecte
 |---------------------|----------------------|----------------------------------------------------------------------------------------------|
 | *Findable*          | Facile à trouver     | Les données ont besoin d'un code unique et persistant pour les retrouver                     |
 | *Accessible*        | Accessible           | Les données et surtout les métadonnées avec une licence sont mises à disposition.            |
-| *Interoperable*     | Intéropérable        | Les données et les métadonnées doivent respecter les standards internationaux                |
-| *Reusable*          | Réutilisable         | Les données doivent être réutilisable grâce à des métadonnées riches et des licences claires |
+| *Interoperable*     | Interopérable        | Les données et les métadonnées doivent respecter les standards internationaux                |
+| *Reusable*          | Réutilisable         | Les données doivent être réutilisables grâce à des métadonnées riches et des licences claires |
 
 ##### Facile à retrouver (*Findable*)
 
-Vos données et vos métadonnées détaillées doivent être facile à retrouver. Vous devez donc fournir un identifiant **unique et permanent**. Il existe de nombreux identifiants comme ISBN, ISSN, DOI, ...
+Vos données et vos métadonnées détaillées doivent être faciles à retrouver. Vous devez donc fournir un identifiant **unique et permanent**. Il existe de nombreux identifiants comme ISBN, ISSN, DOI, ...
 
 Dans le cadre de la recherche scientifique, Le Digital Object Identifier (*DOI*) est la méthode standardisée conseillée. Vous avez déjà été confronté à des DOI. Par exemple, le DOI suivant <https://doi.org/10.1038/sdata.2016.18> fait référence à l'article *The FAIR Guiding Principles for scientific data management and stewardship*. Ce code est unique et persistant. Ce code va toujours renvoyer vers cet article de la revue Scientific Data. Imaginons que la revue Scientific Data disparaissent, le DOI sera toujours associé à cet article. Ainsi, la publication pourra être retrouvée ailleurs sur Internet grâce à ce DOI.
 
-Le DOI ne couvre pas que les articles scientifiques, il est également utilisé pour les données. Par exemple, le DOI suivant <https://doi.org/10.5281/zenodo.3711592> fait référence au données intitulé. *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* publié par Zenodo. Nous reviendrons dans les sections suivantes sur [zenodo](https://zenodo.org).
+Le DOI ne couvre pas que les articles scientifiques, il est également utilisé pour les données. Par exemple, le DOI suivant <https://doi.org/10.5281/zenodo.3711592> fait référence aux données intitulées. *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* publié par Zenodo. Nous reviendrons dans les sections suivantes sur [zenodo](https://zenodo.org).
 
 ##### Accessible (*Accessible*)
 
-Les données et les métadonnées que vous collectez doivent de plus en plus souvent être rendue disponible. Certaines revues scientifiques requièrent la mise à disposition des données. Les recherches financées par des fonds publics (nationaux, Européen,...) requièrent également la mise à disposition des données. Les données ne doivent pas être disponible à tous. Par contre les métadonnées doivent l'être. Il est, de plus, important de préciser la procédure afin d'obtenir les données.
+Les données et les métadonnées que vous collectez doivent de plus en plus souvent être rendues disponibles. Certaines revues scientifiques requièrent la mise à disposition des données. Les recherches financées par des fonds publics (nationaux, Européen,...) requièrent également la mise à disposition des données. Les données ne doivent pas être disponibles à tous. Par contre les métadonnées doivent l'être. Il est, de plus, important de préciser la procédure afin d'obtenir les données.
 
 Il parait presque logique et évident de mettre à disposition ces données afin d'en faire profiter la recherche académique dans son ensemble. La recherche va progresser plus rapidement si les chercheurs collaborent. Un scientifique seul dans son laboratoire ne peut pas espérer progresser plus rapidement que 20 scientifiques qui collaborent et utilisent les données.
 
 Il ne s'agit cependant pas de donner ces données sans aucune sécurité. En effet, il serait frustrant de travailler très dur sur un sujet précis et qu'un autre scientifique vole le fruit de ces nombreuses heures de travail et publie un article avant vous. Il existe une solution pour spécifier les droits d'utilisation de vos données. Vous devez associer une **licence** à vos données et métadonnées.
 
-Vous avez très certainement déjà entendu parlé des licences [Creative Commons](https://creativecommons.org). Il est de plus en plus courant de voir apparaître ce genre d'information sur des sites web comme [CC0](https://creativecommons.org/share-your-work/public-domain/cc0), [CC-by](https://creativecommons.org/licenses/by/4.0/), ou encore [CC-by-sa](https://creativecommons.org/licenses/by-sa/4.0/).
+Vous avez très certainement déjà entendu parler des licences [Creative Commons](https://creativecommons.org). Il est de plus en plus courant de voir apparaître ce genre d'information sur des sites web comme [CC0](https://creativecommons.org/share-your-work/public-domain/cc0), [CC-by](https://creativecommons.org/licenses/by/4.0/), ou encore [CC-by-sa](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Vous êtes peut être plus familié avec les logos ci-dessous :
+Vous êtes peut-être plus familiers avec les logos ci-dessous :
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a>
 
@@ -61,7 +61,7 @@ Vous êtes peut être plus familié avec les logos ci-dessous :
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a>.
 
-**Que se cache-t-il derrière ces logos ? Nous allons détailler ensemble ces abréviations.** Nous pouvons résumer cela de manière simple en se posant deux questions :
+**Que se cache-t-il derrière ces logos ? Nous allons détailler ensemble ces abréviations.** Nous pouvons résumer cela de manière simple en nous posant deux questions :
 
 -   Souhaitez-vous autoriser le partage des adaptations de votre œuvre ?
     -   Oui
@@ -71,7 +71,7 @@ Vous êtes peut être plus familié avec les logos ci-dessous :
     -   Oui
     -   Non
 
-Ces deux questions proviennent de l'outil mis à disposition sur le site Creative Commons <https://creativecommons.org/choose/> pour définir la licence la plus adaptée pour vous.
+Ces deux questions proviennent de l'outil mis à disposition sur le site [Creative Commons](https://creativecommons.org/choose) pour définir la licence la plus adaptée pour vous.
 
 Dans le cadre de la recherche, tout n'est pas si simple. Vous devez tenir compte l'avis de vos supérieurs hiérarchiques, de votre institution et de la ou des institutions qui financent le travail. La bonne pratique est donc de discuter avec l'ensemble des acteurs pour décider de la bonne licence à employer, *le plus tôt possible, c'est-à-dire, déjà lors de l'élaboration du projet de recherche*.
 
@@ -79,7 +79,7 @@ Repartons de notre jeu de données sur la COVID-19 : [Dataset: Number of diagno
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt="Licence Creative Commons" style="border-width:0"/></a><br />Ce(tte) œuvre est mise à disposition selon les termes de la <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Licence Creative Commons Attribution 4.0 International</a>.
 
-Il est donc autorisé d'adapter l'œuvre et de l'utiliser à des fins commerciales. Il s'agit d'une licence très peu contraignantes. Il suffit simplement de créditer l'auteur de l'œuvre originale.
+Il est donc autorisé d'adapter l'œuvre et de l'utiliser à des fins commerciales. Il s'agit d'une licence très peu contraignante. Il suffit simplement de créditer l'auteur de l'œuvre originale.
 
 Il existe également des licences plus spécifiques aux bases de données, de la moins contraignante à la plus contraignante [PDDL](https://opendatacommons.org/licenses/pddl/) , [ODC-by](https://opendatacommons.org/licenses/by/) et [ODbL](https://opendatacommons.org/licenses/odbl/)
 
@@ -87,9 +87,9 @@ Il existe également des licences plus spécifiques aux bases de données, de la
 
 `r h5p(123, height = 270, toc = "Choix des licenses")`
 
-##### Intéropérable (*Interoperable*)
+##### Interopérable (*Interoperable*)
 
-Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisable, compréhensible et *combinable avec d'autres données*. Le choix du format des données est également important Ce principe est difficile à mettre en place et requiert donc une réflexion approfondie.
+Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisables, compréhensibles et *combinables avec d'autres données*. Le choix du format des données est également important Ce principe est difficile à mettre en place et requiert donc une réflexion approfondie.
 
 ##### À vous de jouer ! {.unnumbered}
 
@@ -130,9 +130,9 @@ Lorsque vous allez concevoir un plan d'expérience, n'oubliez pas de concevoir v
 
 ### Utilisation de données ouvertes
 
-Il existe de nombreux sites qui regroupent un ensemble de données ouvertes. Nous avons parlé précédemment de Zenodo mais de nombreuses bases de données sont également disponibles comme le [Portail européen de données](https://www.europeandataportal.eu/fr), [Portail belge de données](https://data.gov.be/fr), ...
+Il existe de nombreux sites qui regroupent un ensemble de données ouvertes. Nous avons parlé précédemment de Zenodo mais de nombreuses bases de données sont également disponibles comme le [Portail européen de données](https://www.europeandataportal.eu/fr), [Portail belge de données](https://data.gov.be/fr) ...
 
-Afin de connaître la qualité des données voici une check-list très utile pour appréhender des données ouvertes. Vous devez être capable de trouver facilement :
+Afin de connaître la qualité des données, voici une check-list très utile pour appréhender des données ouvertes. Vous devez être capable de trouver facilement :
 
 -   But des données
 -   Code unique et persistant des données
@@ -140,11 +140,11 @@ Afin de connaître la qualité des données voici une check-list très utile pou
 -   Format des données
 -   Qualité des données
 
-**A nouveau, vous vous rendez compte que nous revenons à notre principe FAIR expliqué plus haut.** Prenons notre exemple sur le *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* et appliquons notre check-list.
+**À nouveau, vous vous rendez compte que nous revenons à notre principe FAIR expliqué plus haut.** Prenons notre exemple sur le *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* et appliquons notre check-list.
 
 -   Le but des données
 
-Une description des données est proposée. Le nom de l'auteur est spécifié. Il est également précisé la date de publication avec la version des données. Le 16 mars 2020, la version est `v2020.3.16`. Les données sont également associées à un dépôt GitHub qui les traitent : [J535D165/CoronaWatchNL](https://github.com/J535D165/CoronaWatchNL)
+Une description des données est proposée. Le nom de l'auteur est spécifié. Il est également précisé la date de publication avec la version des données. Le 16 mars 2020, la version est `v2020.3.16`. Les données sont également associées à un dépôt GitHub qui les traite : [J535D165/CoronaWatchNL](https://github.com/J535D165/CoronaWatchNL)
 
 -   Un code unique et persistant
 
@@ -152,7 +152,7 @@ Ces données ont un DOI : [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3
 
 -   La licence
 
-Les données sont mise à disposition avec la licence [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode)
+Les données sont mises à disposition avec la licence [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode)
 
 -   le format
 
@@ -162,11 +162,11 @@ Les données sont proposées sous le format `csv`. Ce format est un standard tr�
 
 Ce dernier critère est le plus difficile à déterminer. Une première chose à vérifier concerne les métadonnées associées à chaque variable. Nous pouvons voir que l'auteur peut encore améliorer les métadonnées associées à ses données. Le nom des variables reste cependant tout à fait compréhensible.
 
-Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir très simplement cette check-list.
+Comme vous venez de le voir, Zenodo de par sa structuration permet de remplir très simplement cette check-list.
 
 ##### Pour en savoir plus {.unnumbered}
 
--   [Qu'est ce que les données ouvertes ?](https://www.europeandataportal.eu/fr/training/what-open-data)
+-   [Qu'est-ce que les données ouvertes ?](https://www.europeandataportal.eu/fr/training/what-open-data)
 
 -   [Aide sur l'interprétation et le choix des licences](https://www.europeandataportal.eu/en/training/licensing-assistant)
 
@@ -174,9 +174,9 @@ Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir t
 
 -   [Guide sur les licences Open Data](https://theodi.org/article/publishers-guide-to-open-data-licensing/)
 
--   Des stockages spécifiques ont été mis en place pour les données scientifiques comme [Zenodo (dépot des données hebergé par le CERN)](https://zenodo.org), [Dataverse](https://dataverse.org), ou encore [Figshare](https://figshare.com)
+-   Des stockages spécifiques ont été mis en place pour les données scientifiques comme [Zenodo (dépôt des données hébergé par le CERN)](https://zenodo.org), [Dataverse](https://dataverse.org), ou encore [Figshare](https://figshare.com)
 
--   [Data Management Plan](https://www.unil.ch/openscience/fr/home/menuinst/open-research-data/gerer-ses-donnees-de-recherche/data-management-plan-dmp.html)
+<!-- Plus accessible?!   [Data Management Plan](https://www.unil.ch/openscience/fr/home/menuinst/open-research-data/gerer-ses-donnees-de-recherche/data-management-plan-dmp.html) -->
 
 -   Le [Principe FAIR](https://ogsl.ca/fr/principes-fair) expliqué par l'Observatoire Global du Saint-Laurent
 
@@ -186,15 +186,13 @@ Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir t
 
 ## Cartes auto-adaptatives (SOM)
 
-Le positionnement multidimensionnel faisant appel à une matrice de distances entre tous les individus, les calculs deviennent vite pénalisants au fur et à mesure que le jeu de données augmente en taille. En général, les calculs sont assez lents. Nous verrons au module suivant que l'**analyse en composantes principales** apporte une réponse intéressante à ce problème, mais nous contraint à étudier des corrélations linéaires et des distances de type euclidiennes.
-
-Une approche radicalement différente, qui reste plus générale car non linéaire, est la méthode des **cartes auto-adaptatives**, ou encore, **cartes de Kohonen** du nom de son auteur se désigne par "self-organizing map" en anglais. L'acronyme **SOM** est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d'abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre **ordination** (représentation sur des cartes) et **classification** (regroupement des individus).
+Pour clore ce cours, nous allons étudier une nouvelle technique multivariée qui n'est pas très couramment employée, mais qui mérite pourtant que l'on s'y intéresse, en particulier pour étudier des données biologiques. Il s'agit d'une approche radicalement différente de l'ACP, AFC, ou encore MDS, qui reste plus générale car non linéaire. C'est la méthode des **cartes auto-adaptatives**, ou encore, **cartes de Kohonen** du nom de son auteur se désignent par "self-organizing map" en anglais. L'acronyme **SOM** est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d'abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus qui se ressemblent soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre **ordination** (représentation sur des cartes) et **classification** (regroupement des individus).
 
 ##### À vous de jouer ! {.unnumbered}
 
 `r h5p(98, height = 270, toc = "Choix des méthodes")`
 
-La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux **réseaux de neurones adaptatifs** et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l'information en entrée pour aller assigner une zone de traitement de l'information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Étant donné la complexité du calcul, les développement mathématiques n'ont pas leur place dans ce cours. Ce qui importe, c'est de comprendre le concept, et d'être ensuite capable d'utiliser les SOM à bon escient. Uniquement pour ceux d'entre vous qui désirent comprendre les détails du calcul, vous pouvez lire [ici](https://towardsdatascience.com/kohonen-self-organizing-maps-a29040d688da) ou visionner la vidéo suivante **(facultative et en anglais)** :
+La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux **réseaux de neurones adaptatifs** et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l'information en entrée pour aller assigner une zone de traitement de l'information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Étant donné la complexité du calcul, les développements mathématiques n'ont pas leur place dans ce cours. Ce qui importe, c'est de comprendre le concept, et d'être ensuite capable d'utiliser les SOM à bon escient. Uniquement pour ceux d'entre vous qui désirent comprendre les détails du calcul, vous pouvez lire [ici](https://towardsdatascience.com/kohonen-self-organizing-maps-a29040d688da) ou visionner la vidéo suivante **(facultative et en anglais)** :
 
 ```{r, echo=FALSE}
 vembedr::embed_youtube("0qtvb_Nx2tA", width = 770, height = 433, query = "end=266")
@@ -202,9 +200,9 @@ vembedr::embed_youtube("0qtvb_Nx2tA", width = 770, height = 433, query = "end=26
 
 Plutôt que de détailler les calculs, nous vous montrons ici comment un ensemble de pixels de couleurs différentes est organisé sur une carte SOM de Kohonen en un arrangement infiniment plus cohérent... automatiquement (cet exemple est proposé par [Frédéric De Lène Mirouze](https://amethyste16.wordpress.com/about/) dans [son blog](https://amethyste16.wordpress.com/2015/10/24/reseau-de-neurones-les-cartes-auto-adaptatives/)).
 
-![Image créée artificiellement avec disposition aléatoire des pixels.](images/sdd2_06/pixels_aleatoires.png)
+![Image créée artificiellement avec disposition aléatoire des pixels.](images/sdd2_10/pixels_aleatoires.png)
 
-![Carte SOM obtenue à partir de l'image précédente : les pixels sont automatiquement triés par couleur sur la carte.](images/sdd2_06/pixels_som.png)
+![Carte SOM obtenue à partir de l'image précédente : les pixels sont automatiquement triés par couleur sur la carte.](images/sdd2_10/pixels_som.png)
 
 Ce qui est évident sur un exemple aussi visuel que celui-ci fonctionne aussi très bien pour ranger les individus dans un tableau multivarié *a priori* chaotique comme ceux que nous rencontrons régulièrement en statistiques multivariées en biologie.
 
@@ -221,7 +219,7 @@ Les 19 premières colonnes représentent des mesures réalisées sur notre planc
 
 ```{r}
 zoo %>.%
-  fselect(., -class) %>.%
+  sselect(., -class) %>.%
   scale(.) %>.%
   as_matrix(.) ->
   zoo_mat
@@ -236,7 +234,7 @@ library(kohonen) # Charge le package kohonen
 rect_grid_7_7 <- somgrid(7, 7, topo = "rectangular") # Crée la grille
 ```
 
-Il n'y a pas de graphique `chart` ou `ggplot2` dans le package {kohonen}. Nous utiliserons ici les graphiques de base de R. Pour visualiser la grille, il faut la transformer en un objet **kohonen**. Nous pouvons ajouter plein d'information sur la grille. Ici, nous rajoutons une propriété calculée à l'aide de `unit.distances()` qui est la distance des cellules de la carte par référence à la cellule centrale. Les cellules sont numérotées de 1 à *n* en partant en bas à gauche, en progressant le long de la ligne du bas vers la droite, et en reprenant à gauche à la ligne au dessus. Donc, la ligne du bas contient de gauche à droite les cellules n°1 à 7. La ligne au dessus contient les cellules n°8 à 14, et ainsi de suite. La cellule du centre de la grille en en quatrième ligne en partant du bas et en position 4 sur cette ligne, soit trois lignes complètes plus quatre ($3*7+4=25$). C'est la cellule n°25.
+Il n'y a pas de graphique `chart` ou `ggplot2` dans le package {kohonen}. Nous utiliserons ici les graphiques de base de R. Pour visualiser la grille, il faut la transformer en un objet **kohonen**. Nous pouvons ajouter plein d'information sur la grille. Ici, nous rajoutons une propriété calculée à l'aide de `unit.distances()` qui est la distance des cellules de la carte par référence à la cellule centrale. Les cellules sont numérotées de 1 à *n* en partant en bas à gauche, en progressant le long de la ligne du bas vers la droite, et en reprenant à gauche à la ligne au-dessus. Donc, la ligne du bas contient de gauche à droite les cellules n°1 à 7. La ligne au-dessus contient les cellules n°8 à 14, et ainsi de suite. La cellule du centre de la grille en en quatrième ligne en partant du bas et en position 4 sur cette ligne, soit trois lignes complètes plus quatre ($3*7+4=25$). C'est la cellule n°25.
 
 ```{r}
 rect_grid_7_7 %>.%
@@ -247,7 +245,7 @@ rect_grid_7_7 %>.%
     main = "Distance depuis la cellule centrale") # Titre du graphique
 ```
 
-Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes s'ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation : en horizontal et en vertical, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huit voisins directs.
+Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes s'ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation : en horizontal et en vertical, ce qui donne deux gradients possibles qui, combinés, donnent des extrêmes dans les coins opposés. Une cellule possède huit voisins directs.
 
 L'autre topologie possible est la grille hexagonale. Voyons ce que cela donne :
 
@@ -286,7 +284,7 @@ zoo_som <- som(zoo_mat, grid = somgrid(7, 7, topo = "hexagonal"), rlen = 200)
 plot(zoo_som, type = "changes")
 ```
 
-Vous serez sans doute surpris de constater que la diminution de la courbe se fait plus lentement maintenant. En fait `som()` va adapter son taux d'apprentissage en fonction du nombre d'itérations qu'on lui donne et va alors "peaufiner le travail" d'autant plus. Au final, la valeur n'est pas plus basse pour autant. Donc, nous avons aboutit probablement à une solution.
+Vous serez sans doute surpris de constater que la diminution de la courbe se fait plus lentement maintenant. En fait, `som()` va adapter son taux d'apprentissage en fonction du nombre d'itérations qu'on lui donne et va alors "peaufiner le travail" d'autant plus. Au final, la valeur n'est pas plus basse pour autant. Donc, nous avons abouti probablement à une solution.
 
 Le second graphique que nous pouvons réaliser consiste à placer les individus dans la carte, en utilisant éventuellement une couleur différente en fonction d'une caractéristique de ces individus (ici, leur `class`e). Ce graphique est obtenu avec `type = "mapping"`. Si vous ne voulez pas représenter la grille hexagonale à l'aide de cercles, vous pouvez spécifier `shape = "straight"`. Nous avons 17 classes de zooplancton et il est difficile de représenter plus de 10-12 couleurs distinctes, mais [ce site](https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/) propose une palette de 20 couleurs distinctes. Nous en utiliserons les 17 premières...
 
@@ -324,7 +322,7 @@ De nombreuses autres présentations graphiques sont possibles sur cette base. No
 
 #### Représentation des variables
 
-La carte SOM est orientée. C'est-à-dire que les cellules représentent des formes différentes de plancton telles qu'exprimées à travers les 19 variables utilisées ici (quantification de la taille, de la forme, de la transparence, ...). Le graphique `type = "codes"` permet de visualiser ces différences de manière générale :
+La carte SOM est orientée. C'est-à-dire que les cellules représentent des formes différentes de plancton telles qu'exprimées à travers les 19 variables utilisées ici (quantification de la taille, de la forme, de la transparence ...). Le graphique `type = "codes"` permet de visualiser ces différences de manière générale :
 
 ```{r, fig.height=7}
 plot(zoo_som, type = "codes", codeRendering = "segments")
@@ -334,7 +332,7 @@ Ce graphique est riche en informations. Nous voyons que :
 
 -   les très grands individus (`ecd`, `area`, `perimeter`, etc.), soit les segments verts sont en haut à gauche de la carte et les petits sont à droite,
 -   les individus opaques (variables `mean`, `mode`, `max`, etc.[^10-open-data-som-2]), soit des segments dans les tons jaunes sont en haut à droite. Les organismes plus transparents sont en bas à gauche,
--   au delà de ces deux principaux critères qui se dégagement prioritairement, les aspects de forme (segments rose-rouges) se retrouvent exprimés moins nettement le long de gradients. La `circularity` mesure la silhouette plus ou moins arrondie des items (sa valeur est d'autant plus élevée que la forme se rapproche d'un cercle). Les organismes circulaires se retrouvent dans le haut de la carte. L'`elongation` et l'`aspect` mesurent l'allongement de la particule et se retrouvent plutôt exprimés positivement dans le bas de la carte.
+-   au-delà de ces deux principaux critères qui se dégagent prioritairement, les aspects de forme (segments rose-rouge) se retrouvent exprimés moins nettement le long de gradients. La `circularity` mesure la silhouette plus ou moins arrondie des items (sa valeur est d'autant plus élevée que la forme se rapproche d'un cercle). Les organismes circulaires se retrouvent dans le haut de la carte. L'`elongation` et l'`aspect` mesurent l'allongement de la particule et se retrouvent plutôt exprimés positivement dans le bas de la carte.
 
 [^10-open-data-som-2]: Attention : la variable `transparency`, contrairement à ce que son nom pourrait suggérer n'est pas une mesure de la transparence de l'objet, mais de l'aspect plus ou moins régulier et lisse de sa silhouette.
 
@@ -353,374 +351,15 @@ Nous pouvons plus facilement inspecter les zones d'influence de différentes var
 
 Lorsque nous avons réalisé une CAH sur le jeu de données `zooplankton`, nous étions obligés de choisir deux variables parmi les 19 pour visualiser le regroupement sur un graphique nuage de points. C'est peu, et cela ne permet pas d'avoir une vision synthétique sur l'ensemble de l'information. Les méthodes d'ordination permettent de visualiser plus d'information sur un petit nombre de dimensions grâce aux techniques de réduction des dimensions qu'elles implémentent. Les cartes SOM offrent encore un niveau supplémentaire de raffinement. Nous pouvons considérer que chaque cellule est un premier résumé des données et nous pouvons effectuer ensuite une CAH sur ces cellules afin de dégager un regroupement et le visualiser sur la carte SOM. L'intérêt est que l'on réduit un jeu de données potentiellement très volumineux à un nombre plus restreint de cellules (ici 7x7 = 49), ce qui est plus "digeste" pour la CAH. Voici comment ça fonctionne (notez que `dissimilarity()` attend un **data frame** alors que `som()` travaille avec des objets **matrix**, donc une conversion s'impose ici) :
 
-```{r, include=FALSE}
-# CAH for SciViews, version 1.2.0
-# Copyright (c) 2021, Philippe Grosjean (phgrosjean@sciviews.org)
-
-SciViews::R
-
-# dist is really a dissimilarity matrix => we use dissimilarity() as in the
-# {cluster} package, i.e., class is c("dissimilarity", "dist")
-# TODO: also make a similarity object and convert between the two
-# fun can be stats::dist, vegan::vegdist, vegan::designdist, cluster::daisy
-# factoextra::get_dist and probably other dist-compatible functions
-# Depending on method =, use either vegan::vegdist or stats::dist as default fun
-dissimilarity <- function(data, formula = ~ ., subset = NULL,
-  method = "euclidean", scale = FALSE, rownames.col = "rowname",
-  transpose = FALSE, fun = NULL, ...) {
-  # TODO: get more meaningful warnings and errors by replacing fun by actual
-  # name of the function
-  if (is.null(fun)) {# Default function depends on the chosen method
-    if (method %in% c("maximum", "binary", "minkowski")) {
-      fun <- stats::dist
-    } else {
-      fun <- vegan::vegdist # Note: euclidean/manhattan/canberra in both, but
-      # we prioritize vegdist, and canberra is not calculated the same in dist!
-    }
-  }
-  # We accept only formulas with right-hand side => length must be two
-  if (length(formula) == 3)
-    stop("The formula cannot have a left-hand term")
-
-  # With matrices, we don't use rownames.col: rownames are already correctly set
-  if (!is.matrix(data)) {# row names may be in a column (usual for tibbles)
-    data <- as.data.frame(data)
-    if (rownames.col %in% names(data)) {
-      rownames(data) <- data[[rownames.col]]
-      data[[rownames.col]] <- NULL
-    } else {# rownames.col is NOT used
-      rownames.col <- NULL
-    }
-    if (as.character(formula[2] != ".")) {
-      # Subset the columns
-      data <- model.frame(formula, data = data, subset = subset)
-    } else if (!is.null(subset)) {
-      data <- data[subset, ]
-    }
-  } else {# A matrix
-    rownames.col <- NULL
-    if (as.character(formula[2] != ".")) {
-      # Subset the columns (and possibly the rows)
-      if (is.null(subset)) {
-        data <- data[, all.vars(formula)]
-      } else {
-        data <- data[subset, all.vars(formula)]
-      }
-    }
-  }
-
-  if (isTRUE(transpose))
-    data <- t(data)
-
-  # Arguments method =/metric = and stand = not always there
-  if (!is.null(as.list(args(fun))$metric)) {# metric = instead of method =
-    dst <- fun(data, metric = method, stand = scale, ...)
-  } else if (isTRUE(scale)) {
-    if (is.null(as.list(args(fun))$stand)) {# fun has no stand = argument
-      data <- scale(data)
-      dst <- fun(data, method = method, ...)
-    } else {# We don't standardise ourself because there may be also qualitative
-      # or binary data (like for cluster::daisy, for instance)
-      dst <- fun(data, method = method, stand = scale, ...)
-    }
-  } else {# Just method = and scale = FALSE
-    dst <- fun(data, method = method, ...)
-  }
-  attr(dst, "call") <- match.call()
-  # Depending if it is a dist or dissimilarity object, the method is stored in
-  # method or in Metric, but we use metric in our own version to avoid a clash
-  # with the method item in cluster()/hclust() further on (hclust change it
-  # into dist.method, but it is better to have the right name right now)
-  attr(dst, "metric") <- method
-  # dist or dissimilarity object use Labels, but we use labels everywhere else
-  # including in cluster()/hclust()
-  # So, we make sure labels is present (in hclust, it is labels anyway!)
-  attr(dst, "labels") <- rownames(data)
-  # Default values for Diag and Upper set to FALSE
-  if (is.null(attr(dst, "Diag"))) attr(dst, "Diag") <- FALSE
-  if (is.null(attr(dst, "Upper"))) attr(dst, "Upper") <- FALSE
-  # Keep info about how raw data were transformed
-  attr(dst, "rownames.col") <- rownames.col
-  attr(dst, "transpose") <- transpose
-  attr(dst, "scale") <- scale
-  class(dst) <- unique(c("dissimilarity", class(dst)))
-  dst
-}
-
-as.dissimilarity <- function(x, ...)
-  UseMethod("as.dissimilarity")
-as_dissimilarity <- as.dissimilarity # Synonym
-
-as.dissimilarity.matrix <- function(x, ...) {
-  dst <- as.dist(x, ...)
-  attr(dst, "call") <- match.call()
-  attr(dst, "metric") <- attr(dst, "method") # Make sur metric is used
-  class(dst) <- unique(c("dissimilarity", class(dst)))
-  dst
-}
-
-# We want to print only the first few rows and columns
-print.dissimilarity <- function(x, digits.d = 3L, rownames.lab = "labels",
-...) {
-  mat <- as.matrix(x)
-  mat <- format(round(mat, digits.d))
-  diag(mat) <- ""
-  mat[upper.tri(mat)] <- ""
-  class(mat) <- c("dst", "matrix")
-  tbl <- tibble::as_tibble(mat)
-  #tbl <- tibble::add_column(tbl, {{rownames.lab}} = rownames(mat), .before = 1)
-  # I prefer this
-  tbl <- dplyr::bind_cols(
-    as_tibble_col(rownames(mat), column_name = rownames.lab), tbl)
-  tbl <- tbl[, -ncol(tbl)]
-  more_info <- ""
-  if (isTRUE(attr(x, "scale"))) {
-    if (isTRUE(attr(x, "transpose"))) {
-      more_info <- " (transposed then scaled data)"
-    } else {# Only scaled
-      more_info <- " (scaled data)"
-    }
-  } else {
-    if (isTRUE(attr(x, "transpose")))
-      more_info <- " (transposed data)"
-  }
-  cat("Dissimilarity matrix with metric: ", attr(x, "metric"),
-    more_info, "\n", sep = "")
-  print(tbl)
-  invisible(x)
-}
-
-labels.dissimilarity <- function(object, ...) {
-  labs <- object$labels
-  if (is.null(labs)) object$Labels
-}
-
-nobs.dissimilarity <- function(object, ...)
-  attr(object, "Size")
-
-# TODO: `[` by first transforming into a matrix with as.matrix()
-
-autoplot.dissimilarity <- function(object, order = TRUE, show.labels = TRUE,
-lab.size = NULL, gradient = list(low = "red", mid = "white", high = "blue"),
-...) {
-  factoextra::fviz_dist(object, order = order, show_labels = show.labels,
-    lab_size = lab.size, gradient = gradient)
-}
-
-chart.dissimilarity <- function(data, ...,
-type = NULL, env = parent.frame())
-  autoplot(data, type = type, ...)
-
-# cluster object (inheriting from hclust)
-cluster <- function(x, ...)
-  UseMethod("cluster")
-
-cluster.default <- function(x, ...)
-  stop("No method for object of class ", class(x)[1])
-
-# Cluster uses hclust() by default, ... but it looks first for a faster
-# implementation in either {fastcluster} or {flashClust} before falling back
-# to the {stats} version.
-# The functions cluster::agnes() and cluster::diana() should be compatible too,
-# as well as any function that returns an object convertible into hclust
-# by as.hclust() (but not tested yet)
-# Also, a version where the raw data are provided and the disimilarity matrix
-# is internally calculated should be also provided (see cluster::agnes)
-# See also {ape} for phylogenetic trees methods
-cluster.dist <- function(x, method = "complete", fun = NULL, ...) {
-  if (is.null(fun)) {
-    # We try fastcluster, then flashClust, then stats
-    fun <- try(fastcluster::hclust, silent = TRUE)
-    if (inherits(fun, "try-error"))
-      fun <- try(flashClust::hclust, silent = TRUE)
-    if (inherits(fun, "try-error"))
-      fun <- try(stats::hclust, silent = TRUE)
-  }
-  clst <- fun(x, method = method, ...)
-  clst <- as.hclust(clst)
-  clst$call <- match.call()
-  # hclust has to give a different name to the distance metric: dist.method
-  # but we use metric. Again, keep both for maximum compatibility
-  clst$metric <- clst$dist.method
-  # If the original data were scaled or transposed, get the info also
-  clst$rownames.col <- attr(x, "rownames.col")
-  clst$scale <- attr(x, "scale")
-  clst$transpose <- attr(x, "transpose")
-  class(clst) <- unique(c("cluster", class(clst)))
-  clst
-}
-
-# A couple of useful methods for our cluster object
-# str() method is gathered from a dendrogram object
-str.cluster <- function(object, max.level = NA, digits.d = 3L, ...)
-  str(as.dendrogram(object), max.level = max.level, digits.d = digits.d, ...)
-
-labels.cluster <- function(object, ...)
-  object$labels
-
-nobs.cluster <- function(object, ...)
-  length(object$order)
-
-# Other methods by first transforming into dendrogram: rev, reorder, order, [[
-
-# cutree() is an explicit name, but it does not follow the rule of using
-# known methods... and here, it really something that predict() is made for,
-# except it cannot handle newdata =, but that argument is not in its definition
-predict.cluster <- function(object, k = NULL, h = NULL, ...)
-  cutree(object, k = k, h = h)
-
-# There is no broom::glance() or broom::tidy() yet (what to put in it?),
-# but broom:augment() should be nice = add the clusters as .fitted in the tibble
-library(broom)
-augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
-  # Should we transpose the data (note: this is against augment() rules, but...)
-  if (isTRUE(x$transpose)) {
-    # We first have to make sure rownames are correct before the transposition
-    if (!is.matrix(data) && !is.null(data[[x$rownames.col]])) {
-      rownames(data) <- data[[x$rownames.col]]
-      data[[x$rownames.col]] <- NULL
-    }
-    data <- t(data)
-    msg <- "transposed data"
-  } else {
-    msg <- "data"
-  }
-  data <- as_tibble(data)
-
-  # Get clusters
-  clst <- predict(x, k = k, h = h, ...)
-  if (nrow(data) != length(clst)) {
-    stop("Different number of items in ", msg, " (",nrow(data) ,
-      ") and in the clusters (", length(clst), ")")
-  }
-  tibble::add_column(data, .fitted = clst)
-}
-
-# Instead of the default plot.hclust(), we prefer the plot.dendrogram() version
-# that allows for more and better variations of the dendrogram (horizontal or
-# circular), see http://www.sthda.com/english/wiki
-# /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
-# -unsupervised-machine-learning
-plot.cluster <- function(x, y, labels = TRUE, hang = -1, check = TRUE,
-type = "vertical", lab = "Height", ...) {
-  type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
-  # type == "circular" is special because we need to transform as ape::phylo
-  if (type == "circular") {
-    if (!missing(hang))
-      warning("'hang' is not used with a circular dendrogram")
-    phylo <- ape::as.phylo(x)
-    plot(phylo, type = "fan", font = 1, show.tip.label = labels, ...)
-  } else {# Use plot.dendrogram() instead
-    # We first convert into dendrogram objet, then we plot it
-    # (better that plot.hclust())
-    if (isTRUE(labels)) leaflab <- "perpendicular" else leaflab <- "none"
-    dendro <- as.dendrogram(x, hang = hang, check = check)
-    if (type == "horizontal") {
-      plot(dendro, horiz = TRUE, leaflab = leaflab, xlab = lab, ...)
-    } else {
-      plot(dendro, horiz = FALSE, leaflab = leaflab, ylab = lab, ...)
-    }
-  }
-}
-
-# This is to draw circles in a plot (where to cut in a circular dendrogram)
-# TODO: should be nice to do similar function for other symbols too in SciViews
-circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
-  symbols(x = x, y = y, circles = d / 2, fg = col, lwd = lwd, lty = lty,
-    inches = FALSE, add = TRUE, ...)
-
-# TODO: make sure the dendrogram is correct with different ggplot themes
-autoplot.cluster <- function(object, labels = TRUE, type = "vertical",
-circ.text.size = 3, theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
-  if (is.null(type))
-    type <- "vertical"
-  type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
-
-  # Create the dendrogram
-  ddata <- ggdendro::dendro_data(object, type = "rectangle")
-  dendro <- ggplot(ggdendro::segment(ddata)) +
-    geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
-    theme + xlab(xlab) + ylab(ylab)
-
-  if (type == "circular") {
-    if (isTRUE(labels)) {
-      # Get labels (need one more to avoid last = first!)
-      label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
-      xmax <- nobs(object) + 1
-      label_df$id <- 1:xmax
-      angle <-  360 * (label_df$id - 0.5) / xmax
-      # Left or right?
-      label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
-      # Angle for more readable text
-      label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
-    }
-
-    # Make the dendrogram circular
-    dendro <- dendro +
-      scale_x_reverse() +
-      scale_y_reverse() +
-      coord_polar(start = pi/2)
-    if (isTRUE(labels))
-      dendro <- dendro +
-        geom_text(data = label_df,
-          aes(x = id, y = -0.02, label = labels, hjust = hjust),
-          size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE)
-    dendro <- dendro +
-      theme(panel.border = element_blank(),
-        axis.text = element_blank(),
-        axis.line = element_blank(),
-        axis.ticks.y = element_blank()) +
-      ylab("")
-
-  } else if (type == "vertical") {# Vertical dendrogram
-    dendro <- dendro +
-      scale_x_continuous(breaks = seq_along(ddata$labels$label),
-        labels = ddata$labels$label) +
-      scale_y_continuous(expand = expansion(mult = c(0, 0.02))) +
-      theme(panel.border = element_blank(),
-        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        axis.line.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_text(angle = 90, hjust = 0.5))
-    if (!isTRUE(labels))
-      dendro <- dendro +
-        theme(axis.text.x = element_blank())
-
-  } else {# Horizontal dendrogram
-    dendro <- dendro +
-      scale_x_continuous(breaks = seq_along(ddata$labels$label),
-        labels = ddata$labels$label, position = "top") +
-      scale_y_reverse(expand = expansion(mult = c(0.05, 0))) +
-      coord_flip() +
-      theme(panel.border = element_blank(),
-        axis.line.y = element_blank(),
-        axis.ticks.y = element_blank())
-    if (!isTRUE(labels))
-      dendro <- dendro +
-        theme(axis.text.y = element_blank())
-  }
-  dendro
-}
-
-chart.cluster <- function(data, ...,
-  type = NULL, env = parent.frame())
-  autoplot(data, type = type, ...)
-
-# To indicate where to cut in the dendrogram, one could use `geom_hline()`,
-# but when the dendrogram is horizontal or circular, this is suprizing. So,
-# I define geom_dendroline(h = ....)
-geom_dendroline <- function(h, ...)
-  geom_hline(yintercept = h, ...)
-```
-
 ```{r}
+SciViews::R("explore")
 # Distance euclidienne entre cellules
 zoo_som_dist <- dissimilarity(as.data.frame(zoo_som$codes[[1]]),
   method = "euclidean")
 zoo_som_cah <- cluster(zoo_som_dist, method = "ward.D2", members = zoo_som_nb)
 ```
 
-Notre CAH a été réalisée ici avec la méthode D2 de Ward. L'argument `members =` est important. Il permet de pondérer chaque cellule en fonction du nombre d'individus qui y sont mappés. Toutes les cellules n'ont pas un même nombre d'individus, et nous souhaitons mettre plus de poids dans l'analyse aux cellules les plus remplies.
+Notre CAH a été réalisée ici avec la méthode D2 de Ward. L'argument `members =` est important. Il permet de pondérer chaque cellule en fonction du nombre d'individus qui y est mappée. Toutes les cellules n'ont pas un même nombre d'individus, et nous souhaitons mettre plus de poids dans l'analyse aux cellules les plus remplies.
 
 Voici le dendrogramme :
 
@@ -749,18 +388,18 @@ add.cluster.boundaries(zoo_som, clustering = groupes)
 Grâce à la topographie des variables que nous avons réalisée plus haut, nous savons que :
 
 -   le groupe vert bouteille en bas reprend les petites particules plutôt transparentes,
--   le groupe orange à droite est constitué de particules très contrastées avec des parties opaques et d'autres transparentes (`range` dans les niveaux de gris important) mais globalement foncées (`mode` correspondant au niveau de gris le plus représenté faible),
+-   le groupe orange à droite est constitué de particules très contrastées avec des parties opaques et d'autres, transparentes (`range` dans les niveaux de gris important) mais globalement foncées (`mode` correspondant au niveau de gris le plus représenté faible),
 -   le groupe du dessus à droite en blanc est constitué d'autres particules très contrastées, mais à dominante claire (`mode` élevé),
 -   le groupe bleu est constitué des particules moyennes à grandes ayant une forme complexe (variable `elongation` élevée),
--   les groupes vert clair et rose en haut à gauche reprend les toutes grandes particules, avec la cellule unique en rose qui reprend les plus grosses.
+-   les groupes vert clair et rose en haut à gauche reprennent les toutes grandes particules, avec la cellule unique en rose qui reprend les plus grosses.
 
-Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adaptatives SOM... Il est par exemple possible d'aller mapper des nouveaux individus dans cette carte (données supplémentaires), ou même de faire une classification sur base d'exemples (classification supervisée) que nous verrons au cours de Science des Données Biologiques III. Nous espérons que cela vous donnera l'envie et la curiosité de tester cette méthode sur vos données et d'explorer plus avant ses nombreuses possibilités.
+Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adaptatives SOM... Il est par exemple possible d'aller mapper de nouveaux individus dans cette carte (données supplémentaires), ou même de faire une classification sur base d'exemples (classification supervisée) que nous verrons au cours de Science des Données Biologiques III. Nous espérons que cela vous donnera l'envie et la curiosité de tester cette méthode sur vos données et d'explorer plus avant ses nombreuses possibilités.
 
 ##### Pour en savoir plus {.unnumbered}
 
 -   Une [explication très détaillée en français](https://meritis.fr/ia/cartes-topologiques-de-kohonen/) accompagnée de la résolution d'un exemple fictif dans R.
 
--   Une [autre explication détaillée en français](http://eric.univ-lyon2.fr/~ricco/tanagra/fichiers/fr_Tanagra_Kohonen_SOM_R.pdf) avec exemple dans R.
+<!-- Ressource plus disponible?!   Une [autre explication détaillée en français](http://eric.univ-lyon2.fr/~ricco/tanagra/fichiers/fr_Tanagra_Kohonen_SOM_R.pdf) avec exemple dans R. -->
 
 -   Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package {kohonen} en {chart} ou {ggplot2}. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
 
@@ -786,7 +425,7 @@ if (exists("assignment2"))
 
 ## Récapitulatif des exercices
 
-Ce dixième module vous a permis de comprendre ce que sont des données ouvertes et comment partager ses propres données. Vous avez aussi appris à réaliser des cartes auto-adaptatives. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
+Ce dixième module vous a permis de comprendre ce que sont des données ouvertes et comment partager ses propres données. Vous avez aussi appris à réaliser des cartes auto-adaptatives. Pour évaluer votre compréhension de cette matière, vous aviez les exercices suivants à réaliser :
 
 `r show_ex_toc()`
 

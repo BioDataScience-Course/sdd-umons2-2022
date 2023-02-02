@@ -8,7 +8,7 @@ SciViews::R("explore")
 
 -   Être capable d'analyser des données présentes dans des tableaux multiples et/ou hétérogènes simultanément à l'aide de l'analyse factorielle multiple
 
--   Être capable de choisir les meilleurs outils en fonction de la taille des jeux de données à traiter, en particulier pour les (très) gros jeux de données (= big data)
+-   Être capable de choisir les meilleurs outils de traitement et de remaniement de données en fonction de la taille des jeux de données à traiter, en particulier pour les (très) gros tableaux (= big data)
 
 ##### Prérequis {.unnumbered}
 
@@ -33,7 +33,7 @@ Une première approche consiste à convertir des variables afin d'homogénéiser
 |    35 - 40    | obésité classe II  |
 |     \> 40     | obésité classe III |
 
-A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours_r_module_analyse_multi_dimensionnelles/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici[^08-afm-big-data-2].
+À l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours_r_module_analyse_multi_dimensionnelles/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours, mais qu'il est important de mentionner pour mémo ici[^08-afm-big-data-2].
 
 [^08-afm-big-data-2]: Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).
 
@@ -43,7 +43,7 @@ L'analyse factorielle multiple (AFM, *multiple factorial analysis* ou MFA en ang
 
 Lorsque vous chargez les packages nécessaires à l'analyse exploratoire dans SciViews R à l'aide de `SciViews::R("explore")`, vous avez à disposition la fonction `mfa(data = ...., formula)` qui fera les calculs qui nous intéressent. Ensuite nous utiliserons `summary()` et `chart$type()` pour les graphiques, où `type` pourra être `screeplot`, `altscreeplot`, `loadings`, `scores`, `groups`, `axes`, `frequences` ou `ellipses` (nous verrons plus loin ce que représentent tous ces graphiques).
 
-Nous allons aborder cette technique puissante mais un peu plus complexe qu'est l'AFM sur la base d'un jeu de données que nous connaissons bien maintenant via nos exercices précédents : la communauté de plancton le long d'un transect entre Nice et la Corse.
+Nous allons aborder cette technique puissante, mais un peu plus complexe qu'est l'AFM sur la base d'un jeu de données que nous connaissons bien maintenant via nos exercices précédents : la communauté de plancton le long d'un transect entre Nice et la Corse.
 
 ### Plancton en Méditerranée
 
@@ -73,7 +73,7 @@ bind_cols(
   mar
 ```
 
-Ce tableau n'a aucunes valeurs manquantes et il contient 29 variables :
+Ce tableau n'a aucune valeur manquante et il contient 29 variables :
 
 ```{r}
 names(mar)
@@ -90,7 +90,7 @@ Il y a trois groupes distincts :
 Avant de pouvoir réaliser notre AFM, nous devons comprendre comment écrire la formule qui va décrire nos données. Pour chaque groupe, nous ajouterons un terme à la formule qui contient trois composantes :
 
 1.  Le nombre `n` de colonnes constituant le groupe (les colonnes du tableau composite sont comptées de gauche à droite),
-2.  Le `type` de variable considérée. Quatre types sont possibles. Les variables continues à standardiser avant d'être utilisées dans une ACP sont de type **std**. Les variables quantitative également à utiliser selon l'ACP mais *sans* standardisation sont de type **num**. Les données qualitatives assimilables à un tableau de contingence à double entrée (données de fréquences d'observations, dénombrements, etc.) sont de type **cnt** et seront traitées comme une AFC, et enfin, les variables qualitatives classiques sont de type **fct** et seront traitées selon une analyse factorielle multiple AFM.
+2.  Le `type` de variable considérée. Quatre types sont possibles. Les variables continues à standardiser avant d'être utilisées dans une ACP sont de type **std**. Les variables quantitatives également à utiliser selon l'ACP, mais *sans* standardisation sont de type **num**. Les données qualitatives assimilables à un tableau de contingence à double entrée (données de fréquences d'observations, dénombrements, etc.) sont de type **cnt** et seront traitées comme une AFC, et enfin, les variables qualitatives classiques sont de type **fct** et seront traitées selon une analyse factorielle multiple AFM.
 3.  Le `nom` que l'on veut donner à chaque groupe de variables pour l'identifier dans l'analyse.
 
 Un groupe est décrit dans la formule comme `n * type %as% nom` (donc avec les opérateurs `*` et `%as%`). Chaque groupe inclus dans l'analyse est précédé d'un signe plus `+` (le premier plus peut être omis de la formule). Les groupes supplémentaires (à soustraire à l'analyse) sont précédés d'un signe moins `-`. Et enfin, tous les groupes sont décrits à la droite de la formule, donc, après le `~`.
@@ -122,15 +122,15 @@ Ne nous intéressons pour l'instant qu'au tableau `Eignenvalues` qui reprend les
 chart$scree(mar_mfa, fill = "cornsilk")
 ```
 
-Ici, on voit très clairement que deux axes suffisent. La suite de l'analyse se fait à peu près comme une ACP, mais des données et graphes supplémentaires nous permet d'interpréter les groupes de variables les uns par rapport aux autres. Le graphique des variables s'obtient comme pour l'ACP avec `chart$loadings()`. Il est ici plus encombré car nous avons 28 variables. La direction des différents vecteurs par rapport aux dimensions de l'AFM et entre eux nous indique la corrélation directe (même sens), inverse (opposition), ou l'absence de corrélation (vecteurs orthogonaux). Ce graphique permet aussi d'orienter le plan de l'AFM pour nos graphiques ultérieurs.
+Ici, on voit très clairement que deux axes suffisent. La suite de l'analyse se fait à peu près comme une ACP, mais des données et graphes supplémentaires nous permettent d'interpréter les groupes de variables les uns par rapport aux autres. Le graphique des variables s'obtient comme pour l'ACP avec `chart$loadings()`. Il est ici plus encombré, car nous avons 28 variables. La direction des différents vecteurs par rapport aux dimensions de l'AFM et entre eux nous indique la corrélation directe (même sens), inverse (opposition), ou l'absence de corrélation (vecteurs orthogonaux). Ce graphique permet aussi d'orienter le plan de l'AFM pour nos graphiques ultérieurs.
 
 ```{r}
 chart$loadings(mar_mfa, choices = c(1, 2))
 ```
 
-Toutes les variables environnementales sont très bien représentées dans le premier plan de l'AFM (normes quasiment de un). Nous observons une corrélation inverse entre la température (en bas à gauche du premier plan de l'AFM) et la fluorescence (qui pointe en haut à droite du plan). La salinité et la densité sont corrélées positivement entre elles, mais ne le sont pas avec les deux autres variables environnementales. Les salinités et densités élevées sont en bas à droite sur le plan de l'AFM.
+Toutes les variables environnementales sont très bien représentées dans le premier plan de l'AFM (normes quasiment de 1). Nous observons une corrélation inverse entre la température (en bas à gauche du premier plan de l'AFM) et la fluorescence (qui pointe en haut à droite du plan). La salinité et la densité sont corrélées positivement entre elles, mais ne le sont pas avec les deux autres variables environnementales. Les salinités et densités élevées sont en bas à droite sur le plan de l'AFM.
 
-Pour le plancton, nous avons pas mal de choses car plusieurs vecteurs ont une norme importante (nous ignorons les autres, trop mal représentés dans le premier plan de l'AFM). Il faut pointer l'opposition entre des groupes comme GasteropodsLarvae, EchinodermLarvae, Cladocerans et Pteropods qui pointent vers la gauche, et les copépodes (Calanus, Clausocalanus, CopepoditsX, etc.) qui pointent vers la droite. Le découpage selon le second axe pour le plancton est moins net.
+Pour le plancton, nous avons pas mal de choses, car plusieurs vecteurs ont une norme importante (nous ignorons les autres, trop mal représentés dans le premier plan de l'AFM). Il faut pointer l'opposition entre des groupes comme GasteropodsLarvae, EchinodermLarvae, Cladocerans et Pteropods qui pointent vers la gauche, et les copépodes (Calanus, Clausocalanus, CopepoditsX, etc.) qui pointent vers la droite. Le découpage selon le second axe pour le plancton est moins net.
 
 D'autre part, les variables environnementales pour lesquelles deux dimensions fortes se dégagent sont placées en oblique par rapport à la dimension forte du plancton sur Dim 1. cela signifie que les deux dimensions environnementales sont partiellement corrélées avec la présence de ces groupes planctoniques.
 
@@ -245,7 +245,7 @@ Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comp
 
 ##### Pour en savoir plus {.unnumbered}
 
--   Des [slides](http://factominer.free.fr/more/tutorial_2010_MFA.pdf) (en anglais) qui détaillent les calculs sous-jacents à l'AFM, ainsi que d'autres calculs non abordés ici (le RV, les points partiels, ...),
+-   Des [slides](http://factominer.free.fr/more/tutorial_2010_MFA.pdf) (en anglais) qui détaillent les calculs sous-jacents à l'AFM, ainsi que d'autres calculs non abordés ici (le RV, les points partiels ...),
 
 -   Une [vidéo d'introduction à l'AFM](https://www.youtube.com/watch?v=1U-s8u1rcpo) en français (8:37, première partie d'une série de 4 vidéos),
 
@@ -305,7 +305,7 @@ TODO...
 
 ## Récapitulatif des exercices
 
-Ce module 8 vous a permis de découvrir l'AFM, et de traiter des jeux de données volumineux au mieux. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser :
+Ce module 8 vous a permis de découvrir l'AFM, et de traiter des jeux de données volumineux au mieux. Pour évaluer votre compréhension de cette matière, vous aviez les exercices suivants à réaliser :
 
 `r show_ex_toc()`
 

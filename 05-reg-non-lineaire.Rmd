@@ -214,7 +214,7 @@ anim_plot +
 gganimate::anim_save("nls_anim.gif")
 ```
 
-![](images/sdd2_04/nls_anim.gif)
+![](images/sdd2_05/nls_anim.gif)
 
 La convergence est considérée comme obtenue lorsque la différence de valeur de $f_{obj}$ d'une étape à l'autre tombe en dessous d'un **seuil de tolérance** que nous nous sommes fixé. C'est l'argument `control =` de `nls()` qui en reprend les détails, voir `?nls.control`. Les options sont :
 
