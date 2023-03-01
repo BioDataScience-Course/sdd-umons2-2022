@@ -90,7 +90,7 @@ Il y a trois groupes distincts :
 Avant de pouvoir réaliser notre AFM, nous devons comprendre comment écrire la formule qui va décrire nos données. Pour chaque groupe, nous ajouterons un terme à la formule qui contient trois composantes :
 
 1.  Le nombre `n` de colonnes constituant le groupe (les colonnes du tableau composite sont comptées de gauche à droite),
-2.  Le `type` de variable considérée. Quatre types sont possibles. Les variables continues à standardiser avant d'être utilisées dans une ACP sont de type **std**. Les variables quantitatives également à utiliser selon l'ACP, mais *sans* standardisation sont de type **num**. Les données qualitatives assimilables à un tableau de contingence à double entrée (données de fréquences d'observations, dénombrements, etc.) sont de type **cnt** et seront traitées comme une AFC, et enfin, les variables qualitatives classiques sont de type **fct** et seront traitées selon une analyse factorielle multiple AFM.
+2.  Le `type` de variable considérée. Quatre types sont possibles. Les variables continues à standardiser avant d'être utilisées dans une ACP sont de type **std**. Les variables quantitatives également à utiliser selon l'ACP, mais *sans* standardisation sont de type **num**. Les données qualitatives assimilables à un tableau de contingence à double entrée (données de fréquences d'observations, dénombrements, etc.) sont de type **cnt** et seront traitées comme une AFC, et enfin, les variables qualitatives classiques sont de type **fct** et seront traitées comme des variables qualitatives dans l'analyse factorielle multiple AFM.
 3.  Le `nom` que l'on veut donner à chaque groupe de variables pour l'identifier dans l'analyse.
 
 Un groupe est décrit dans la formule comme `n * type %as% nom` (donc avec les opérateurs `*` et `%as%`). Chaque groupe inclus dans l'analyse est précédé d'un signe plus `+` (le premier plus peut être omis de la formule). Les groupes supplémentaires (à soustraire à l'analyse) sont précédés d'un signe moins `-`. Et enfin, tous les groupes sont décrits à la droite de la formule, donc, après le `~`.
@@ -297,11 +297,90 @@ if (exists("assignment2"))
 
 ## Big data
 
-TODO...
+On entend souvent parler de "big data", mais qu'est-ce que c'est réellement ? En quoi cela me concerne comme biologiste ? Que dois-je faire si je suis confronté à un gros jeu de données ? Autant de questions auxquelles nous allons nous attaquer maintenant.
+
+Le "big data" va s'intéresser aux jeux de données qui sont trop volumineux pour être traités avec les outils classiques que nous avons étudiés jusqu'ici. Il va donc de pair avec des outils logiciels spécifiques. Mais au fait, à partir de quelle taille de tableau dois-je m'inquiéter ?
+
+### Gros jeux de données dans R
+
+Au départ, vos données sont stockées sur le disque, proviennent d'Internet, ou d'un package R. Dans `SciViews::R`, vous les lisez en mémoire vive avec la fonction `read()`. Cette fonction importe les données depuis différents formats, mais nous allons considérer deux formats très fréquents en biologie : le CSV et Excel. Microsoft Excel a une limitation maximale de la taille du tableau à un peu plus d'un million de lignes et un peu plus de 16.000 colonnes. Donc, est-ce qu'un million de lignes, c'est à considérer comme du "big data" avec R aussi ? Pour y répondre, il faut déterminer si un tel tableau de données peut tenir en mémoire vive. Admettons que le tableau ne contienne que des nombres réels. Dans R, ces nombres sont représentés par des **"doubles"** qui occupent chacun 8 octets (les entiers de R, dits **"long integers"** occupent, eux, 4 octets chacun). Si vous avez 10 variables matérialisées par des "doubles" dans ce tableau d'un million de lignes, vous aurez : 1.000.000 \* 10 \* 8 octets = 80 millions d'octets ou encore environ 80 mégaoctets (en réalité, un mégaoctets, c'est 1024\*1024 octets, mais ne chicanons pas). La mémoire vive d'un PC moyen fait 8 gigaoctets, soit environ 8000 mégaoctets. Aucuns problèmes pour R avec un tableau de cette taille ou même plus gros. **En matière de nombre de lignes, Excel déclare forfait vers le million, mais R peut facilement gérer des tableaux bien plus volumineux.**
+
+Pour les objets **data.table** que nous utilisons régulièrement dans `SciViews::R`, la limite vient du nombre entier le plus grand que R peut gérer (les entiers sont utilisés pour indexer les lignes du tableau en mémoire). Ce nombre est :
+
+```{r}
+.Machine$integer.max
+```
+
+Comme les entiers sont représentés par 4 octets, cela correspond à 2\^31 - 1 = `r 2^31-1`. On enlève un bit qui sert à stocker le signe de l'entier + ou - et encore un item pour représenter les valeurs manquantes. La limite absolue d'un tableau **data.table** est donc d'un peu plus de 2 milliards de lignes, soit 2000 fois plus que dans Excel.
+
+Une autre limitation est toutefois à prendre aussi en compte : la taille de la mémoire vive disponible. Vous ne pourrez pas ouvrir et travailler avec un tableau de données plus gros, ou même, qui tienne tout juste en mémoire vive. En effet, il faut garder de la mémoire pour le système d'exploitation et les logiciels, dont R. R doit aussi copier les données partiellement ou totalement selon les fonctions que vous allez utiliser sur votre jeu de données. Donc, pour pouvoir faire ensuite quelque chose d'utile sur ce tableau, il faut compter que le tableau le plus volumineux utilisable correspond à la mémoire vive divisée par un facteur entre 2.5 et 3 (2.5 si vous avez beaucoup de mémoire vive, soit 64Go ou plus). Avec votre machine dans SaturnCloud et ses 16Go, vous pourrez donc traiter un tableau de données de 65 millions de lignes, toujours si vous avez les mêmes 10 colonnes de nombres réels dedans (65.000.000 \* 10 \* 8 = 5.2Go).
+
+Si vous souhaitez monter un PC qui ne sera limité que par la taille maximale admissible pour un **data.table,** et jouer avec des tableaux de 2 milliards de lignes (toujours avec 10 colonnes de nombre réels et un facteur multiplicatif de 2.5), il vous faudra installer 400Go de mémoire vive dans ce PC. Naturellement, si vous avez 20 colonnes, il vous en faudra deux fois plus : la taille est relative au nombre de colonnes à raison de 16Go par colonne de nombres réels ou de dates et 8Go par nombres entiers ou variables **factor** sur 2 milliards de lignes, sans oublier de multiplier tout cela par le facteur multiplicatif de 2.5 ou 3.
+
+Mais prenons maintenant un peu de recul : combien de fois aurez-vous à traiter d'aussi gros jeux de données (et surtout à les traiter en une seule fois) ? Il est fort probable plutôt que vous ne rencontrerez déjà que rarement des tableau avec plus de quelques dizaines de millions de lignes. Donc, la quasi-totalité de vos tableaux de données pourront être traités entièrement en mémoire vive, que ce soit dans votre PC directement, ou dans une machine virtuelle plus grosse dans le cloud. Aujourd'hui, un PC de bureau puissant qui coûte quelques milliers d'euros peut accueillir très facilement 128Go de mémoire vive. De plus, vous avez aussi accès (avec un compte payant) à des machine sur le cloud qui ont autant, voire plus de mémoire vie. Par exemple, sur [SaturnCloud](https://saturncloud.io), vous avez les machines **4XLarge** avec 16 cœurs et 128Go de RAM, **8XLarge** avec 32 cœurs et 256Go RAM, et même **16XLarge** avec 64 cœurs et 512Go de RAM !
+
+```{block2, type='info'}
+Avec Excel, vous ne pourrez pas traiter des tableaux plus gros qu'environ 1 million de lignes (voir [ici](https://support.microsoft.com/en-us/office/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3)) et aujourd'hui des tableaux de cette taille se rencontrent en biologie, même si ce n'est pas ultra fréquent. Par contre, la limite dans R est :
+
+-   soit de 2^31-1 lignes = plus de 2 milliards de lignes (nombre de lignes maximales indexables dans un **data.table**),
+-   soit la taille de la mémoire vive en Go à raison d'environ (8Go * nombre de colonnes de réels ou dates + 4Go * nombre d'entiers ou facteurs) * nombre de lignes du tableau / 1.000.000.000 * coefficient multiplicatif (2.5 ou 3).
+
+Aujourd'hui, les PC ou machines virtuelles sur le cloud ayant 128Go de mémoire vive sont relativement accessibles. Ils permettent de traiter des tableaux de 600 millions de lignes par 10 colonnes d'entiers... et vous rencontrerez très, très rarement des tableaux aussi volumineux. Par conséquent, la question du "big data" ne se présentera pas pour vous, ou alors, il s'agira de données gérées par une grosse organisation qui a les moyens nécessaires pour engager une équipe de spécialites qui gère ces données à votre place. **Vous devez, par contre, maîtriser les techniques qui vous permettent de gérer des tableau moyennement volumineux de plusieurs centaines de milliers de lignes à plusieurs dizaines de millions de lignes**.
+```
+
+### Stockage de gros jeux de données
+
+Le format de stockage conseillé pour les tableaux cas par variables et le [CSV](https://docs.fileformat.com/spreadsheet/csv/) ("coma-separated values"). Il s'agit d'un format qui existe depuis les années 1970 et qui est le plus universel pour l'échange et l'archivage des données[^08-afm-big-data-4]. Malheureusement, le format CSV n'est pas le plus économe en espace disque car il stocke les données en clair (lisible par un humain) et donc de manière non compressée. Il est toutefois possible de compresser le fichier à l'aide de trois algorithmes différents : **gz**, **bz2** ou **xz**, dans l'ordre de l'efficacité de compression, mais dans l'ordre inverse de temps de calcul pour compresser et décompresser les données. Ainsi la compression **gz** (le fichier portera l'extension **.csv.gz**) est le mode de compression le plus rapide, mais génère une compression moyenne. **C'est un bon choix pour les tableaux de taille petite à moyenne et pour un usage en local.** À l'opposé, le **xz** (fichiers **.csv.xz**) permet une bien meilleure compression, au prix d'un temps de calcul bien plus long à la compression (la décompression restant moyennement rapide). **C'est un excellent choix pour les fichiers à archiver définitivement ou encore pour un échange via Internet.** Avec le format CSV combiné à la compression, vous pourrez déjà faire beaucoup.
+
+[^08-afm-big-data-4]: Pensez toujours à adjoindre un **dictionnaire des données** à votre fichier CSV qui renseigne les métadonnées nécessaire pour expliciter chaque colonne du tableau... Nous avons traité cette question dans le module 6 du premier cours.
+
+À faire: exemple sur babynames
+
+### Gros jeux de données et git/GitHub
+
+Le système de gestion git, et la plateforme de collaboration GitHub (ou les équivalents GitLab, BitBucket ou autres) n'aiment pas du tout les gros fichiers... et encore moins lorsque ces fichiers sont amenés à changer d'une version à l'autre. Pour nos données brutes, nous pouvons raisonnablement penser que l'on peut avoir un fichier qui ne change pas. C'est déjà ça. Mais GitHub ne tolère pas des fichiers plus gros que 25Mo (si téléversés directement via le navigateur web) ou 100Mo via un push. Nous vous conseillons de considérer les techniques discutées ici dès que les fichiers atteignent ou dépassent de 10Mo.
+
+À faire: expliquer les différentes stratégies pour stocker et accéder à ses données dans un dépôt git/GitHub.
+
+### Bases de données à la rescousse
+
+Si les données sont trop volumineuses pour tenir en mémoire, ou si il n'est pas raisonnable de rapatrier toutes les données (par exemple, depuis Internet) pour au final filtrer ou regrouper les données vers un plus petit jeu de données, il vaut mieux travailler avec des outils spécialisés dans ce type de traitement : les bases de données. Voici un scénario décliné en deux variantes pour vous faire comprendre son intérêt. Vous avez un gros jeu de données (50Go, 9 colonnes par 1 milliard de lignes) sur une machine distante. Vous avez besoin d'une partie de ces données (1%) pour la suite de votre travail, soit 10 millions de lignes après agrégation des données.
+
+**Variante #1 : sans base de données**
+
+-   Données disponibles sur un serveur distant au format CSV, compressé XZ via une URL (compression x5, taille du fichier : 10Go).
+
+-   Utilisation de `read()` sur l'URL. Il faut au moins 128Go de mémoire vive pour traiter un tel tableau. Temps de téléchargement avec une bonne connexion Wifi (120Mbit/s) : 14min.
+
+-   Filtrage et agrégation des données dans `SciViews::R` à l'aide de `sfilter()`, `sgroup_by()` et `ssummarise()` : \< 1 sec.
+
+**Variante #2 : avec base de données**
+
+-   Données disponibles depuis un serveur distant utilisant une base de données PostgreSQL.
+
+-   Connexion à la base de données depuis le R local : \< 1 sec.
+
+-   Utilisation des verbes `filter()`, `group_by()` et `summarise()` dans R avec le package {dbplyr} = code similaire au scénario #1.
+
+-   Exécution d'une requête SQL dans la base de donnée à l'aide de `collect_dtx()`. {dbplyr} convertit automatiquement votre code en SQL et l'envoie au serveur PostgreSQL qui effectue le traitement directement sur le serveur : 1-2 sec.
+
+-   Vous récupérez le tableau des données agrégées. Cela représente 1% des données brutes. Toujuors avec la même connexion Wifi, cela prend environ 10 sec.
+
+-   Comme vous récupérez un tableau de 10 millions de lignes, il ne nécessite plus que 0,5Go de mémoire vive. Même si vous n'avez pas plus de 8Go de RAM, vous pourrez travailler confortablement avec ce tableau dans R.
+
+-   Vous vous déconnectez de la base de données.
+
+La variante #2 est un peu plus compliquée car elle implique la connexion à un serveur de base de données, mais comme vous ne devez pas récupérer l'ensemble des données sur votre propre PC, vous pouvez vous contenter de 8Go de RAM au lieu de 128Go. De plus, le traitement sera bien plus rapide (moins de 15 sec, contre près d'1/4h pour la variance #1). En effet, le téléchargement de l'ensemble des données nécessite de récupérer 10Go de données compressées. C'est le goulot d'étranglement dans le processus qui rend la variante #1 très, très lente. Vous l'aurez compris, dans un tel cas, la base de donnée est largement gagnante (variante #2).
+
+Il existe deux grandes catégories de bases de données : les **bases de données relationnelles ou non**. Les premières utilisent un langage spécifique pour interroger et manipuler les données : le **SQL** ou **"Structured Query Language"**. Dans cette catégorie, nous retrouvons [SQLite](https://www.sqlite.org/index.html), [PostgreSQL](https://www.postgresql.org), MySQL/[MariaDB](https://mariadb.org), Microsoft Access et SQL Server, Oracle, ... Les bases de données non relationnelles, dites "noSQL" utilisent des requêtes en **JSON**. La plus connue est [MongoDB](https://www.mongodb.com), mais il y en a plusieurs autres. Il existe un package R permettant d'accéder à toutes ces bases de données et encore bien d'autres.
+
+Dans un premier temps, vous pouvez vous concentrer sur la façon de vous connecter et de vous déconnecter de la base de données. Ensuite, le package {dbplyr} permet d'utiliser vos verbes {dplyr} familiers tels que `filter()`, `select()`, `mutate()`, `group_by()` ou `summarise()`.
+
+À faire : exemple concret.
 
 ##### À vous de jouer ! {.unnumbered}
 
-`r learnr("B08Lb_bigd", title = "Données volumineuses (big data)", toc = "onnées volumineuses (big data)")`
+`r learnr("B08Lb_bigd", title = "Données volumineuses (big data)", toc = "Données volumineuses (big data)")`
 
 ## Récapitulatif des exercices
 
