@@ -328,18 +328,39 @@ Avec Excel, vous ne pourrez pas traiter des tableaux plus gros qu'environ 1 mill
 Aujourd'hui, les PC ou machines virtuelles sur le cloud ayant 128Go de mémoire vive sont relativement accessibles. Ils permettent de traiter des tableaux de 600 millions de lignes par 10 colonnes d'entiers... et vous rencontrerez très, très rarement des tableaux aussi volumineux. Par conséquent, la question du "big data" ne se présentera pas pour vous, ou alors, il s'agira de données gérées par une grosse organisation qui a les moyens nécessaires pour engager une équipe de spécialites qui gère ces données à votre place. **Vous devez, par contre, maîtriser les techniques qui vous permettent de gérer des tableau moyennement volumineux de plusieurs centaines de milliers de lignes à plusieurs dizaines de millions de lignes**.
 ```
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(223, height = 270, toc = NULL)`
+-->
+```
 ### Stockage de gros jeux de données
 
 Le format de stockage conseillé pour les tableaux cas par variables et le [CSV](https://docs.fileformat.com/spreadsheet/csv/) ("coma-separated values"). Il s'agit d'un format qui existe depuis les années 1970 et qui est le plus universel pour l'échange et l'archivage des données[^08-afm-big-data-4]. Malheureusement, le format CSV n'est pas le plus économe en espace disque car il stocke les données en clair (lisible par un humain) et donc de manière non compressée. Il est toutefois possible de compresser le fichier à l'aide de trois algorithmes différents : **gz**, **bz2** ou **xz**, dans l'ordre de l'efficacité de compression, mais dans l'ordre inverse de temps de calcul pour compresser et décompresser les données. Ainsi la compression **gz** (le fichier portera l'extension **.csv.gz**) est le mode de compression le plus rapide, mais génère une compression moyenne. **C'est un bon choix pour les tableaux de taille petite à moyenne et pour un usage en local.** À l'opposé, le **xz** (fichiers **.csv.xz**) permet une bien meilleure compression, au prix d'un temps de calcul bien plus long à la compression (la décompression restant moyennement rapide). **C'est un excellent choix pour les fichiers à archiver définitivement ou encore pour un échange via Internet.** Avec le format CSV combiné à la compression, vous pourrez déjà faire beaucoup.
 
 [^08-afm-big-data-4]: Pensez toujours à adjoindre un **dictionnaire des données** à votre fichier CSV qui renseigne les métadonnées nécessaire pour expliciter chaque colonne du tableau... Nous avons traité cette question dans le module 6 du premier cours.
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(224, height = 270, toc = NULL)`
+-->
+```
 À faire: exemple sur babynames
 
 ### Gros jeux de données et git/GitHub
 
 Le système de gestion git, et la plateforme de collaboration GitHub (ou les équivalents GitLab, BitBucket ou autres) n'aiment pas du tout les gros fichiers... et encore moins lorsque ces fichiers sont amenés à changer d'une version à l'autre. Pour nos données brutes, nous pouvons raisonnablement penser que l'on peut avoir un fichier qui ne change pas. C'est déjà ça. Mais GitHub ne tolère pas des fichiers plus gros que 25Mo (si téléversés directement via le navigateur web) ou 100Mo via un push. Nous vous conseillons de considérer les techniques discutées ici dès que les fichiers atteignent ou dépassent de 10Mo.
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(225, height = 270, toc = NULL)`
+-->
+```
 À faire: expliquer les différentes stratégies pour stocker et accéder à ses données dans un dépôt git/GitHub.
 
 ### Bases de données à la rescousse
@@ -374,6 +395,13 @@ La variante #2 est un peu plus compliquée car elle implique la connexion à un 
 
 Il existe deux grandes catégories de bases de données : les **bases de données relationnelles ou non**. Les premières utilisent un langage spécifique pour interroger et manipuler les données : le **SQL** ou **"Structured Query Language"**. Dans cette catégorie, nous retrouvons [SQLite](https://www.sqlite.org/index.html), [PostgreSQL](https://www.postgresql.org), MySQL/[MariaDB](https://mariadb.org), Microsoft Access et SQL Server, Oracle, ... Les bases de données non relationnelles, dites "noSQL" utilisent des requêtes en **JSON**. La plus connue est [MongoDB](https://www.mongodb.com), mais il y en a plusieurs autres. Il existe un package R permettant d'accéder à toutes ces bases de données et encore bien d'autres.
 
+```{=html}
+<!-- H5P en cours de validation
+##### À vous de jouer ! {.unnumbered}
+
+`r h5p(226, height = 270, toc = NULL)`
+-->
+```
 Dans un premier temps, vous pouvez vous concentrer sur la façon de vous connecter et de vous déconnecter de la base de données. Ensuite, le package {dbplyr} permet d'utiliser vos verbes {dplyr} familiers tels que `filter()`, `select()`, `mutate()`, `group_by()` ou `summarise()`.
 
 À faire : exemple concret.
