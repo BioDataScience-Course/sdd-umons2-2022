@@ -49,7 +49,7 @@ Nous allons aborder cette technique puissante, mais un peu plus complexe qu'est 
 
 Les jeux de données `marphy` et `marbio` dans le package {pastecs} présentent deux tableaux de données complémentaires. Le premier, `marphy` reprend les mesures environnementales de base (température, salinité et densité des masses d'eaux), ainsi qu'une information indirecte sur la concentration en phytoplancton : la fluorescence de la chlorophylle. Le second tableau `marbio` reprend les effectifs observés dans 24 groupes de zooplancton mesurés sur des échantillons issus des mêmes stations que `marphy`. Ces stations sont réparties de manière équidistante le long d'un transect entre le continent (vers Nice, station n°1) et la Corse (à Calvi, station n°68).
 
-![Exemple d'organismes appartenant au zooplancton (Matt Wilson & Jay Clark, NOAA NMFS AFSC, licence : domaine public)](images/sdd2_08/zooplankton.jpg)
+![Exemple d'organismes appartenant au zooplancton (Matt Wilson & Jay Clark, NOAA NMFS AFSC, license : domaine public)](images/sdd2_08/zooplankton.jpg)
 
 Jusqu'à présent, nous avions utilisé ces deux tableaux séparément. Notre objectif ici est de les analyser ensemble. Nous allons commencer par considérer ces deux tableaux comme **quantitatifs**. Dans ce cas, l'AFM réalisera deux ACP, une par tableau. Ensuite, elle pondérera les données de chacun en fonction de la part de variance sur le premier axe respectif. Pour finir, elle réalisera une ACP globale avec toutes les données qui conservera la structure de chacun des deux tableaux initiaux grâce à la pondération appliquée en interne.
 
@@ -170,7 +170,7 @@ Si on interprète ce graphique des individus en fonction de l'orientation donné
 
 -   La zone frontale est caractérisée par la température la plus basse et la fluorescence la plus élevée alors que la salinité est moyenne. C'est logique : on a une remontée d'eaux froides des profondeurs riches en nutriments que le phytoplancton utilise (fluorescence élevée signifie phytoplancton élevé).
 
--   La zone centrale en Corse à Calvi est caractérisée par la salinité la plus élevée, une température élevée et une fluorescence basse, caractéristiques d'une zone oligothrophe. Comme nous l'avons déjà noté, la communauté planctonique est similaire à ce qu'on rencontre au large au milieu du transect, et elle tranche sensiblement avec celle rencontrée du côté niçois.
+-   La zone centrale en Corse à Calvi est caractérisée par la salinité la plus élevée, une température élevée et une fluorescence basse, caractéristiques d'une zone oligotrophe. Comme nous l'avons déjà noté, la communauté planctonique est similaire à ce qu'on rencontre au large au milieu du transect, et elle tranche sensiblement avec celle rencontrée du côté niçois.
 
 Revenons sur la façon dans l'AFM est construite (le fameux "compromis"), et son interprétation par rapport aux masses d'eaux. Le graphique suivant montre les relations entre les groupes.
 
@@ -303,7 +303,7 @@ Le "big data" va s'intéresser aux jeux de données qui sont trop volumineux pou
 
 ### Gros jeux de données dans R
 
-Au départ, vos données sont stockées sur le disque, proviennent d'Internet, ou d'un package R. Dans `SciViews::R`, vous les lisez en mémoire vive avec la fonction `read()`. Cette fonction importe les données depuis différents formats, mais nous allons considérer deux formats très fréquents en biologie : le CSV et Excel. Microsoft Excel a une limitation maximale de la taille du tableau à un peu plus d'un million de lignes et un peu plus de 16.000 colonnes. Donc, est-ce qu'un million de lignes, c'est à considérer comme du "big data" avec R aussi ? Pour y répondre, il faut déterminer si un tel tableau de données peut tenir en mémoire vive. Admettons que le tableau ne contienne que des nombres réels. Dans R, ces nombres sont représentés par des **"doubles"** qui occupent chacun 8 octets (les entiers de R, dits **"long integers"** occupent, eux, 4 octets chacun). Si vous avez 10 variables matérialisées par des "doubles" dans ce tableau d'un million de lignes, vous aurez : 1.000.000 \* 10 \* 8 octets = 80 millions d'octets ou encore environ 80 mégaoctets (en réalité, un mégaoctets, c'est 1024\*1024 octets, mais ne chicanons pas). La mémoire vive d'un PC moyen fait 8 gigaoctets, soit environ 8000 mégaoctets. Aucuns problèmes pour R avec un tableau de cette taille ou même plus gros. **En matière de nombre de lignes, Excel déclare forfait vers le million, mais R peut facilement gérer des tableaux bien plus volumineux.**
+Au départ, vos données sont stockées sur le disque, proviennent d'Internet, ou d'un package R. Dans `SciViews::R`, vous les lisez en mémoire vive avec la fonction `read()`. Cette fonction importe les données depuis différents formats, mais nous allons considérer deux formats très fréquents en biologie : le CSV et Excel. Microsoft Excel a une limitation maximale de la taille du tableau à un peu plus d'un million de lignes et un peu plus de 16.000 colonnes. Donc, est-ce qu'un million de lignes, c'est à considérer comme du "big data" avec R aussi ? Pour y répondre, il faut déterminer si un tel tableau de données peut tenir en mémoire vive. Admettons que le tableau ne contienne que des nombres réels. Dans R, ces nombres sont représentés par des **"doubles"** qui occupent chacun 8 octets (les entiers de R, dits **"long integers"** occupent, eux, 4 octets chacun). Si vous avez 10 variables matérialisées par des "doubles" dans ce tableau d'un million de lignes, vous aurez : 1.000.000 \* 10 \* 8 octets = 80 millions d'octets ou encore environ 80 mégaoctets (en réalité, un mégaoctet, c'est 1024\*1024 octets, mais ne chicanons pas). La mémoire vive d'un PC moyen fait 8 gigaoctets, soit environ 8000 mégaoctets. Aucun problème pour R avec un tableau de cette taille ou même plus gros. **En matière de nombre de lignes, Excel déclare forfait vers le million, mais R peut facilement gérer des tableaux bien plus volumineux.**
 
 Pour les objets **data.table** que nous utilisons régulièrement dans `SciViews::R`, la limite vient du nombre entier le plus grand que R peut gérer (les entiers sont utilisés pour indexer les lignes du tableau en mémoire). Ce nombre est :
 
@@ -315,9 +315,9 @@ Comme les entiers sont représentés par 4 octets, cela correspond à 2\^31 - 1 
 
 Une autre limitation est toutefois à prendre aussi en compte : la taille de la mémoire vive disponible. Vous ne pourrez pas ouvrir et travailler avec un tableau de données plus gros, ou même, qui tienne tout juste en mémoire vive. En effet, il faut garder de la mémoire pour le système d'exploitation et les logiciels, dont R. R doit aussi copier les données partiellement ou totalement selon les fonctions que vous allez utiliser sur votre jeu de données. Donc, pour pouvoir faire ensuite quelque chose d'utile sur ce tableau, il faut compter que le tableau le plus volumineux utilisable correspond à la mémoire vive divisée par un facteur entre 2.5 et 3 (2.5 si vous avez beaucoup de mémoire vive, soit 64Go ou plus). Avec votre machine dans SaturnCloud et ses 16Go, vous pourrez donc traiter un tableau de données de 65 millions de lignes, toujours si vous avez les mêmes 10 colonnes de nombres réels dedans (65.000.000 \* 10 \* 8 = 5.2Go).
 
-Si vous souhaitez monter un PC qui ne sera limité que par la taille maximale admissible pour un **data.table,** et jouer avec des tableaux de 2 milliards de lignes (toujours avec 10 colonnes de nombre réels et un facteur multiplicatif de 2.5), il vous faudra installer 400Go de mémoire vive dans ce PC. Naturellement, si vous avez 20 colonnes, il vous en faudra deux fois plus : la taille est relative au nombre de colonnes à raison de 16Go par colonne de nombres réels ou de dates et 8Go par nombres entiers ou variables **factor** sur 2 milliards de lignes, sans oublier de multiplier tout cela par le facteur de 2.5 à 3.
+Si vous souhaitez monter un PC qui ne sera limité que par la taille maximale admissible pour un **data.table,** et jouer avec des tableaux de 2 milliards de lignes (toujours avec 10 colonnes de nombres réels et un facteur multiplicatif de 2.5), il vous faudra installer 400Go de mémoire vive dans ce PC. Naturellement, si vous avez 20 colonnes, il vous en faudra deux fois plus : la taille est relative au nombre de colonnes à raison de 16Go par colonne de nombres réels ou de dates et 8Go par nombres entiers ou variables **factor** sur 2 milliards de lignes, sans oublier de multiplier tout cela par le facteur de 2.5 à 3.
 
-Mais prenons maintenant un peu de recul : combien de fois aurez-vous à traiter d'aussi gros jeux de données (et surtout à les traiter en une seule fois) ? Il est fort probable plutôt que vous ne rencontrerez déjà que rarement des tableau avec plus de quelques dizaines de millions de lignes. Donc, la quasi-totalité de vos tableaux de données pourront être traités entièrement en mémoire vive, que ce soit dans votre PC directement, ou dans une machine virtuelle plus grosse dans le cloud. Aujourd'hui, un PC puissant, style station de travail, qui coûte quelques milliers d'euros peut accueillir très facilement 128Go de mémoire vive. De plus, vous avez aussi accès (avec un compte payant) à des machine sur le cloud qui ont autant, voire plus de mémoire vie. Par exemple, sur [SaturnCloud](https://saturncloud.io), vous avez les machines **4XLarge** avec 16 cœurs et 128Go de RAM, **8XLarge** avec 32 cœurs et 256Go RAM, et même **16XLarge** avec 64 cœurs et 512Go de RAM !
+Mais prenons maintenant un peu de recul : combien de fois aurez-vous à traiter d'aussi gros jeux de données (et surtout à les traiter en une seule fois) ? Il est fort probable plutôt que vous ne rencontrerez déjà que rarement des tableau avec plus de quelques dizaines de millions de lignes. Donc, la quasi-totalité de vos tableaux de données pourront être traitée entièrement en mémoire vive, que ce soit dans votre PC directement, ou dans une machine virtuelle plus grosse dans le cloud. Aujourd'hui, un PC puissant, style station de travail, qui coûte quelques milliers d'euros, peut accueillir très facilement 128Go de mémoire vive. De plus, vous avez aussi accès (avec un compte payant) à des machine sur le cloud qui ont autant, voire plus de mémoire vive. Par exemple, sur [SaturnCloud](https://saturncloud.io), vous avez les machines **4XLarge** avec 16 cœurs et 128Go de RAM, **8XLarge** avec 32 cœurs et 256Go RAM, et même **16XLarge** avec 64 cœurs et 512Go de RAM !
 
 ```{block2, type='info'}
 Avec Excel, vous ne pourrez pas traiter des tableaux plus gros qu'environ 1 million de lignes (voir [ici](https://support.microsoft.com/en-us/office/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3)) et aujourd'hui des tableaux de cette taille se rencontrent en biologie, même si ce n'est pas ultra fréquent. Par contre, la limite dans R est :
@@ -345,7 +345,7 @@ Il nous a fallu seulement `r round(time, 3)` secondes pour charger ce jeu de don
 install.packages("babynames")
 ```
 
-Ensuite seulement, vous pourrez lire le jeu de données avec l'instruction `read()`un peu plus haut. Pour visionner de manière compacte la structure du tableau, vous pouvez utiliser `str()` :
+Ensuite seulement, vous pourrez lire le jeu de données avec l'instruction `read()`un peu plus haut. Pour visualiser de manière compacte la structure du tableau, vous pouvez utiliser `str()` :
 
 ```{r}
 str(babynames) # Structure du tableau
@@ -365,7 +365,7 @@ Notre tableau occupe près de 75 millions d'octets (*Bytes* en anglais, d'où l'
 (lobstr::obj_size(babynames) / 2^20) |> unclass()
 ```
 
-Notre tableau occupe 71,5 mégaoctets en mémoire vive. Pour connaitre la quantité de mémoire vive totale occupée par R, les packages et les objets chargés en mémoire, regarder dans l'onglet **Environment** de RStudio. Dans la barre d'outils, il y a un petit graphique en parts de tarte qui l'indique avec la valeur en `MiB` ou `GiB`. Les `MiB`, contrairement aux `MB` correspondent, eux, à 1.000.000 d'octets. Confus ? Oui, ce n'est pas facile, il y a deux façons de calculer la taille en mémoire et sur le disque, avec le "kilo" octets qui vaut soit 1000, soit 1024. Soyez bien attentifs. Par exemple, la taille des disques durs et disques SSD sont généralement renseignés en `GiB`, des millions d'octets ou en `TiB`, des milliards d'octets, mais la taille des partitions sur le disque sont renseignées en `GB`, soit 1024 x 1024 x 1024 octets. Cela explique que vos partitions dépassent de peu les 900 gigaoctets sur votre disque pourtant bien. renseigné comme ayant une capacité de ... 1 teraoctets ! Mais revenons à notre onglet **Environment**. Si vous cliquez sur la petite flèche noire pointant vers le bas à la droite du graphique en parts de tartes et de l'indication, vous avez un menu déroulant qui donne accès à un rapport plus complet de l'utilisation, de la mémoire vive par la session actuelle... C'est très pratique pour voir où on en est, surtout quand on manipule des très gros jeux de données ! Notez à présent la quantité de mémoire utilisée par la session R (le nombre qui apparaît dans la barre d'outils) après avoir chargé le tableau `babynames`. Nous allons maintenant faire une opération classique sur ce tableau. Nous allons résumé l'utilisation des prénoms toutes années confondues et les trier du plus utilisé au moins utilisé. Ce faisant, nous enregistrerons également le temps nécessaire à ce calcul dans R avec `system.time()`.
+Notre tableau occupe 71,5 mégaoctets en mémoire vive. Pour connaitre la quantité de mémoire vive totale occupée par R, les packages et les objets chargés en mémoire, regarder dans l'onglet **Environment** de RStudio. Dans la barre d'outils, il y a un petit graphique en parts de tarte qui l'indique avec la valeur en `MiB` ou `GiB`. Les `MiB`, contrairement aux `MB` correspondent, eux, à 1.000.000 d'octets. Confus ? Oui, ce n'est pas facile, il y a deux façons de calculer la taille en mémoire et sur le disque, avec le "kilo" octets qui vaut soit 1000, soit 1024. Soyez bien attentifs. Par exemple, la taille des disques durs et disques SSD sont généralement renseignés en `GiB`, des millions d'octets ou en `TiB`, des milliards d'octets, mais la taille des partitions sur le disque sont renseignées en `GB`, soit 1024 x 1024 x 1024 octets. Cela explique que vos partitions dépassent de peu les 900 gigaoctets sur votre disque pourtant bien. renseigné comme ayant une capacité de ... 1 téraoctet ! Mais revenons à notre onglet **Environment**. Si vous cliquez sur la petite flèche noire pointant vers le bas à la droite du graphique en parts de tartes et de l'indication, vous avez un menu déroulant qui donne accès à un rapport plus complet de l'utilisation, de la mémoire vive par la session actuelle... C'est très pratique pour voir où on en est, surtout quand on manipule de très gros jeux de données ! Notez à présent la quantité de mémoire utilisée par la session R (le nombre qui apparaît dans la barre d'outils) après avoir chargé le tableau `babynames`. Nous allons maintenant faire une opération classique sur ce tableau. Nous allons résumer l'utilisation des prénoms toutes années confondues et les trier du plus utilisé au moins utilisé. Ce faisant, nous enregistrerons également le temps nécessaire à ce calcul dans R avec `system.time()`.
 
 ```{r}
 (time <- system.time(
@@ -377,7 +377,7 @@ Notre tableau occupe 71,5 mégaoctets en mémoire vive. Pour connaitre la quanti
 )[["elapsed"]])
 ```
 
-Il a fallu moins d'une seconde sur la machine qui compile ce cours pour faire cette opération. Vous voyez donc que, non seulement, nous pouvons lire dans R très facilement des tableaux de plusieurs millions de lignes, mais qu'en plus, les remaniements classiques avec les fonctions "speedy" dont le nom commence par "s" sont également très rapides. Voici les dix prénoms les plus utilisées aux États-Unis :
+Il a fallu moins d'une seconde sur la machine qui compile ce cours pour faire cette opération. Vous voyez donc que, non seulement, nous pouvons lire dans R très facilement des tableaux de plusieurs millions de lignes, mais qu'en plus, les remaniements classiques avec les fonctions "speedy" dont le nom commence par "s" sont également très rapides. Voici les dix prénoms les plus utilisés aux États-Unis :
 
 ```{r}
 head(names, n = 10)
@@ -385,7 +385,7 @@ head(names, n = 10)
 
 Il s'agit de prénoms masculins. Cela veut donc dire que les principaux prénoms masculins sont bien plus (ré)utilisés que les principaux prénoms féminins pour lesquels il y a plus de diversité.
 
-Notez à présent la quantité de mémoire utilisée par votre session R... Normalement, si vous êtes parti d'une session vide, vous restez encore largement en dessous du gigaoctets, soit très loin des 16Go disponibles. On a de la marge et aucune précaution particulière ne doit être prise avec des tableaux "aussi petits" pour R. Par contre, faites bien attention aux outils statistiques que vous utilisez dessus. Par exemple, ajuster un modèle linéaire généralisé avec variable aléatoire dans une telle quantité de données prendra soit un temps très, très long, soit fera planter la machine par manque de mémoire (il s'agit d'une technique qui demande énormément de calculs).
+Notez à présent la quantité de mémoire utilisée par votre session R... Normalement, si vous êtes parti d'une session vide, vous restez encore largement en dessous du gigaoctet, soit très loin des 16Go disponibles. On a de la marge et aucune précaution particulière ne doit être prise avec des tableaux "aussi petits" pour R. Par contre, faites bien attention aux outils statistiques que vous utilisez dessus. Par exemple, ajuster un modèle linéaire généralisé avec variable aléatoire dans une telle quantité de données prendra soit un temps très, très long, soit fera planter la machine par manque de mémoire (il s'agit d'une technique qui demande énormément de calculs).
 
 ```{block2, type='info'}
 Lorsque vous manipulez des gros jeux de données dans R, pensez toujours à surveiller l'utilisation de la mémoire vive par la session en cours et à éliminer les objets qui ne sont plus utiles. Pour cela, vous pouvez utiliser `rm()`. Par exemple, pour effacer de la mémoire un table nommé `df`, et un vecteur `x`, vous entrez `rm(df, x)`.
@@ -393,15 +393,15 @@ Lorsque vous manipulez des gros jeux de données dans R, pensez toujours à surv
 
 ### Format de stockage
 
-Le format de stockage conseillé pour les tableaux cas par variables est le [CSV](https://docs.fileformat.com/spreadsheet/csv/) ("coma-separated values"). Il s'agit d'un format qui existe depuis les années 1970 et qui est le plus universel pour l'échange et l'archivage des données[^08-afm-big-data-4]. Malheureusement, le format CSV n'est pas le plus économe en espace disque car il stocke les données en clair (lisible par un humain) et donc de manière non compressée. Il est toutefois possible de compresser le fichier à l'aide de trois algorithmes différents : **gz**, **bz2** ou **xz**, dans l'ordre de l'efficacité de compression, mais dans l'ordre inverse de temps de calcul pour compresser et décompresser les données. Ainsi la compression **gz** (le fichier portera l'extension **.csv.gz**) est le mode de compression le plus rapide, mais qui génère une compression moyenne. **C'est un bon choix pour les tableaux de taille petite à moyenne et pour un usage en local.** À l'opposé, le **xz** (fichiers **.csv.xz**) permet une bien meilleure compression, au prix d'un temps de calcul bien plus long à la compression (la décompression restant moyennement rapide). **C'est un excellent choix pour les fichiers à archiver définitivement ou encore pour un échange via Internet.** La compression **.bz2** est intermédiaire, et donc utile si vous voulez un compromis entre les deux. Avec le format CSV combiné à la compression, vous pourrez déjà faire beaucoup.
+Le format de stockage conseillé pour les tableaux cas par variables est le [CSV](https://docs.fileformat.com/spreadsheet/csv/) ("coma-separated values"). Il s'agit d'un format qui existe depuis les années 1970 et qui est le plus universel pour l'échange et l'archivage des données[^08-afm-big-data-4]. Malheureusement, le format CSV n'est pas le plus économe en espace disque, car il stocke les données en clair (lisible par un humain) et donc de manière non compressée. Il est toutefois possible de compresser le fichier à l'aide de trois algorithmes différents : **gz**, **bz2** ou **xz**, dans l'ordre de l'efficacité de compression, mais dans l'ordre inverse de temps de calcul pour compresser et décompresser les données. Ainsi la compression **gz** (le fichier portera l'extension **.csv.gz**) est le mode de compression le plus rapide, mais qui génère une compression moyenne. **C'est un bon choix pour les tableaux de taille petite à moyenne et pour un usage en local.** À l'opposé, le **xz** (fichiers **.csv.xz**) permet une bien meilleure compression, au prix d'un temps de calcul bien plus long à la compression (la décompression restant moyennement rapide). **C'est un excellent choix pour les fichiers à archiver définitivement ou encore pour un échange via Internet.** La compression **.bz2** est intermédiaire, et donc utile si vous voulez un compromis entre les deux. Avec le format CSV combiné à la compression, vous pourrez déjà faire beaucoup.
 
-[^08-afm-big-data-4]: Pensez toujours à adjoindre un **dictionnaire des données** à votre fichier CSV qui renseigne les métadonnées nécessaire pour expliciter chaque colonne du tableau... Nous avons traité cette question dans le module 6 du premier cours.
+[^08-afm-big-data-4]: Pensez toujours à adjoindre un **dictionnaire des données** à votre fichier CSV qui renseigne les métadonnées nécessaires pour expliciter chaque colonne du tableau... Nous avons traité cette question dans le module 6 du premier cours.
 
 ##### À vous de jouer ! {.unnumbered}
 
 `r h5p(223, height = 270, toc = "Écriture de gros jeux de données")`
 
-Nous allons maintenant enregistrer le tableau d'origine `babynames` sur le disque. Une fois n'est pas coutume, nous sortirons du dépôt et créerons un dossier temporaire nommé `babynames_to_delete` qui, comme son nom l'indique, est voué à être effacé[^08-afm-big-data-5]. Si vous exécutez ceci dans SaturnCloud assurez-vous d'avoir bien effacé les données car vous n'avez que 10GiB de disque disponible au total.
+Nous allons maintenant enregistrer le tableau d'origine `babynames` sur le disque. Une fois n'est pas coutume, nous sortirons du dépôt et créerons un dossier temporaire nommé `babynames_to_delete` qui, comme son nom l'indique, est voué à être effacé[^08-afm-big-data-5]. Si vous exécutez ceci dans SaturnCloud assurez-vous d'avoir bien effacé les données, car vous n'avez que 10GiB de disque disponible au total.
 
 [^08-afm-big-data-5]: Nous pourrions aussi utiliser un dossier temporaire créé comme sous-dossier de `tempdir()`, mais il ne sera alors pas si facile d'explorer les fichiers créés dans l'onglet **Files** de RStudio.
 
@@ -443,7 +443,7 @@ timings$taille_Mo[1] <- file_size(csv_file) / 2^20 # Transformation en Mo
 
 La vitesse d'écriture (et de lecture) dépend naturellement de R, mais aussi de la vitesse du disque utilisé. La machine où ce cours est compile est assez rapide. L'écriture prend moins d'une seconde. Dans SaturnCloud, c'est un peu plus lent, mais toujours très acceptable.
 
-Nous faisons maintenant de même pour les trois format de compression **.gz**, **.bz2** et .**xz**. Compression GZ :
+Nous faisons maintenant de même pour les trois formats de compression **.gz**, **.bz2** et .**xz**. Compression GZ :
 
 ```{r}
 csv_gz_file <- path(testdir, "babynames.csv.gz")
@@ -488,7 +488,7 @@ Cela donne le résultat suivant :
 knitr::kable(timings)
 ```
 
-Comme vous pouvez le constater, la compression de ce type de tableau n'est pas négligeable. Déjà avec GZ, on obtient une compression cinq fois et avec XZ, cela monte à 7,5 fois et on passe de 46,5Mo à un peu plus de 6Mo. cependant, le temps de compression (écriture) est alors très long. Le format GZ est le plus rapide et le format BZ2 reste raisonnablement rapide en écriture avec un excellent niveau de compression, mais c'est le plus lent en lecture ensuite. Voici quelques directives basées sur ce résultats :
+Comme vous pouvez le constater, la compression de ce type de tableau n'est pas négligeable. Déjà avec GZ, on obtient une compression cinq fois et avec XZ, cela monte à 7,5 fois et on passe de 46,5Mo à un peu plus de 6Mo. cependant, le temps de compression (écriture) est alors très long. Le format GZ est le plus rapide et le format BZ2 reste raisonnablement rapide en écriture avec un excellent niveau de compression, mais c'est le plus lent en lecture ensuite. Voici quelques directives basées sur ce résultat :
 
 -   S'il y a beaucoup de place sur le disque et que le disque est rapide, le format non compressé CSV est à privilégier.
 
@@ -498,7 +498,7 @@ Comme vous pouvez le constater, la compression de ce type de tableau n'est pas n
 
 -   Pour une compression maximale, utilisez XZ. Ceci se justifie pour des fichiers à stocker sur un serveur sur le net. En effet, le temps de téléchargement sera ici le facteur le plus important et il est directement proportionnel à la taille du fichier.
 
-Vous pouvez naviguer jusque votre dossier `babynames_to_delete` dans l'onglet **Files** pour voir vos différents fichiers. Enfin, lorsque vous avez fini de travailler avec des gros jeux de données, pensez à nettoyer votre environnement de travail, et éventuellement, vos dossiers des objets et fichiers devenus inutiles (**important sur SaturnCloud !**).
+Vous pouvez naviguer jusque dans votre dossier `babynames_to_delete` dans l'onglet **Files** pour voir vos différents fichiers. Enfin, lorsque vous avez fini de travailler avec de gros jeux de données, pensez à nettoyer votre environnement de travail, et éventuellement, vos dossiers des objets et fichiers devenus inutiles (**important sur SaturnCloud !**).
 
 ```{r}
 rm(babynames, babynames2)
@@ -513,11 +513,11 @@ fs::dir_delete(testdir)
 
 Si nous pouvons travailler confortablement dans R avec des tableaux de plusieurs millions de lignes, le système de gestion git et la plateforme de collaboration GitHub (ou les équivalents GitLab, BitBucket ou autres) n'aiment pas du tout, par contre, les gros fichiers que ces tableaux génèrent... et encore moins lorsque ces fichiers sont amenés à changer d'une version à l'autre ! Pour nos données brutes, nous pouvons raisonnablement penser que l'on peut avoir un fichier qui ne change pas. C'est déjà ça. Mais GitHub ne tolère pas des fichiers plus gros que 25Mo (si téléversés directement via le navigateur web) ou 100Mo via un push. Nous vous conseillons de considérer les techniques discutées ici dès que les fichiers atteignent ou dépassent de 10Mo.
 
-Premièrement, envisagez de stocker vos données (compression csv.xz si possible) ailleurs où elles sont accessible via un lien URL. Pour cela, il vous faut un serveur de fichiers. Des stockages cloud comme OneDrive, Google Drive, ... ne permettent en général pas le téléchargement direct de fichiers via une URL (en tous cas pas sans ruser) : il faut obligatoirement passer par l'interface du système. Par contre, certains dépôts spécialisés dans les données comme [Zeonodo](https://zenodo.org) vous permettent de créer un compte gratuit et d'ensuite partager des données, y compris de très, très gros fichiers (jusqu'à 50Go, voire plus avec autorisation à demander aux gestionnaires du site). Vous aurez en plus, un DOI, c'est-à-dire, un identifiant unique pour faciliter l'accès (voir module 10).
+Premièrement, envisagez de stocker vos données (compression csv.xz si possible) ailleurs où elles sont accessibles via un lien URL. Pour cela, il vous faut un serveur de fichiers. Des stockages cloud comme OneDrive, Google Drive, ... ne permettent en général pas le téléchargement direct de fichiers via une URL (en tous cas pas sans ruser) : il faut obligatoirement passer par l'interface du système. Par contre, certains dépôts spécialisés dans les données comme [Zeonodo](https://zenodo.org) vous permettent de créer un compte gratuit et d'ensuite partager des données, y compris de très, très gros fichiers (jusqu'à 50Go, voire plus avec autorisation à demander aux gestionnaires du site). Vous aurez en plus, un DOI, c'est-à-dire, un identifiant unique pour faciliter l'accès (voir module 10).
 
 Deuxièmement, décidez si vous voulez *toujours* télécharger vos données depuis cette URL, ou si vous voulez utiliser un **cache** qui vous permettra de ne lire le fichier qu'une seule fois et de le stocker ensuite sur le disque. La fonction `read()` admet un argument `cache=` qui indique où stocker une copie du fichier. Le but est de le stocker dans le dépôt, mais dans un dossier qui sera ignoré de git, par exemple dans `data/cache`. Ainsi, vous éditerez le fichier `.gitignore` à la racine du dépôt en y ajoutant `data/cache/`. La barre oblique à la fin est importante pour spécifier qu'il s'agit d'un dossier dont on veut ignorer tout le contenu. À partir de ce moment, le fichier en cache ne sera pas repris dans les commits/pulls/ pushes.
 
-Troisièmement, vous utilisez `read()` sur l'URL et indiquez le fichier désiré dans `cache_file=`. Cela donne quelque chose comme ceci (spécifiez toujours bien le format avec `$…` si vous charger depuis une URL) :
+Troisièmement, vous utilisez `read()` sur l'URL et indiquez le fichier désiré dans `cache_file=`. Cela donne quelque chose comme ceci (spécifiez toujours bien le format avec `$…` si vous chargez depuis une URL) :
 
 ```{r, eval=FALSE}
 dir_create("data/cache") # S"assurer que le dossier existe
@@ -543,7 +543,7 @@ Ce mécanisme est très efficace pour contourner les limitations de git et GitHu
 
 ### Bases de données à la rescousse
 
-Si les données sont trop volumineuses pour tenir en mémoire, ou si il n'est pas raisonnable de rapatrier toutes les données (par exemple, depuis Internet) pour au final filtrer ou regrouper les données vers un plus petit jeu de données, il vaut mieux travailler avec des outils spécialisés dans ce type de traitement : les bases de données. Voici un scénario décliné en deux variantes pour vous faire comprendre son intérêt. Vous avez un gros jeu de données (50Go, 9 colonnes par 1 milliard de lignes) sur une machine distante. Vous avez besoin d'une partie de ces données (1%) pour la suite de votre travail, soit 10 millions de lignes après agrégation des données.
+Si les données sont trop volumineuses pour tenir en mémoire, ou s'il n'est pas raisonnable de rapatrier toutes les données (par exemple, depuis Internet) pour au final filtrer ou regrouper les données vers un plus petit jeu de données, il vaut mieux travailler avec des outils spécialisés dans ce type de traitement : les bases de données. Voici un scénario décliné en deux variantes pour vous faire comprendre son intérêt. Vous avez un gros jeu de données (50Go, 9 colonnes par 1 milliard de lignes) sur une machine distante. Vous avez besoin d'une partie de ces données (1%) pour la suite de votre travail, soit 10 millions de lignes après agrégation des données.
 
 **Variante #1 : sans base de données**
 
@@ -561,7 +561,7 @@ Si les données sont trop volumineuses pour tenir en mémoire, ou si il n'est pa
 
 -   Utilisation des verbes `filter()`, `group_by()` et `summarise()` dans R avec le package {dbplyr} = code similaire au scénario #1.
 
--   Exécution d'une requête SQL dans la base de donnée à l'aide de `collect_dtx()`. {dbplyr} convertit automatiquement votre code en SQL et l'envoie au serveur PostgreSQL qui effectue le traitement directement sur le serveur : 1-2 sec.
+-   Exécution d'une requête SQL dans la base de données à l'aide de `collect_dtx()`. {dbplyr} convertit automatiquement votre code en SQL et l'envoie au serveur PostgreSQL qui effectue le traitement directement sur le serveur : 1-2 sec.
 
 -   Vous récupérez le tableau des données agrégées. Cela représente 1% des données brutes. Toujours avec la même connexion Wifi, cela prend environ 10 sec.
 
@@ -569,7 +569,7 @@ Si les données sont trop volumineuses pour tenir en mémoire, ou si il n'est pa
 
 -   Vous vous déconnectez de la base de données.
 
-La variante #2 est un peu plus compliquée car elle implique la connexion à un serveur de base de données, mais comme vous ne devez pas récupérer l'ensemble des données sur votre propre PC, vous pouvez vous contenter de 8Go de RAM au lieu de 128Go. De plus, le traitement sera bien plus rapide (moins de 15 sec, contre près d'1/4h pour la variance #1). En effet, le téléchargement de l'ensemble des données nécessite de récupérer 10Go de données compressées. C'est le goulot d'étranglement dans le processus qui rend la variante #1 très, très lente. Vous l'aurez compris, dans un tel cas, la base de donnée est largement gagnante (variante #2).
+La variante #2 est un peu plus compliquée, car elle implique la connexion à un serveur de base de données, mais comme vous ne devez pas récupérer l'ensemble des données sur votre propre PC, vous pouvez vous contenter de 8Go de RAM au lieu de 128Go. De plus, le traitement sera bien plus rapide (moins de 15 sec, contre près d'1/4h pour la variance #1). En effet, le téléchargement de l'ensemble des données nécessite de récupérer 10Go de données compressées. C'est le goulot d'étranglement dans le processus qui rend la variante #1 très, très lente. Vous l'aurez compris, dans un tel cas, la base de données est largement gagnante (variante #2).
 
 Il existe deux grandes catégories de bases de données : les **bases de données relationnelles ou non**. Les premières utilisent un langage spécifique pour interroger et manipuler les données : le **SQL** ou **"Structured Query Language"**. Dans cette catégorie, nous retrouvons [SQLite](https://www.sqlite.org/index.html), [PostgreSQL](https://www.postgresql.org), MySQL/[MariaDB](https://mariadb.org), Microsoft Access et SQL Server, Oracle, ... Les bases de données non relationnelles, dites "noSQL" utilisent des requêtes en **JSON**. La plus connue est [MongoDB](https://www.mongodb.com), mais il y en a plusieurs autres. Il existe des packages R permettant d'accéder à toutes ces bases de données et encore à bien d'autres.
 
@@ -577,15 +577,105 @@ Il existe deux grandes catégories de bases de données : les **bases de donné
 
 `r h5p(226, height = 270, toc = "Bases de données et requêtes")`
 
-L'exemple présenté plus haut est fictif. Dans un premier temps, vous pouvez vous concentrer sur la façon de vous connecter et de vous déconnecter de la base de données. Ensuite, le package {dbplyr} permet d'utiliser vos verbes {dplyr} familiers tels que `filter()`, `select()`, `mutate()`, `group_by()` ou `summarise()`. Pour cela, nous allons toujours utiliser notre jeu de données `babynames`, mais nous créerons une base de données [DuckDB](https://duckdb.org) en mémoire dans l'unique but de comprendre la logique de connexion et d'interrogation d'une base de données avec {dbplyr}. Nous approfondirons l'utilisation des bases de données dans le module suivant.
+L'exemple présenté plus haut est fictif. Dans un premier temps, vous pouvez vous concentrer sur la façon de vous connecter et de vous déconnecter de la base de données. Ensuite, le package {dbplyr} permet d'utiliser vos verbes {dplyr} familiers tels que `filter()`, `select()`, `mutate()`, `group_by()` ou `summarise()`. Pour cela, nous allons toujours utiliser notre jeu de données `babynames`, mais nous créerons une base de données [DuckDB](https://duckdb.org) en mémoire dans l'unique but de comprendre la logique de connexion et d'interrogation d'une base de données avec {dbplyr}. Nous approfondirons l'utilisation des bases de données dans le module suivant. Assurons-nous d'abord d'avoir `SciViews::R` et le jeu de données `babynames` chargés.
 
 ```{r}
-# A faire: exemp^le de connexion à une base de données DuckDB
+SciViews::R
+babynames <- read("babynames", package = "babynames")
+```
+
+Nous créons une base de données DuckDB en mémoire et nous nous y connectons dans la foulée avec `DBI::dbConnect()`. Naturellement, la plupart du temps, la base de données sera créée sur le disque en indiquant un chemin d'accès à cette base pour l'argument `dbdir=` à `DBI::dbConnect()` (voir l'aide en ligne de `?duckdb::duckdb`). Ensuite, nous recopions `babynames` dans la base de données avec `copy_to()`. En pratique, vous pouvez imaginer une base de données préexistante n'importe où sur Internet et qui possède déjà les données à utiliser.
+
+```{r}
+# Création de la base de données et connexion
+con <- DBI::dbConnect(duckdb::duckdb())
+copy_to(con, babynames)
+```
+
+À présent, afin d'éviter de confondre la table "babynames" dans la base de données et le jeu de données dans R `babynames`, nous allons effacer ce dernier. Il ne subsistera donc plus que la version dans DuckBD !
+
+```{r}
+rm(babynames) # Élimination du jeu de données dans la session R
+```
+
+Le package {DBI} vous offre une panoplie de fonctions pour interagir avec la base de données. Par exemple, pour lister les tables présentes dans la base de données :
+
+```{r}
+DBI::dbListTables(con)
+```
+
+... et pour lister les variables (on parle de **champs** pour une base de données, ou *fields* en anglais), vous ferez :
+
+```{r}
+DBI::dbListFields(con, "babynames")
+```
+
+Tout cela concerne bien les données dans DuckDB. Dans l'environnement R, nous n'avons que `con` la connexion à cette base de données, mais aucune autre donnée dans R lui-même. Nous pouvons créer un objet **tbl** qui va être lié à une table de notre base de données comme ceci :
+
+```{r}
+db_babynames <- tbl(con, "babynames")
+db_babynames
+```
+
+Quand vous imprimez le contenu de `db_babynames`, vous pouvez avoir l'impression qu'il contient les données, mais il n'en est rien. Une requête sur les 10 premières lignes du tableau est faite en interne à la base de données. Ensuite ces 10 lignes sont affichées, et le résultat est jeté. Aucune donnée n'est réellement stockée dans `db_babynames`. D'ailleurs, ce n'est pas un data frame, mais une liste.
+
+La particularité de l'objet `db_babynames` est donc qu'il ne fait qu'un lien avec la table de la base de données. Insistons bien : le contenu de la base n'est *pas* dans R, il appartient au serveur de la base de données, ici, à DuckDB qui gère sa base en mémoire vive. Cependant, vous pourrez l'utiliser presque comme si c'était un jeu de données habituel dans R. Mais à chaque fois que vous écrirez du code qui utilise une fonction "tidy", l'action est mise en attente et traduite en **langage SQL** qui est le langage compris par le serveur de base de données. La fonction `show_query()` permet de visualiser ce code SQL à tout moment.
+
+À titre d'exemple, reprenons notre petit traitement précédent. Il consiste à sommer les occurrences de tous les prénoms sur toutes les années et puis à les arranger du plus fréquent au moins fréquent. Pour rappel, voici le code que nous avions utilisé avec les fonctions "speedy" pour effectuer l'opération sur le data frame `babynames` en mémoire vive dans la session R :
+
+```{r, eval=FALSE}
+babynames %>.%
+  sgroup_by(., name) %>.%
+  ssummarise(., total = fsum(n)) %>.%
+  sarrange(., desc(total)) %->%
+  names
+```
+
+Nous allons maintenant réécrire ce code en fonction "tidy" (**attention : les fonctions "speedy" commençant par "s" et les fonctions "fast" commençant par "f" ne sont *pas* utilisables avec les objets tbl !)**.
+
+```{r}
+db_babynames %>.%
+  group_by(., name) %>.%
+  summarise(., total = sum(n, na.rm = TRUE)) %>.%
+  arrange(., desc(total)) ->
+  query
+```
+
+Nous avons éliminé les "s" et "f" devant le nom des fonctions et nous assignons maintenant avec l'opérateur standard `->` (très important) à l'objet `query`. Comme la fonction `sum()` n'élimine pas les valeurs manquantes par défaut, contrairement à `fsum()`, nous devons préciser `na.rm = TRUE` pour avoir le même traitement. À ce stade, rien n'est réalisé. La base de données n'est **pas encore** interrogée. Utilisons maintenant `show_query()` pour voir à quoi ressemble le code SQL équivalent, code qui sera exécuté dans la base de données ultérieurement.
+
+```{r}
+show_query(query)
+```
+
+Même si vous n'avez jamais rencontré de code SQL auparavant, vous noterez qu'il est relativement compréhensible. Les mots clés utilisés sont proches des noms de fonction de {dplyr}. Ce n'est pas un hasard : {dplyr} s'est inspiré de l'existant, et notamment du langage SQL. À présent, il est temps d'effectuer notre requête dans la base de données et de récupérer le résultat. Pour cela, nous utilisons :`collect_dtx()`
+
+```{r}
+names <- collect_dtx(query)
+names
+```
+
+Notez bien les points suivants :
+
+1.  Tout le calcul s'est fait dans DuckDB et non dans R.
+2.  Le contenu de la table "babynames" (près de 2 millions de lignes par 5 colonnes) est resté dans la base de données.
+3.  Seul le résultat a été transféré à R, soit un bien plus petit tableau de 97310 lignes par 2 colonnes. On est donc bien dans le scénario #2 vu plus haut. Ici, ce n'est pas très important, car les données sont de toute façon en mémoire vive, mais si le serveur de base de données était à distance et accessible via Internet, cela ferait gagner un temps considérable !
+4.  Ni `con`, ni `db_babynames`, ni `query` ne sont des tableaux contenant des données. Ce sont tous des objets spéciaux créés pour dialoguer avec la base de données.
+5.  Par contre, le résultat final obtenu via `collect_dtx()`, ou avec l'assignation alternative `%<-%` ou `%->%` est bien un data frame classique contenant des données (ici dans `names`).
+
+Lorsque nous avons fini avec cette base de données, nous nous déconnectons avec `DBI::dbDisconnect()`, en indiquant `shutdown = TRUE` pour la fermer par la même occasion (dans le cas d'un serveur distant, nous n'avons pas besoin de le fermer ; il restera disponible pour d'autres requêtes ultérieures). Cela libère la mémoire vive occupée dans notre cas.
+
+```{r}
+DBI::dbDisconnect(con, shutdown = TRUE)
 ```
 
 ##### Pour en savoir plus {.unnumbered}
 
-À faire : quelques liens vers des sites intéressants relatifs à cette matière...
+-   Le [site de {dbplyr}](https://dbplyr.tidyverse.org) contient une introduction et plusieurs articles (en anglais) expliquant comment l'utiliser et comment cela fonctionne en interne.
+-   [R API for DuckDB](https://duckdb.org/docs/api/r.html) :utilisation de DuckDB depuis R (en anglais).
+-   Une [présentation](https://jthomasmock.github.io/bigger-data/#54) expliquant comment travailler avec de gros jeux de données (en anglais).
+-   Une [série de blogs](https://jozef.io/tags/sparklyr/) intéressants expliquant un outil alternatif très utilisé : **Spark**, avec le package {sparklyr}, en anglais.
+-   Le [package {piggyback}](https://docs.ropensci.org/piggyback/) propose une alternative intéressante pour stocker des données volumineuses dans un dépôt GitHub sans l'encombrer, via les "releases", en anglais.
+-   Le [package {pins}](https://pins.rstudio.com) permet de "publier" des données dans un format qui en facilite la réutilisation, y compris la gestion de différentes versions, en anglais.
 
 ##### À vous de jouer ! {.unnumbered}
 
