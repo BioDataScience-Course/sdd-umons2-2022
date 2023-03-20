@@ -16,6 +16,8 @@ La section relative aux bases de données fait suite aux notions vues dans le ca
 
 Les techniques MDS étudiées à la fin de ce module étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(cah-kmeans-div) doit être assimilé avant de s'attaquer au présent module.
 
+**Le script R relatif à cette section est disponible [ici](https://raw.githubusercontent.com/BioDataScience-Course/sdd_lessons/2022-2023/B09/R/B09Ra_db_mds.R).** Il peut être copié et collé dans un document `.R` dans RStudio sous SaturnCloud pour l'exécuter et l'explorer par vous-même.
+
 ## Accès aux bases de données
 
 Puisque nous traitons de jeux de données multivariés potentiellement très gros, il devient important de pouvoir accéder aux données stockées de manière plus structurée que dans un fichier au format CSV ou Excel, par exemple. Les bases de données, et notamment les **bases de données relationnelles**, sont prévues pour stocker de grandes quantités de données de manière structurée et pour pouvoir en extraire la partie qui nous intéresse à l'aide de **requêtes**. Nous allons ici étudier les rudiments indispensables pour nous permettre de gérer l'accès à de telles bases de données depuis R.
@@ -224,8 +226,7 @@ whol %>.%
   left_join(., pop) %>.% # étape 1 fusion
   filter(., year >= 2000 & year < 2010 & sex == "f" & age %in% c("2534", "3544", "4554")) %>.% # étape 2 filtrage
   group_by(., country, year) %>.% # étape 3 regroupement par pays et année
-  summarise(., total = population, all_new = sum(new_cases, na.rm = TRUE)) %>.% # étape 4 somme des cas
-  distinct(.) %>.% # 12 fois les mêmes lignes, n'en garder qu'une à chaque fois
+  summarise(., total = first(population), all_new = sum(new_cases, na.rm = TRUE)) %>.% # étape 4 somme des cas
   mutate(., prevalence = all_new / total) %>.% # étape 5, calcul de la prévalence
   group_by(., country) %>.% # étape 6 regroupement par pays
   summarise(., mean_prev = mean(prevalence, na.rm = TRUE)) %>.% # étape 7 prévalence moyenne
@@ -455,9 +456,8 @@ dm_from_src(con) %>.%
   dm_add_fk(., who, c(country, year), pop) %>.% # Clé étrangère who -> pop
   #dm_add_fk(., pop, country, countries) %>.% # Clé étrangère pop -> countries
   dm_add_fk(., who, country, countries) %->% # Clé étrangère who -> countries
-  
   who_dm
-# graphique du schéma de la base
+# Graphique du schéma de la base
 dm_draw(who_dm, view_type = "all")
 ```
 
@@ -487,8 +487,7 @@ who_dm %>.% # étape 1 de jointure inutile avec un objet dm
   dm_flatten_to_tbl(., who) %>.% # Réduction en une seule table
   # Le traitement ci-dessous est identique à celui dans R !
   group_by(., country, year) %>.% # étape 3 regroupement par pays et année
-  summarise(., total = population, all_new = sum(new_cases, na.rm = TRUE)) %>.% # étape 4 somme des cas
-  distinct(.) %>.% # 12 fois les mêmes lignes, n'en garder qu'une à chaque fois
+  summarise(., total = first(population), all_new = sum(new_cases, na.rm = TRUE)) %>.% # étape 4 somme des cas
   mutate(., prevalence = all_new / total) %>.% # étape 5, calcul de la prévalence
   group_by(., country) %>.% # étape 6 regroupement par pays
   summarise(., mean_prev = mean(prevalence, na.rm = TRUE)) %>.% # étape 7 prévalence moyenne
