@@ -8,7 +8,7 @@ SciViews::R("explore")
 
 -   Aller plus loin dans la gestion de gros jeux de données et de données réparties en plusieurs tables avec les bases de données relationnelles, la normalisation des données et les modèles de données.
 
--   Comprendre la représentation d'une matrice de distances sur un carte (ordination) et la réduction de dimensions via le positionnement multidimensionnel MDS.
+-   Comprendre la représentation d'une matrice de distances sur une carte (ordination) et la réduction de dimensions via le positionnement multidimensionnel MDS.
 
 ##### Prérequis {.unnumbered}
 
@@ -26,7 +26,7 @@ Puisque nous traitons de jeux de données multivariés potentiellement très gro
 SQL est un langage dédié aux requêtes et la manipulation de bases de données relationnelles, constituées de tables (équivalent à des tableaux cas par variables en statistiques) reliées entre elles par une ou plusieurs *clés*. Par exemple, le champ `auteur` d'une liste de livres dans la table `Livres` renvoie (est lié à) vers le champs `nom` d'une autre table `Ecrivains` qui fournit plus de détails sur chaque auteur.
 ```
 
-Il existe différents moteurs de bases de données relationnelles. Les plus courants sont : SQLite, MySQL/MariaDB, PosgreSQL, SQL Server, Oracle, ... Mais il y a aussi des nouveaux qui offrent des fonctions intéressantes et/ou des performances inégalées dans certaines applications, notamment **DuckDB** que nous avons déjà utilisé au module précédent et que nous continuerons à utiliser ici. La plupart de ces solutions nécessitent d'installer un **serveur** de base de données centralisé. Cependant, SQLite et DuckDB, proposent une approche plus légère permettant d'exploiter le langage SQL ([prononcez "S.Q.L." ou "Sequel"](https://www.vertabelo.com/blog/notes-from-the-lab/sql-or-sequel)) sans devoir installer un serveur externe à R, y compris avec des petites bases de données test en mémoire ou contenues dans un fichier.
+Il existe différents moteurs de bases de données relationnelles. Les plus courants sont : SQLite, MySQL/MariaDB, PosgreSQL, SQL Server, Oracle ... Mais il y a aussi des nouveaux qui offrent des fonctions intéressantes et/ou des performances inégalées dans certaines applications, notamment **DuckDB** que nous avons déjà utilisé au module précédent et que nous continuerons à utiliser ici. La plupart de ces solutions nécessitent d'installer un **serveur** de base de données centralisé. Cependant, SQLite et DuckDB proposent une approche plus légère permettant d'exploiter le langage SQL ([prononcez "S.Q.L." ou "Sequel"](https://www.vertabelo.com/blog/notes-from-the-lab/sql-or-sequel)) sans devoir installer un serveur externe à R, y compris avec des petites bases de données tests en mémoire ou contenues dans un fichier.
 
 ### Drivers de bases de données dans RStudio
 
@@ -41,7 +41,7 @@ Dans la SciViews Box, une série de drivers sont préinstallés, notamment pour 
 -   Indiquer **New R Script** dans la section **Connect from:**
 -   Cliquer sur **OK**
 
-Un nouveau script s'ouvre avec le coce suivant :
+Un nouveau script s'ouvre avec le code suivant :
 
 ```{r, eval=FALSE}
 library(DBI)
@@ -85,7 +85,7 @@ drv <- duckdb(dbdir = "duckdb_test.db")
 con <- dbConnect(drv)
 ```
 
-Nous nous intéressons à des données relatives à la tuberculose, issues de l'organisation mondiale de la santé (*World Health Organization* en anglais, d'où le nom du jeu de données `who`). Comme les cas de tuberculose par pays sont à mettre en relation avec la taille de la population de chaque pays, nous récupérons ces informations complémentaires dans un autre data frame nommé `pop`. Ces deux jeux de données sont disponibles depuis le package {tidyr}.
+Nous nous intéressons à des données relatives à la tuberculose, issues de l'Organisation mondiale de la santé (*World Health Organization* en anglais, d'où le nom du jeu de données `who`). Comme les cas de tuberculose par pays sont à mettre en relation avec la taille de la population de chaque pays, nous récupérons ces informations complémentaires dans un autre data frame nommé `pop`. Ces deux jeux de données sont disponibles depuis le package {tidyr}.
 
 ```{r}
 who <- read("who", package = "tidyr")
@@ -100,7 +100,7 @@ Allez voir l'aide relative à ces données en entrant `?tidyr::who` à la consol
 -   **year :** l'année (entier)
 -   **population :** le nombre d'habitants dans ce pays cette année-là (entier).
 
-Par contre, la table `who` est un peu plus "nébuleuse" car elle contient 60 variables. Nous y retrouvons des variables identiques à la table `pop` : **country** et **year**. De plus, deux colonnes précisent le pays avec des codes abbrégés (colonnes nommées **iso2** et **iso3**). Par exemple pour l'Afghanistan (premier pays par ordre alphabétique), le code ISO2 est "AF" et le code ISO3 est "AFG". Ces quatre colonnes ne posent pas de problèmes particuliers.
+Par contre, la table `who` est un peu plus "nébuleuse", car elle contient 60 variables. Nous y retrouvons des variables identiques à la table `pop` : **country** et **year**. De plus, deux colonnes précisent le pays avec des codes abrégés (colonnes nommées **iso2** et **iso3**). Par exemple pour l'Afghanistan (premier pays par ordre alphabétique), le code ISO2 est "AF" et le code ISO3 est "AFG". Ces quatre colonnes ne posent pas de problèmes particuliers.
 
 Ce sont les 56 autres colonnes qui devraient vous intriguer. La page d'aide indique que le nom de chaque colonne est formé de plusieurs items : "new" (pour nouveaux cas de tuberculose), "rel", "sn", "sp", "ep", un code indiquant la méthode de diagnostic, et enfin, une dernière composante commençant par "m" ou "f" (le genre) et suivi de deux à quatre chiffres indiquant la classe d'âge, par exemple, "1524" pour les 15 à 24 ans, avec "014", la classe de 0 à 14 ans et "65", la classe de 65 ans et plus. Vous vous doutez bien qu'un tel encodage des données ne va pas être facile à utiliser ! Cela nous permet d'aborder des règles de remaniement des tableaux de données qui simplifient leur usage dans une base de données relationnelle. Cela s'appelle la **normalisation** des données. Mais avant d'aborder cela, voyons comment travailler dans R directement avec ces données (à titre de comparaison).
 
@@ -110,25 +110,25 @@ La question à laquelle nous souhaitons répondre est la suivante : **Quels son
 
 #### Traitement en R
 
-Nous effectuons d'abord le traitement à partir du tableau `wol` non retravaillé (section facultative) afin de démontrer les difficultés qui apparaissent lorsque les données sont mal présentées. Ensuite, nous remanierons le tableau `wol` et feront le traitement à nouveau. En R, nous pourrions utiliser les fonctions "tidy" ou "speedy" (et d'autres encore) pour décomposer le problème en plusieurs étapes plus simples. Nous utiliserons ici autant que possible les fonctions "tidy". *Réfléchissez un peu par vous-mêmes comment vous feriez pour répondre à cette question dans R avant de continuer votre lecture...*
+Nous effectuons d'abord le traitement à partir du tableau `wol` non retravaillé (section facultative) afin de démontrer les difficultés qui apparaissent lorsque les données sont mal présentées. Ensuite, nous remanierons le tableau `wol` et ferons le traitement à nouveau. En R, nous pourrions utiliser les fonctions "tidy" ou "speedy" (et d'autres encore) pour décomposer le problème en plusieurs étapes plus simples. Nous utiliserons ici autant que possible les fonctions "tidy". *Réfléchissez un peu par vous-mêmes comment vous feriez pour répondre à cette question dans R avant de continuer votre lecture...*
 
 <details>
 
 <summary>Traitement à partir du tableau `wol` non retravaillé</summary>
 
-Nous pouvons dé"composer le problème comme suit :
+Nous pouvons décomposer le problème comme suit :
 
 1.  fusion des tableaux `who` et `pop`,
 2.  filtrage des données pour ne conserver que les années égales ou supérieures à 2000 et inférieures à 2010,
 3.  **filtrage des données pour ne conserver que les femmes entre 25 et 54 ans,**
-4.  **somme des nouveaux cas de tuberculose, quelle que soit la méthode de détection et la classe d'âge,**
+4.  **somme de nouveaux cas de tuberculose, quelles que soit la méthode de détection et la classe d'âge,**
 5.  calcul des proportions, soit la somme de cas divisés par la population totale, variable nommée `prevalence`,
 6.  regroupement par pays,
 7.  résumé des prévalences moyennes par pays, toutes années confondues,
 8.  tri de ces prévalences moyennes par ordre décroissant,
 9.  enfin, ne conserver que les dix pays ayant les plus fortes prévalences moyennes.
 
-Les étapes 3 et 4 sont mises en évidence car elles seront difficile à réaliser à cause du mauvais encodage. C'est parce que l'information requise (genre et classe d'âge) n'est **pas** reprise sous forme de données dans le tableau, mais **cachée** dans le nom des colonnes. Les deux premières étapes sont faciles pour quelqu'un qui maîtrise un peu les fonctions "tidy".
+Les étapes 3 et 4 sont mises en évidence, car elles seront difficiles à réaliser à cause du mauvais encodage. C'est parce que l'information requise (genre et classe d'âge) n'est **pas** reprise sous forme de données dans le tableau, mais **cachée** dans le nom des colonnes. Les deux premières étapes sont faciles pour quelqu'un qui maîtrise un peu les fonctions "tidy".
 
 ```{r}
 dim(who)
@@ -150,7 +150,7 @@ dim(who3)
 names(who3)
 ```
 
-L'étape 4 pose aussi quelques soucis car à nouveau, l'information nécessaire utile est encodée dans le nom des variables. Ici, nous pourrions être tentés d'utiliser un `mutate()` avec quelque chose comme `all_new = new_sp_f2534 + new_sn_f2534 + <...longue liste à compléter ici !>`. Non seulement, c'est pénible à encoder, mais en plus, cela ne fonctionnera pas à cause des valeurs manquantes. Vous vous retrouverez avec des `NA` à peu près partout ! Si vous êtes tenté d'utiliser `all_new = sum(new_sp_f2534, new_sn_f2534, <...longue liste à compléter ici !>, na.rm = TRUE)`... et bien cela ne fonctionnera pas non plus (essayez si vous ne me croyez pas) ! Il existe plusieurs façons de faire cela, mais aucune n'est très élégante. Nous vous épargnons les détails. **Ce qui est important de noter, c'est la difficulté à réaliser cette étape 4 à cause du mauvais encodage des données dans `who` au départ.** Allez, c'est parti en utilisant `rowSums()` qui, comme son nom l'indique, calcule des sommes par lignes (les plus téméraires peuvent rechercher une autre façon de faire comme exercice) !
+L'étape 4 pose aussi quelques soucis, car à nouveau, l'information nécessaire utile est encodée dans le nom des variables. Ici, nous pourrions être tentés d'utiliser un `mutate()` avec quelque chose comme `all_new = new_sp_f2534 + new_sn_f2534 + <...longue liste à compléter ici !>`. Non seulement c'est pénible à encoder, mais en plus, cela ne fonctionnera pas à cause des valeurs manquantes. Vous vous retrouverez avec des `NA` à peu près partout ! Si vous êtes tenté d'utiliser `all_new = sum(new_sp_f2534, new_sn_f2534, <...longue liste à compléter ici !>, na.rm = TRUE)`... et bien cela ne fonctionnera pas non plus (essayez si vous ne me croyez pas) ! Il existe plusieurs façons de faire cela, mais aucune n'est très élégante. Nous vous épargnons les détails. **Ce qui est important de noter, c'est la difficulté à réaliser cette étape 4 à cause du mauvais encodage des données dans `who` au départ.** Allez, c'est parti en utilisant `rowSums()` qui, comme son nom l'indique, calcule des sommes par lignes (les plus téméraires peuvent rechercher une autre façon de faire comme exercice) !
 
 ```{r}
 who3 %>.%
@@ -163,7 +163,7 @@ dim(who4)
 names(who4)
 ```
 
-Les étapes suivantes ne posent pas pas problèmes particuliers car nous venons d'évacuer la difficulté du mauvais encodage des données avec le calcul de notre colonne `all_new`.
+Les étapes suivantes ne posent pas de problèmes particuliers, car nous venons d'évacuer la difficulté du mauvais encodage des données avec le calcul de notre colonne `all_new`.
 
 ```{r}
 who4 %>.%
@@ -175,7 +175,7 @@ who4 %>.%
   head(., 10) # étape 9 seulement les 10 premiers pays
 ```
 
-Ouf ! Cela n'a pas été simple du tout. Faites une pose bien méritée, mais ne vous découragez pas si vous avez perdu le fil. L'important est de tirer la conclusion que, lorsque les données sont mal encodées, le traitement risque de s'avérer très pénible même dans R.
+Ouf ! Cela n'a pas été simple du tout. Faites une pause bien méritée, mais ne vous découragez pas si vous avez perdu le fil. L'important est de tirer la conclusion que, lorsque les données sont mal encodées, le traitement risque de s'avérer très pénible même dans R.
 
 </details>
 
@@ -189,7 +189,7 @@ dim(whol)
 head(whol)
 ```
 
-Notez que notre tableau long possède plus de 400.000 lignes. Nous devons encore modifier le tableau afin d'avoir trois colonnes à la place de `type`. Ces colonnes vont reprendre les informations suivantes : (1) la méthode de détection (`method`), (2) le genre (`sex`) et (3) la classe d'âge (`age`). Nous pourrions être tenté d'utiliser `separate()` ici. Malheureusement, nous n'avons pas un caractère qui sépare de manière parfaite nos informations. Le trait souligné sépare la méthode du reste, mais il est repris dans la méthode également comme avec `new_sp`, mais pas toujours comme avec `newrel`. De plus, aucun caractère ne sépare le genre de la classe d'âge. Décidément, ce jeu de données est particulièrement pénible à traiter. Pas de découragement. Cela nous donne l'occasion de découvrir d'autres fonctions R utiles ! Nous allons extraire les infos avec `substring()` que vous n'avez probablement pas encore utilisé. Cette fonction extrait des parties d'une chaîne de caractères, en indiquant le caractère de début et de fin pour le découpage. Par exemple :
+Notez que notre tableau long possède plus de 400.000 lignes. Nous devons encore modifier le tableau afin d'avoir trois colonnes à la place de `type`. Ces colonnes vont reprendre les informations suivantes : (1) la méthode de détection (`method`), (2) le genre (`sex`) et (3) la classe d'âge (`age`). Nous pourrions être tentés d'utiliser `separate()` ici. Malheureusement, nous n'avons pas un caractère qui sépare de manière parfaite nos informations. Le trait souligné sépare la méthode du reste, mais il est repris dans la méthode également comme avec `new_sp`, mais pas toujours comme avec `newrel`. De plus, aucun caractère ne sépare le genre de la classe d'âge. Décidément, ce jeu de données est particulièrement pénible à traiter. Pas de découragement. Cela nous donne l'occasion de découvrir d'autres fonctions R utiles ! Nous allons extraire les infos avec `substring()` que vous n'avez probablement pas encore utilisé. Cette fonction extrait des parties d'une chaîne de caractères, en indiquant le caractère de début et de fin pour le découpage. Par exemple :
 
 ```{r}
 substring("new_ep_f2534", 1, 6) # method
