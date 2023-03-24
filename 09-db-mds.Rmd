@@ -742,7 +742,7 @@ if (exists("assignment"))
     course.starts = c(
       'S-BIOG-061' = !"{W[28]+1} 13:00:00"),
     course.ends = c(
-      'S-BIOG-061' = !"{W[29]+1} 23:59:59"),
+      'S-BIOG-061' = !"{W[32]+1} 23:59:59"),
     term = "Q2", level = 3,
     toc = "Bases de données et analyse MDS (rat-kangourous à Portal)")
 ```

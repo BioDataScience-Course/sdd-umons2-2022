@@ -1031,7 +1031,7 @@ if (exists("assignment2"))
     course.starts = c(
       'S-BIOG-061' = !"{W[24]+1} 13:00:00"),
     course.ends = c(
-      'S-BIOG-061' = !"{W[29]+5} 23:59:59"),
+      'S-BIOG-061' = !"{W[32]+1} 23:59:59"),
     term = "Q2", level = 4, n = 4,
     toc = "Étude écologique sur le Doubs (I)")
 ```

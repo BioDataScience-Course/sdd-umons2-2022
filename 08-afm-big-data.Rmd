@@ -101,7 +101,9 @@ Un groupe est décrit dans la formule comme `n * type %as% nom` (donc avec les o
 
 Dans notre cas concret ici, cela donne :
 
-    ~ 4*std %as% environnement + 24*num %as% plancton - 1*fct %as% zone
+```         
+~ 4*std %as% environnement + 24*num %as% plancton - 1*fct %as% zone
+```
 
 L'analyse se fait en appelant `mfa(data = ...., formula)`. Nous assignons le résultat du calcul à `mar_mfa` :
 
@@ -290,7 +292,7 @@ if (exists("assignment2"))
     course.starts = c(
       'S-BIOG-061' = !"{W[26]+1} 13:00:00"),
     course.ends = c(
-      'S-BIOG-061' = !"{W[29]+5} 23:59:59"),
+      'S-BIOG-061' = !"{W[32]+1} 23:59:59"),
     term = "Q2", level = 4, n = 4,
     toc = "Étude écologique sur le Doubs (II)")
 ```
