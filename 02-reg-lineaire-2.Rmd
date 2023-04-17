@@ -131,7 +131,7 @@ Comparez ces résultats avec ceux du modèle qui utilise tous les points. Lequel
 
 ```{=html}
 <!--
-{r assign_B02Ia_anscombe, echo=FALSE, results='asis'}
+{{r assign_B02Ia_anscombe, echo=FALSE, results='asis'}
 if (exists("assignment"))
   assignment("B02Ia_anscombe", part = NULL,
     url = "https://github.com/BioDataScience-Course/B02Ia_anscombe",
